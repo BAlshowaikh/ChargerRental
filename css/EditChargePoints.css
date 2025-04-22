@@ -1,0 +1,203 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Apr 1, 2025, 11:29:15 PM
+    Author     : HP
+*/
+
+body {
+    color: #2c3e50;
+    overflow-x: hidden;
+    height: 100%;
+    background-image: linear-gradient(to right, #18bc9c, #3498db);
+    background-repeat: no-repeat;
+}
+
+input,
+textarea,
+select {
+    background-color: #ecf0f1;
+    border-radius: 50px !important;
+    padding: 12px 15px !important;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #bdc3c7 !important;
+    font-size: 16px !important;
+    color: #34495e !important;
+    font-weight: 400;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    box-shadow: none !important;
+    border: 1px solid #18bc9c !important;
+    outline: none;
+}
+
+button:focus {
+    box-shadow: none !important;
+    outline: none;
+}
+
+.card {
+    border-radius: 0;
+    border: none;
+}
+
+.card1 {
+    width: 50%;
+    padding: 40px 30px 10px 30px;
+}
+
+.card2 {
+    width: 50%;
+    background-image: linear-gradient(to right, #3498db, #18bc9c);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; 
+    text-align: center;  
+}
+
+#logo {
+    width: 70px;
+    height: 60px;
+}
+
+.heading {
+    margin-bottom: 60px !important;
+}
+
+::placeholder {
+    color: #34495e !important;
+    opacity: 1;
+}
+
+.form-control-label {
+    font-size: 12px;
+    margin-left: 15px;
+}
+
+.msg-info {
+    padding-left: 15px;
+    margin-bottom: 30px;
+}
+
+.btn-color {
+    border-radius: 50px;
+    color: #fff;
+    background: linear-gradient(to right, #3498db, #18bc9c);
+    padding: 15px;
+    cursor: pointer;
+    border: none !important;
+    margin-top: 40px;
+}
+
+.btn-color:hover {
+    color: #fff;
+    background: linear-gradient(to right, #18bc9c, #3498db);
+}
+
+.btn-danger {
+    border-radius: 50px;
+    color: #fff;
+    background: linear-gradient(to right, #e74c3c, #c0392b);
+    padding: 15px;
+    cursor: pointer;
+    border: none !important;
+    margin-top: 20px;
+}
+
+.btn-danger:hover {
+    color: #fff;
+    background: linear-gradient(to right, #c0392b, #e74c3c);
+}
+
+.btn-white {
+    border-radius: 50px;
+    color: #18bc9c;
+    background-color: #fff;
+    padding: 8px 40px;
+    cursor: pointer;
+    border: 2px solid #18bc9c !important;
+    margin-left: 5px;
+}
+
+.btn-white:hover {
+    color: #fff;
+    background: linear-gradient(to right, #3498db, #18bc9c);
+}
+
+a {
+    color: #000;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #000;
+}
+
+.bottom {
+    width: 100%;
+    margin-top: 20px !important;
+}
+
+.sm-text {
+    font-size: 15px;
+}
+
+@media screen and (max-width: 992px) {
+    .card1 {
+        width: 100%;
+        padding: 40px 30px 10px 30px;
+    }
+
+    .card2 {
+        width: 100%;
+    }
+
+    .right {
+        margin-top: 100px !important;
+        margin-bottom: 100px !important;
+    }
+
+    .bottom {
+        margin-top: 30px !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 10px !important;
+    }
+
+    .card2 {
+        padding: 50px;
+    }
+
+    .right {
+        margin-top: 50px !important;
+        margin-bottom: 50px !important;
+    }
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.charge-point-image {
+    max-width: 250px;
+    height: auto;
+    object-fit: cover;
+}
+
+small.text-white {
+    margin-top: 10px; 
+    display: block; 
+}

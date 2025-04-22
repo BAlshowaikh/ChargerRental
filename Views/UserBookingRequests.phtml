@@ -1,0 +1,91 @@
+<?php
+
+/* 
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
+ */
+
+require("template/header.phtml");
+
+?>
+
+<html>
+    <head>
+        <link href="css/UserBookingRequest.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container px-4 py-5 mx-auto">
+            <div class="card card0">
+                <div class="d-flex flex-lg-row flex-column-reverse">
+                    <div class="card card1">
+                        <div class="row justify-content-center my-auto">
+                            <div class="col-md-8 col-10 my-5">
+
+                                <div class="my-auto mx-md-5 px-md-5 right">
+                                    <h3>Your Booking Requests</h3>
+                                </div>
+                                
+                                <!-- Booking Request List -->
+                                <div class="booking-request-container">
+                                    <!-- Booking 1 -->
+                                    <div class="booking-item">
+                                        <div class="booking-details">
+                                            <p><strong>Location:</strong> Charge Point A</p>
+                                            <p><strong>Date:</strong> 2025-04-05</p>
+                                            <p><strong>Time:</strong> 10:00 AM</p>
+                                        </div>
+                                        <div class="booking-status">
+                                            <span class="status-pending">Pending</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Booking 2 -->
+                                    <div class="booking-item">
+                                        <div class="booking-details">
+                                            <p><strong>Location:</strong> Charge Point B</p>
+                                            <p><strong>Date:</strong> 2025-04-06</p>
+                                            <p><strong>Time:</strong> 2:00 PM</p>
+                                        </div>
+                                        <div class="booking-status">
+                                            <span class="status-approved">Approved</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Booking 3 -->
+                                    <div class="booking-item">
+                                        <div class="booking-details">
+                                            <p><strong>Location:</strong> Charge Point C</p>
+                                            <p><strong>Date:</strong> 2025-04-07</p>
+                                            <p><strong>Time:</strong> 12:00 PM</p>
+                                        </div>
+                                        <div class="booking-status">
+                                            <span class="status-declined">Declined</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Booking 4 -->
+                                    <div class="booking-item">
+                                        <div class="booking-details">
+                                            <p><strong>Location:</strong> Charge Point D</p>
+                                            <p><strong>Date:</strong> 2025-04-08</p>
+                                            <p><strong>Time:</strong> 9:00 AM</p>
+                                        </div>
+                                        <div class="booking-status">
+                                            <span class="status-pending">Pending</span>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card2">
+                        <div class="my-auto mx-md-5 px-md-5 right">
+                            <h3>Booking Requests</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

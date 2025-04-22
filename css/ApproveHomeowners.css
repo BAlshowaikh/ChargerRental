@@ -1,0 +1,118 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Apr 19, 2025, 10:52:00 PM
+    Author     : HP
+*/
+
+body {
+    color: #2c3e50;
+    overflow-x: hidden;
+    height: 100%;
+    background-image: linear-gradient(to right, #18bc9c, #3498db);
+    background-repeat: no-repeat;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    padding: 50px 0;
+}
+
+.card {
+    border-radius: 0;
+    border: none;
+}
+
+.card0 {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.card1 {
+    width: 50%;
+    padding: 40px 30px 10px 30px;
+}
+
+.card2 {
+    width: 50%;
+    background-image: linear-gradient(to right, #3498db, #18bc9c);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.heading {
+    margin-bottom: 30px;
+}
+
+.form-control {
+    border-radius: 50px !important;
+    padding: 12px 15px !important;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #bdc3c7 !important;
+    font-size: 16px !important;
+    color: #34495e !important;
+    font-weight: 400;
+}
+
+.form-control:focus {
+    border: 1px solid #18bc9c !important;
+    outline: none;
+    box-shadow: none !important;
+}
+
+textarea.form-control {
+    resize: none;
+}
+
+.form-control-label {
+    font-size: 12px;
+    margin-left: 15px;
+}
+
+.btn-color {
+    border-radius: 50px;
+    color: #fff;
+    background: linear-gradient(to right, #3498db, #18bc9c);
+    padding: 15px;
+    cursor: pointer;
+    border: none !important;
+    margin-top: 40px;
+}
+
+.btn-color:hover {
+    background: linear-gradient(to right, #18bc9c, #3498db);
+}
+
+.right {
+    padding: 20px;
+}
+
+@media screen and (max-width: 992px) {
+    .card1, .card2 {
+        width: 100%;
+    }
+
+    .right {
+        margin-top: 100px !important;
+        margin-bottom: 100px !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 10px !important;
+    }
+
+    .card2 {
+        padding: 50px;
+    }
+
+    .right {
+        margin-top: 50px !important;
+        margin-bottom: 50px !important;
+    }
+}
