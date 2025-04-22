@@ -1,0 +1,90 @@
+<?php
+
+/* 
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
+ */
+
+require("template/header.phtml");
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Generate Booking Reports</title>
+    <link href="css/ChargeBookingReport.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container px-4 py-5 mx-auto">
+        <div class="card card0">
+            <div class="d-flex flex-lg-row flex-column-reverse">
+                
+                <!-- Left Form Section -->
+                <div class="card card1">
+                    <div class="row justify-content-center my-auto">
+                        <div class="col-md-10 col-12 my-5">
+                            <div class="row justify-content-center px-3 mb-3">
+                                <h3 class="text-center heading">Generate Booking Reports</h3>
+                            </div>
+
+                            <form id="report-form" method="POST" action="/Admin/GenerateReport">
+                                
+                                <!-- Date Range -->
+                                <div class="form-group">
+                                    <label class="form-control-label text-muted">Start Date</label>
+                                    <input type="date" name="startDate" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-control-label text-muted">End Date</label>
+                                    <input type="date" name="endDate" class="form-control">
+                                </div>
+
+                                <!-- Status Filter -->
+                                <div class="form-group">
+                                    <label class="form-control-label text-muted">Booking Status</label>
+                                    <select name="status" class="form-control">
+                                        <option value="">All</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+
+                                <!-- Location Filter -->
+                                <div class="form-group">
+                                    <label class="form-control-label text-muted">Location</label>
+                                    <input type="text" name="location" placeholder="Optional location filter" class="form-control">
+                                </div>
+
+                                <!-- Custom SQL -->
+                                <div class="form-group">
+                                    <label class="form-control-label text-muted">Custom SQL Query</label>
+                                    <textarea name="sqlQuery" class="form-control" rows="4" placeholder="SELECT * FROM ChargeBookings WHERE ..."></textarea>
+                                </div>
+
+                                <!-- Submit -->
+                                <div class="row justify-content-center my-3 px-3">
+                                    <button type="submit" class="btn-color">Generate Report</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Info Panel -->
+                <div class="card card2">
+                    <div class="my-auto mx-md-5 px-md-5 right">
+                        <h3 class="text-white">Charge Booking Reports System</h3>
+                        <small class="text-white">Use SQL queries to generate detailed system booking reports.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,64 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Apr 1, 2025, 7:52:47 PM
+    Author     : HP
+*/
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    color: #2c3e50;
+    overflow-x: hidden;
+    height: 100%;
+    background-image: linear-gradient(to right, #18bc9c, #3498db);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.form-control {
+    border-radius: 50px !important;
+    padding: 12px 15px !important;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #bdc3c7 !important;
+    font-size: 16px !important;
+    color: #34495e !important;
+    font-weight: 400;
+}
+
+.form-control:focus {
+  box-shadow: none !important;;
+  border: 1px solid #18bc9c !important;
+  outline: none;
+}
+
+.profile-button {
+  background: #18bc9c;
+  box-shadow: none;
+  border: none;
+}
+
+.profile-button:hover {
+  background: #3498db;
+}
+
+.profile-button:focus {
+  background: #682773;
+  box-shadow: none;
+}
+
+.profile-button:active {
+  background: #682773;
+  box-shadow: none;
+}
+
+.back:hover {
+  color: #3498db;
+  cursor: pointer;
+}
