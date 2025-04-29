@@ -58,6 +58,16 @@ body {
   box-shadow: none;
 }
 
+#edit-profile-btn {
+    cursor: pointer;
+    color: #18bc9c;
+    transition: color 0.3s ease;
+}
+
+#edit-profile-btn:hover {
+    color: #3498db;
+}
+
 .back:hover {
   color: #3498db;
   cursor: pointer;

@@ -26,6 +26,7 @@ require("template/header.phtml");
                         </div>
                         <h3 class="mb-5 text-center heading">Edit Charge Point</h3>
 
+                        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" enctype="multipart/form-data">
                         <!-- Display charge point details here -->
                         <div class="form-group">
                             <label class="form-control-label text-muted">Location</label>
@@ -56,14 +57,14 @@ require("template/header.phtml");
 
                         <div class="row justify-content-center my-3 px-3">
                             <!-- Save Changes Button -->
-                            <button class="btn-block btn-color" onclick="updateChargePoint()">Save Changes</button>
+                            <button type="submit" class="btn-block btn-color" onclick="updateChargePoint()">Save Changes</button>
                         </div>
 
                         <div class="row justify-content-center my-3 px-3">
                             <!-- Delete Charge Point Button -->
-                            <button class="btn-block btn-danger" onclick="deleteChargePoint()">Delete Charge Point</button>
+                            <button type="button" class="btn-block btn-danger" onclick="deleteChargePoint()">Delete Charge Point</button>
                         </div>
-
+                        </form>
                     </div>
                 </div>
             </div>

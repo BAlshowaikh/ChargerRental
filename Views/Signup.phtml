@@ -23,6 +23,8 @@ require('template/header.phtml');
                             <img id="logo" src="https://i.imgur.com/PSXxjNY.png">
                         </div>
                         <h3 class="mb-5 text-center heading">Sign Up for Tidi</h3>
+
+                        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                         <div class="form-group">
                             <label class="form-control-label text-muted">First Name</label>
                             <input type="text" id="fname" name="fname" placeholder="Enter your first name" class="form-control">
@@ -40,8 +42,9 @@ require('template/header.phtml');
                             <input type="text" id="phno" name="phno" placeholder="Enter your phone number" class="form-control">
                         </div>
                         <div class="row justify-content-center my-3 px-3">
-                            <button class="btn-block btn-color">Sign Up to Tidi</button>
+                            <button type="submit" class="btn-block btn-color">Sign Up to Tidi</button>
                         </div>
+                        </form>
                     </div>
                 </div>
                 <div class="bottom text-center mb-5">

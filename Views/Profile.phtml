@@ -8,6 +8,18 @@
 require('template/header.phtml');
 
 ?>
+
+
+<?php
+
+if (isset($_GET["updated"]) && $_GET["updated"] == "true")
+{
+    echo "User information successfully updated!";
+}
+
+?>
+
+
 <head>
     <link href="css/ProfileCSS.css" rel="stylesheet">
 </head>
@@ -30,7 +42,7 @@ require('template/header.phtml');
                         <i class="fa fa-long-arrow-left mr-1 mb-1"></i>
                         <h6>Back to home</h6>
                     </div>
-                    <h6 class="text-right">Edit Profile</h6>
+                    <h6 class="text-right" id="edit-profile-btn">Edit Profile</h6>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-6"><input type="text" class="form-control" placeholder="first name" value="First Name"></div>

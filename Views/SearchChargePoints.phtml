@@ -30,7 +30,7 @@ require("template/header.phtml");
                             </div>
                             <h6 class="msg-info">Use filters to find the best option near you.</h6>
 
-                            <form id="search-form" method="GET">
+                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" id="search-form" method="GET">
                                 <!-- Location -->
                                 <div class="form-group">
                                     <label class="form-control-label text-muted">Location (Address, Postcode, or Lat/Lng)</label>
