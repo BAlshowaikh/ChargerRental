@@ -31,21 +31,21 @@ require('template/header.phtml');
                         <form id="loginForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                         <div class="form-group">
                             <label class="form-control-label text-muted">Username</label>
-                            <input type="text" id="email" name="email" placeholder="Phone no or email id" class="form-control">
+                            <input type="text" id="email" name="email" placeholder="Enter your email" class="form-control" value="<?php if (isset($_POST["email"])) {echo $_POST["email"];} ?>">
                         </div>
 
                         <div class="form-group">
                             <label class="form-control-label text-muted">Password</label>
-                            <input type="password" id="password" name="password" placeholder="Password" class="form-control">
+                            <input type="password" id="password" name="password" placeholder="Password" class="form-control" value="<?php if (isset($_POST["password"])) {echo $_POST["password"];} ?>">
                         </div>
 
                         <div class="row justify-content-center my-3 px-3">
                             <button type="submit" class="btn-block btn-color">Login to Tidi</button>
                         </div>
 
-                            <?php if (!empty($view->error)): ?>
+                            <?php if (!empty($view->loginError)): ?>
                                 <div class="alert alert-danger text-center">
-                                    <?php echo htmlspecialchars($view->error); ?>
+                                    <?php echo $view->loginError; ?>
                                 </div>
                             <?php endif; ?>
 
@@ -69,6 +69,7 @@ require('template/header.phtml');
 <script type="module" src="./js/LoginFormValidation.js"></script>
 
 </body>
+
 <?php 
 require('template/footer.phtml');
 ?>

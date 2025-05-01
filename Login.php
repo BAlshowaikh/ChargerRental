@@ -10,6 +10,8 @@ require ("Models/userDataSet.php");
 $view = new stdClass();			
 $view->pageTitle = 'Login';
 
+session_start();
+
 $user = new userDataSet();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["email"]) && isset($_POST["password"]))
@@ -20,9 +22,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["email"]) && isset($_P
 
     if ($userData)
     {
-        session_start();
         $_SESSION["userID"] = $userData["user_ID"];
         $_SESSION["role"] = $userData["User_role_User_role_ID"];
+
+        $_SESSION["fullname"] = $userData["f_Name"] . " " . $userData["l_Name"];
+        $_SESSION["username"] = $userData["username"];
 
         if ($userData["User_role_User_role_ID"] == 1 || $userData["User_role_User_role_ID"] == 2)
         {
@@ -37,8 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["email"]) && isset($_P
     }
     else
     {
-        $view->errorMessage = "Invalid username or password";
+        $view->loginError = "Invalid username or password";
     }
 }
+
 
 require_once('Views/Login.phtml');

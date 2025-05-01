@@ -65,10 +65,26 @@ body {
 }
 
 #edit-profile-btn:hover {
-    color: #3498db;
+    color: white;
 }
+
+#edit-profile-btn.editing {
+    background-color: #18bc9c;
+    color: white !important;
+    border: none;
+}
+
+#edit-profile-btn.editing:hover {
+    background-color: #16a085;
+    color: white !important;
+}
+
 
 .back:hover {
   color: #3498db;
   cursor: pointer;
+}
+
+.profile-container {
+    margin-top: 140px !important;
 }

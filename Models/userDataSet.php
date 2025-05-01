@@ -64,11 +64,9 @@ class userDataSet
 
     public function userExists($username, $password)
     {
-        $sql = "SELECT * FROM User WHERE username = :username AND password = :password";
-
+        $sql = "SELECT * FROM User WHERE username = :username";
         $stmt = $this->_dbHandle->prepare($sql);
         $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $password);
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -80,7 +78,7 @@ class userDataSet
                 SET f_Name = :fname,
                     l_Name = :lname,
                     username = :username,
-                    Phone_no = :phoneNo,
+                    Phone_no = :phoneNo
                 WHERE user_ID = :userID";
 
         $stmt = $this->_dbHandle->prepare($sql);
@@ -91,6 +89,16 @@ class userDataSet
         $stmt->bindParam(':userID', $userID);
 
         return $stmt->execute();
+    }
+
+    public function getUserByID($userID) {
+        $sql = "SELECT * FROM User WHERE user_ID = :userID";
+
+        $statement = $this->_dbHandle->prepare($sql); // ✅ Fixed typo here
+        $statement->bindParam(':userID', $userID, PDO::PARAM_INT); // ✅ Bind the parameter
+        $statement->execute();
+
+        return $statement->fetch(PDO::FETCH_ASSOC); // ✅ Return as associative array
     }
 
     public function updateLocation($road, $city, $locationID)
