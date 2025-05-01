@@ -1,4 +1,4 @@
-// This class will hold the configuration for the db connection
+<!-- This class will hold the configuration for the db connection -->
 <?php
 
 return [

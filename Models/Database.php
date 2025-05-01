@@ -2,6 +2,8 @@
 
 namespace Models;
 
+use \PDO;
+
 class Database
 {
     protected static $_dbInstance = null;
@@ -30,8 +32,8 @@ class Database
     private function __construct($username, $password, $host, $database) {
         try {
             // Create PDO connection with provided credentials
-            $this->_dbHandle = new PDO("mysql:host=$host;dbname=$database", $username, $password);
-            echo "Connected";
+            $this->_dbHandle = new \PDO("mysql:host=$host;dbname=$database", $username, $password);
+            //echo "Connected";
         }
         catch (PDOException $e) {
             // Handle connection errors
@@ -39,7 +41,7 @@ class Database
         }
     }
     // 7. Method to get the database connection handle
-    public function getdbConnection() {
+    public function getConnection() {
         return $this->_dbHandle; // Returns the PDO object for database operations
     }
 

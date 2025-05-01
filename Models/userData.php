@@ -13,6 +13,16 @@ class userData
         $this->password = $dbRow['password'];
         $this->phNo = $dbRow['Phone_no'];
         $this->registrationDate = $dbRow['Registration_date'];
+
+        if ($dbRow['approved'])
+        {
+            $this->approved = "Yes";
+        }
+        else
+        {
+            $this->approved = "No";
+        }
+
         $this->userRoleId = $dbRow['user_role_User_role_ID'];
     }
 
@@ -49,6 +59,11 @@ class userData
     public function getRegistrationDate()
     {
         return $this->registrationDate;
+    }
+
+    public function getApproved()
+    {
+        return $this->approved;
     }
 
     public function getUserRoleId()

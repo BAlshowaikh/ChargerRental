@@ -28,7 +28,7 @@ require('template/header.phtml');
 
                         <h6 class="msg-info">Please login to your account</h6>
 
-                        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                        <form id="loginForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                         <div class="form-group">
                             <label class="form-control-label text-muted">Username</label>
                             <input type="text" id="email" name="email" placeholder="Phone no or email id" class="form-control">
@@ -36,12 +36,19 @@ require('template/header.phtml');
 
                         <div class="form-group">
                             <label class="form-control-label text-muted">Password</label>
-                            <input type="password" id="psw" name="psw" placeholder="Password" class="form-control">
+                            <input type="password" id="password" name="password" placeholder="Password" class="form-control">
                         </div>
 
                         <div class="row justify-content-center my-3 px-3">
                             <button type="submit" class="btn-block btn-color">Login to Tidi</button>
                         </div>
+
+                            <?php if (!empty($view->error)): ?>
+                                <div class="alert alert-danger text-center">
+                                    <?php echo htmlspecialchars($view->error); ?>
+                                </div>
+                            <?php endif; ?>
+
                     </form>
                     </div>
                 </div>
@@ -58,6 +65,8 @@ require('template/header.phtml');
         </div>
     </div>
 </div>
+
+<script type="module" src="./js/LoginFormValidation.js"></script>
 
 </body>
 <?php 
