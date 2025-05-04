@@ -24,7 +24,8 @@ require("template/header.phtml");
                                 <div class="my-auto mx-md-5 px-md-5 right">
                                     <h3>Your Booking Requests</h3>
                                 </div>
-                                
+
+                                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                                 <!-- Booking Request List -->
                                 <div class="booking-request-container">
                                     <!-- Booking 1 -->
@@ -74,8 +75,8 @@ require("template/header.phtml");
                                             <span class="status-pending">Pending</span>
                                         </div>
                                     </div>
-                                    
                                 </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -89,3 +90,9 @@ require("template/header.phtml");
         </div>
     </body>
 </html>
+
+
+
+<?php
+require('template/footer.phtml');
+?>

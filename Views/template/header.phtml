@@ -47,11 +47,17 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <?php if (empty($_SESSION["userID"])): ?>
             <li><a class="dropdown-item" href="Profile.php">Profile</a></li>
             <li><a class="dropdown-item" href="Login.php">Login</a></li>
             <li><a class="dropdown-item" href="Signup.php">Signup</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Logout</a></li>
+            <li><a class="dropdown-item" href="Logout.php">Logout</a></li>
+            <?php else: ?>
+            <li><a class="dropdown-item" href="Profile.php">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="Logout.php">Logout</a></li>
+            <?php endif; ?>
         </ul>
     </div>
 </div>

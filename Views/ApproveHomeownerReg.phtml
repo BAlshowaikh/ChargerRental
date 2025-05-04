@@ -30,7 +30,7 @@ require("template/header.phtml");
                             </div>
 
                             <!-- Homeowner Approval Form -->
-                            <form id="approve-form" action="" method="POST">
+                            <form id="approve-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
                                 <!-- Full Name -->
                                 <div class="form-group">
                                     <label class="form-control-label text-muted">Full Name</label>
@@ -80,3 +80,8 @@ require("template/header.phtml");
     </div>
 </body>
 </html>
+
+
+<?php
+require('template/footer.phtml');
+?>

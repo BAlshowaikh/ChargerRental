@@ -8,11 +8,11 @@
 require('template/header.phtml');
 
 ?>
+
 <head>
     <link href="css/LoginRegCSS.css" rel="stylesheet">
 </head>
-
-
+<body>
 <div class="container px-4 py-5 mx-auto">
     <div class="card card0">
         <div class="d-flex flex-lg-row flex-column-reverse">
@@ -23,26 +23,65 @@ require('template/header.phtml');
                             <img id="logo" src="https://i.imgur.com/PSXxjNY.png">
                         </div>
                         <h3 class="mb-5 text-center heading">Sign Up for Tidi</h3>
+
+                        <form id="regForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                         <div class="form-group">
                             <label class="form-control-label text-muted">First Name</label>
-                            <input type="text" id="fname" name="fname" placeholder="Enter your first name" class="form-control">
+                            <input type="text" id="fname" name="fname" placeholder="Enter your first name" class="form-control" >
+                            <?php if (!empty($view->errors['fname'])): ?>
+                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['fname']) ?></small>
+                            <?php endif; ?>
                         </div>
                         <div class="form-group">
                             <label class="form-control-label text-muted">Last Name</label>
-                            <input type="text" id="lname" name="lname" placeholder="Enter your last name" class="form-control">
+                            <input type="text" id="lname" name="lname" placeholder="Enter your last name" class="form-control" >
+                            <?php if (!empty($view->errors['lname'])): ?>
+                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['lname']) ?></small>
+                            <?php endif; ?>
                         </div>
                         <div class="form-group">
                             <label class="form-control-label text-muted">Email</label>
-                            <input type="text" id="email" name="email" placeholder="Enter your email" class="form-control">
+                            <input type="text" id="email" name="email" placeholder="Enter your email" class="form-control" >
+                            <?php if (!empty($view->errors['email'])): ?>
+                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['email']) ?></small>
+                            <?php endif; ?>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label text-muted">Password</label>
+                            <input type="password" id="password" name="password" placeholder="Enter your password" class="form-control" >
+                            <?php if (!empty($view->errors['password'])): ?>
+                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['password']) ?></small>
+                            <?php endif; ?>
                         </div>
                         <div class="form-group">
                             <label class="form-control-label text-muted">Phone Number</label>
-                            <input type="text" id="phno" name="phno" placeholder="Enter your phone number" class="form-control">
+                            <input type="text" id="phno" name="phno" placeholder="Enter your phone number" class="form-control" >
+                            <?php if (!empty($view->errors['phno'])): ?>
+                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['phno']) ?></small>
+                            <?php endif; ?>
                         </div>
+                        <!--<div class="form-group">
+                            <label class="form-control-label text-muted">Address</label>
+                            <input type="text" id="address" name="address" placeholder="Address: D-113, right avenue block, CA,USA" class="form-control" >
+                            <?php //if (!empty($view->errors['address'])): ?>
+                                <small class="text-danger"><?php //echo htmlspecialchars($view->errors['address']) ?></small>
+                            <?php //endif; ?>
+                        </div>-->
                         <div class="row justify-content-center my-3 px-3">
-                            <button class="btn-block btn-color">Sign Up to Tidi</button>
+                            <button type="submit" class="btn-block btn-color">Sign Up to Tidi</button>
                         </div>
+                        </form>
                     </div>
+                    <?php
+                    if (!empty($view->successReg)) { ?>
+                        <div class="d-flex justify-content-center">
+                            <div class="alert alert-success">
+                                <?php echo $view->successReg; ?>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
                 </div>
                 <div class="bottom text-center mb-5">
                     <p href="#" class="sm-text mx-auto mb-3">Already have an account? <button class="btn btn-white ml-2"><a href="Login.php">Login</a></button></p>
@@ -58,8 +97,11 @@ require('template/header.phtml');
     </div>
 </div>
 
+<script type="module" src="./js/RegistrationFormValidation.js"></script>
+
 <?php
 
 require('template/footer.phtml');
 
 ?>
+</body>

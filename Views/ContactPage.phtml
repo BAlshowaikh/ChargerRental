@@ -31,7 +31,7 @@ require("template/header.phtml");
                             <h6 class="msg-info">Please fill in your details below to contact the homeowner</h6>
 
                             <!-- Contact Form -->
-                            <form id="booking-form" action="" method="POST">
+                            <form id="booking-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
                                 <!-- Name -->
                                 <div class="form-group">
                                     <label class="form-control-label text-muted">Name</label>
@@ -77,3 +77,8 @@ require("template/header.phtml");
     </div>
 </body>
 </html>
+
+
+<?php
+require('template/footer.phtml');
+?>

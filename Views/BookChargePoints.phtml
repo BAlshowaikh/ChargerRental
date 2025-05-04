@@ -25,6 +25,7 @@ require("template/header.phtml");
                                 </div>
                                 <h3 class="mb-5 text-center heading">Book Charge Point</h3>
 
+                                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                                 <!-- Display charge point details here -->
                                 <div class="form-group">
                                     <label class="form-control-label text-muted">Location</label>
@@ -67,7 +68,7 @@ require("template/header.phtml");
                                     <!-- Book Button for customers -->
                                     <button class="btn-block btn-color" onclick="bookChargePoint()">Book Charge Point</button>
                                 </div>
-
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -85,3 +86,7 @@ require("template/header.phtml");
         </div>
     </body>
 </html>
+
+<?php
+require('template/footer.phtml');
+?>

@@ -29,7 +29,7 @@ require("template/header.phtml");
                                 <h3 class="text-center heading">Generate Booking Reports</h3>
                             </div>
 
-                            <form id="report-form" method="POST" action="/Admin/GenerateReport">
+                            <form id="report-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                                 
                                 <!-- Date Range -->
                                 <div class="form-group">
@@ -88,3 +88,7 @@ require("template/header.phtml");
 </body>
 </html>
 
+
+<?php
+require('template/footer.phtml');
+?>

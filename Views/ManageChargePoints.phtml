@@ -25,6 +25,7 @@ require("template/header.phtml");
                         </div>
                         <h3 class="mb-5 text-center heading">Add Charge Points</h3>
 
+                        <form id="add-charge-point-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
                         <div class="form-group">
                             <label class="form-control-label text-muted">Location</label>
                             <input type="text" id="location" name="location" placeholder="Enter location of charge point" class="form-control">
@@ -49,9 +50,9 @@ require("template/header.phtml");
                         </div>
 
                         <div class="row justify-content-center my-3 px-3">
-                            <button class="btn-block btn-color" onclick="submitChargePoint()">Add Charge Point</button>
+                            <button type="submit" class="btn-block btn-color" onclick="submitChargePoint()">Add Charge Point</button>
                         </div>
-
+                        </form>
                     </div>
                 </div>
             </div>
@@ -66,3 +67,7 @@ require("template/header.phtml");
 </div>
 </body>
 </html>
+
+<?php
+require('template/footer.phtml');
+?>
