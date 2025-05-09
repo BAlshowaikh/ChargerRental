@@ -1,68 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>EV Portal</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark">
     <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarColor01">
-    <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-        <a class="nav-link active" href="#">Home
-            <span class="visually-hidden">(current)</span>
-        </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-          <div class="dropdown-menu">
-             <a class="dropdown-item" href="#">Action</a>
-             <a class="dropdown-item" href="#">Another action</a>
-             <a class="dropdown-item" href="#">Something else here</a>
-             <div class="dropdown-divider"></div>
-             <a class="dropdown-item" href="#">Separated link</a>
-          </div>
-        </li>
-    </ul>
-  <form class="d-flex">
-    <input class="form-control me-sm-2" type="search" placeholder="Search">
-    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-  </form>
-    <div class="dropdown ms-3"> <!-- Added 'ms-3' for spacing -->
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <span id="userName">Logged In User</span>
+        <a class="navbar-brand" href="#">EV Portal</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
+                aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-            <?php if (empty($_SESSION["userID"])): ?>
-            <li><a class="dropdown-item" href="Profile.php">Profile</a></li>
-            <li><a class="dropdown-item" href="Login.php">Login</a></li>
-            <li><a class="dropdown-item" href="Signup.php">Signup</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="Logout.php">Logout</a></li>
-            <?php else: ?>
-            <li><a class="dropdown-item" href="Profile.php">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="Logout.php">Logout</a></li>
-            <?php endif; ?>
-        </ul>
+
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <!-- Centered Menu Items -->
+            <ul class="navbar-nav mx-auto">
+
+                <!-- Customer Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="customerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Customer
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="SearchChargePoints.php">Explore Charger Points</a></li>
+                        <li><a class="dropdown-item" href="UserBookingRequest.php">Booking History</a></li>
+                        <li><a class="dropdown-item" href="#">Reminders</a></li>
+                        <li><a class="dropdown-item" href="ContactPage.php">Contact Us</a></li>
+                    </ul>
+                </li>
+
+                <!-- Homeowner Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="homeownerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Homeowner
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="EditChargePoints.php">Manage Charger Point</a></li>
+                        <li><a class="dropdown-item" href="">Manage Booking Request</a></li>
+                    </ul>
+                </li>
+
+                <!-- Admin Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Admin
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="">Manage Charger Points</a></li>
+                        <li><a class="dropdown-item" href="">Manage User Accounts</a></li>
+                        <li><a class="dropdown-item" href="#">Generate System Reports</a></li>
+                        <li><a class="dropdown-item" href="ApproveHomeownerReg.php">Approve Homeowner Registration</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+
+            <!-- User Account Dropdown -->
+            <div class="dropdown ms-3">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span id="userName">Logged In User</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <?php if (empty($_SESSION["userID"])): ?>
+                        <li><a class="dropdown-item" href="Login.php">Login</a></li>
+                        <li><a class="dropdown-item" href="Signup.php">Signup</a></li>
+                    <?php else: ?>
+                        <li><a class="dropdown-item" href="Profile.php">Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="Logout.php">Logout</a></li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        </div>
     </div>
-</div>
-</div>
 </nav>
-</body>
-</html>
 
