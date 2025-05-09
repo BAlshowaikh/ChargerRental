@@ -1,0 +1,42 @@
+<?php require_once 'template/header.phtml'; ?>
+<link rel="stylesheet" href="/css/ManageChargePointsAdmin.css">
+<main class="manage-container">
+    <h2 class="page-title">Manage All Charger Points</h2>
+
+    <div class="card-container">
+        <?php if (isset($view->chargerPoints) && is_array($view->chargerPoints)): ?>
+            <?php foreach ($view->chargerPoints as $point): ?>
+                <div class="card">
+                    <div class="card-section card-image">
+                        <img src="<?= htmlspecialchars($point->getImageUrl()) ?>" alt="Charger Image" class="card-img">
+                    </div>
+                    <div class="divider"></div>
+                    <div class="card-section card-details">
+                        <p><strong>Location:</strong> <?= htmlspecialchars($point->getLocation()) ?></p>
+                        <p><strong>Price:</strong> <?= htmlspecialchars($point->getPrice()) ?> / kWh</p>
+                        <p><strong>Status:</strong> <?= htmlspecialchars($point->getAvailability()) ?></p>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#id=<?= $point->getId() ?>" class="btn edit-btn">Edit</a>
+                        <button onclick="toggleDetails(this)" class="btn toggle-btn">Show/Hide</button>
+                        <form method="post" action="#" style="display:inline;">
+                            <input type="hidden" name="id" value="<?= $point->getId() ?>">
+                            <button type="submit" class="btn delete-btn">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p style="text-align:center;">No charger points found.</p>
+        <?php endif; ?>
+    </div>
+</main>
+
+<script>
+    function toggleDetails(button) {
+        const details = button.closest('.card').querySelector('.card-details');
+        details.style.display = details.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
+
+<?php require_once 'template/footer.phtml'; ?>

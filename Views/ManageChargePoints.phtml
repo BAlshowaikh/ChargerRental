@@ -1,73 +1,33 @@
-<?php
+<?php require_once 'template/header.phtml'; ?>
+<link rel="stylesheet" href="/css/ManageChargePoints.css">
 
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
- */
+<main class="manage-container">
+    <h2 class="page-title">Manage Charger Points</h2>
 
-require("template/header.phtml");
+    <!-- Add button -->
+    <div class="add-button-wrapper">
+        <a href="#" class="btn add-btn">+ Add Charger Point</a>
+    </div>
 
-?>
+    <div class="card-container">
 
-<html>
-<head>
-    <link href="css/ManageChargePoints.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container px-4 py-5 mx-auto">
-    <div class="card card0">
-        <div class="d-flex flex-lg-row flex-column-reverse">
-            <div class="card card1">
-                <div class="row justify-content-center my-auto">
-                    <div class="col-md-8 col-10 my-5">
-                        <div class="row justify-content-center px-3 mb-3">
-                            <img id="logo" src="https://i.imgur.com/PSXxjNY.png">
-                        </div>
-                        <h3 class="mb-5 text-center heading">Add Charge Points</h3>
-
-                        <form id="add-charge-point-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">Location</label>
-                            <input type="text" id="location" name="location" placeholder="Enter location of charge point" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">Price per kWh</label>
-                            <input type="number" id="price" name="price" placeholder="Enter price per kWh" class="form-control" min="0" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">Availability</label>
-                            <select id="availability" name="availability" class="form-control">
-                                <option value="available">Available</option>
-                                <option value="unavailable">Unavailable</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">Upload Picture</label>
-                            <input type="file" id="chargePointImage" name="chargePointImage" class="form-control">
-                        </div>
-
-                        <div class="row justify-content-center my-3 px-3">
-                            <button type="submit" class="btn-block btn-color" onclick="submitChargePoint()">Add Charge Point</button>
-                        </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="card card2">
-                <div class="my-auto mx-md-5 px-md-5 right">
-                    <h3 class="text-white">Easily manage your charge points</h3>
-                    <small class="text-white">Add charge points, and keep track of your pricing and availability with ease.</small>
-                </div>
+        <div class="card">
+            <div class="card-section card-image">Image</div>
+            <div class="divider"></div>
+            <div class="card-section card-details">Details</div>
+            <div class="card-actions">
+                <button class="btn edit-btn">Edit</button>
+                <button class="btn toggle-btn" onclick="toggleDetails(this)">Show/Hide</button>
             </div>
         </div>
     </div>
-</div>
-</body>
-</html>
+</main>
 
-<?php
-require('template/footer.phtml');
-?>
+<script>
+    function toggleDetails(button) {
+        const details = button.closest('.card').querySelector('.card-details');
+        details.style.display = details.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
+
+<?php require_once 'template/footer.phtml'; ?>

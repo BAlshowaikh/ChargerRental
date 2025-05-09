@@ -1,0 +1,38 @@
+<?php require_once 'template/header.phtml'; ?>
+<link rel="stylesheet" href="/css/ManageUsers.css">
+<main class="manage-users-container">
+    <h2 class="page-title">Manage Users</h2>
+
+    <div class="table-wrapper">
+        <table class="user-table">
+            <thead>
+            <tr>
+                <th>User ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>User Role</th>
+                <th></th> <!-- Action column -->
+            </tr>
+            </thead>
+            <tbody>
+            <?php if (isset($view->users) && is_array($view->users)): ?>
+                <?php foreach ($view->users as $user): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($user->getId()) ?></td>
+                        <td><?= htmlspecialchars($user->getFirstName()) ?></td>
+                        <td><?= htmlspecialchars($user->getLastName()) ?></td>
+                        <td><?= htmlspecialchars($user->getRole()) ?></td>
+                        <td><button class="btn suspend-btn">Suspend</button></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="5" style="text-align:center;">No users found.</td>
+                </tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<?php require_once 'template/footer.phtml'; ?>
