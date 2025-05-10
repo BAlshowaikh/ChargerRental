@@ -10,15 +10,65 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 html, body {
     height: 100%;
     margin: 0;
+    padding: 0;
 }
 
 body {
-    color: #2c3e50;
-    overflow-x: hidden;
-    height: 100%;
+    /*color: #2c3e50;
+    overflow-x: hidden;*/
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     background-image: linear-gradient(to right, #18bc9c, #3498db);
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+
+#logo {
+    height: 40px;
+}
+
+#profileIcon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.btn-transparent {
+    background-color: transparent;
+    border: none;
+    padding: 6px 10px;
+}
+
+.btn-transparent:focus,
+.btn-transparent:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+}
+
+.btn-transparent.dropdown-toggle::after {
+    color: white;
+}
+
+.page-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /*min-height: 100vh;*/
+}
+
+main {
+    flex-grow: 1;
+}
+
+footer {
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    text-align: center;
+    padding: 1rem 0;
+    background: transparent;
+    color: #fff;
 }
 
 .form-control {

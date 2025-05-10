@@ -46,10 +46,38 @@ button:focus {
     background-image: linear-gradient(to right, #3498db, #18bc9c);
 }
 
-#logo {
+#mainLogo {
     width: 70px;
     height: 60px;
 }
+
+#logo {
+    height: 40px;
+}
+
+#profileIcon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.btn-transparent {
+    background-color: transparent;
+    border: none;
+    padding: 6px 10px;
+}
+
+.btn-transparent:focus,
+.btn-transparent:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+}
+
+.btn-transparent.dropdown-toggle::after {
+    color: white;
+}
+
 
 .heading {
     margin-bottom: 60px !important;
@@ -151,4 +179,13 @@ a:hover {
         margin-top: 50px !important;
         margin-bottom: 50px !important;
     }
+}
+
+footer {
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    text-align: center;
+    padding: 1rem 0;
+    background: transparent;
+    color: #fff;
+    margin-top: auto;
 }

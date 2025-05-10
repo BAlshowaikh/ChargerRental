@@ -22,10 +22,10 @@ require('template/header.phtml');
 
 
 <head>
-    <link href="css/ProfileCSS.css" rel="stylesheet">
+    <link href="/css/ProfileCSS.css" rel="stylesheet">
 </head>
 <body>
-
+<main class="flex-grow-1 container py-4">
 <form method="POST" action="Profile.php">
 <div class="container rounded bg-white mt-5 profile-container">
     <div class="row">
@@ -77,6 +77,7 @@ require('template/header.phtml');
     </div>
 </div>
 </form>
+</main>
 
     
 <script src="./js/Profile.js"></script>
