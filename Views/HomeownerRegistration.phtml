@@ -1,12 +1,5 @@
 <?php
-
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
- */
-
-require('template/header.phtml');
-
+    require ("template/header.phtml");
 ?>
 
 <head>
@@ -24,7 +17,7 @@ require('template/header.phtml');
                         </div>
                         <h3 class="mb-5 text-center heading">Sign Up for Tidi</h3>
 
-                        <form id="regForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                        <form id="homeownerRegForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                         <div class="form-group">
                             <label class="form-control-label text-muted">First Name</label>
                             <input type="text" id="fname" name="fname" placeholder="Enter your first name" class="form-control" >
@@ -60,15 +53,38 @@ require('template/header.phtml');
                                 <small class="text-danger"><?php echo htmlspecialchars($view->errors['phno']) ?></small>
                             <?php endif; ?>
                         </div>
-                        <!--<div class="form-group">
-                            <label class="form-control-label text-muted">Address</label>
-                            <input type="text" id="address" name="address" placeholder="Address: D-113, right avenue block, CA,USA" class="form-control" >
-                            <?php //if (!empty($view->errors['address'])): ?>
-                                <small class="text-danger"><?php //echo htmlspecialchars($view->errors['address']) ?></small>
-                            <?php //endif; ?>
-                        </div>-->
+                        <div class="form-group">
+                            <label class="form-control-label text-muted">Phone Number</label>
+                            <input type="text" id="chargePoint" name="chargePoint" placeholder="Charge Point Description" class="form-control" >
+                            <?php if (!empty($view->errors['chargePoint'])): ?>
+                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['chargePoint']) ?></small>
+                            <?php endif; ?>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label text-muted">Phone Number</label>
+                            <input type="text" id="price" name="price" placeholder="Enter price per kwh" class="form-control" >
+                            <?php if (!empty($view->errors['price'])): ?>
+                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['price']) ?></small>
+                            <?php endif; ?>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label text-muted">Availability</label>
+                            <select id="availability" name="availability" class="form-control">
+                                <option disabled selected value="">Select Availability</option>
+                                <option value="available">Available</option>
+                                <option value="unavailable">Unavailable</option>
+                            </select>
+                            <?php if (!empty($view->errors['available'])): ?>
+                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['available']) ?></small>
+                            <?php endif; ?>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label text-muted">Charge Point Image</label>
+                            <input type="file" id="chargePointImage" name="chargePointImage" class="form-control">
+                        </div>
+
                         <div class="row justify-content-center my-3 px-3">
-                            <button type="submit" class="btn-block btn-color">Sign Up to Tidi</button>
+                            <button type="submit" class="btn-block btn-color">Sign Up</button>
                         </div>
                         </form>
                     </div>

@@ -5,79 +5,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
  */
 
-require("template/header.phtml");
+require("template/AdminNavBar.phtml");
 
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <link href="css/ApproveHomeowners.css" rel="stylesheet">
+    <link href="/css/sharedLayout.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Approve Homeowners</title>
 </head>
 <body>
-    <div class="container px-4 py-5 mx-auto">
-        <div class="card card0">
-            <div class="d-flex flex-lg-row flex-column-reverse">
-                
-                <!-- Approve Section -->
-                <div class="card card1">
-                    <div class="row justify-content-center my-auto">
-                        <div class="col-md-10 col-12 my-5">
-                            <div class="row justify-content-center px-3 mb-3">
-                                <h3 class="text-center heading">Approve Homeowner Registrations</h3>
-                            </div>
-
-                            <!-- Homeowner Approval Form -->
-                            <form id="approve-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-                                <!-- Full Name -->
-                                <div class="form-group">
-                                    <label class="form-control-label text-muted">Full Name</label>
-                                    <input type="text" id="fullName" name="fullName" placeholder="Homeowner Name" class="form-control" required>
-                                </div>
-
-                                <!-- Email -->
-                                <div class="form-group">
-                                    <label class="form-control-label text-muted">Email</label>
-                                    <input type="email" id="email" name="email" placeholder="Homeowner Email" class="form-control" required>
-                                </div>
-
-                                <!-- Address -->
-                                <div class="form-group">
-                                    <label class="form-control-label text-muted">Address</label>
-                                    <input type="text" id="address" name="address" placeholder="Homeowner Address" class="form-control">
-                                </div>
-
-                                <!-- Status -->
-                                <div class="form-group">
-                                    <label class="form-control-label text-muted">Approval Status</label>
-                                    <select id="status" name="status" class="form-control">
-                                        <option value="approved">Approve</option>
-                                        <option value="rejected">Reject</option>
-                                    </select>
-                                </div>
-
-                                <!-- Submit Button -->
-                                <div class="row justify-content-center my-3 px-3">
-                                    <button type="submit" class="btn-block btn-color">Submit Decision</button>
-                                </div>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Info Panel -->
-                <div class="card card2">
-                    <div class="my-auto mx-md-5 px-md-5 right">
-                        <h3 class="text-white">Manage Homeowner Requests</h3>
-                        <small class="text-white">Review and approve or reject homeowner registration details securely.</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <main class="manage-container">
+        <h2 class="page-title">Approve Homeowner Registration</h2>
+    </main>
 </body>
 </html>
 

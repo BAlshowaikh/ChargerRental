@@ -5,76 +5,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
  */
 
-require("template/header.phtml");
+require("template/CustomerNavBar.phtml");
 
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <link href="css/ContactPage.css" rel="stylesheet">
+    <link href="/css/sharedLayout.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Contact Page</title>
 </head>
 <body>
-    <div class="container px-4 py-5 mx-auto">
-        <div class="card card0">
-            <div class="d-flex flex-lg-row flex-column-reverse">
-                
-                <!-- Form Section -->
-                <div class="card card1">
-                    <div class="row justify-content-center my-auto">
-                        <div class="col-md-8 col-10 my-5">
-                            <div class="row justify-content-center px-3 mb-3">
-                                <h3 class="text-center heading">Contact Page</h3>
-                            </div>
-                            <h6 class="msg-info">Please fill in your details below to contact the homeowner</h6>
-
-                            <!-- Contact Form -->
-                            <form id="booking-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-                                <!-- Name -->
-                                <div class="form-group">
-                                    <label class="form-control-label text-muted">Name</label>
-                                    <input type="text" id="name" name="name" placeholder="Your Name" class="form-control" required>
-                                </div>
-
-                                <!-- Email -->
-                                <div class="form-group">
-                                    <label class="form-control-label text-muted">Email</label>
-                                    <input type="email" id="email" name="email" placeholder="Your Email Address" class="form-control" required>
-                                </div>
-
-                                <!-- Date and Time -->
-                                <div class="form-group">
-                                    <label class="form-control-label text-muted">Date and Time</label>
-                                    <input type="datetime-local" id="booking-time" name="booking-time" class="form-control" required>
-                                </div>
-
-                                <!-- Message -->
-                                <div class="form-group">
-                                    <label class="form-control-label text-muted">Message</label>
-                                    <textarea id="message" name="message" placeholder="Additional Message" class="form-control" rows="4"></textarea>
-                                </div>
-
-                                <!-- Submit Button -->
-                                <div class="row justify-content-center my-3 px-3">
-                                    <button type="submit" class="btn-block btn-color">Contact Homeowner</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Info Section -->
-                <div class="card card2">
-                    <div class="my-auto mx-md-5 px-md-5 right">
-                        <h3 class="text-white">Get in Touch</h3>
-                        <small class="text-white">We’ll get back to you as soon as possible to help with your booking.</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <main class="manage-container">
+        <h2 class="page-title">Contact Page</h2>
+    </main>
 </body>
 </html>
 

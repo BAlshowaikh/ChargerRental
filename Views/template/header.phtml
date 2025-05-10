@@ -3,23 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>EV Portal</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">EV Portal</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
-                aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <div class="container-fluid position-relative">
+        <div class="navbar-brand">
+            <img src="path_to_logo.png" alt="EV Portal Logo" id="logo" style="height: 40px;">
+        </div>
 
         <div class="collapse navbar-collapse" id="navbarColor01">
             <!-- Centered Menu Items -->
-            <ul class="navbar-nav mx-auto">
+            <!--<ul class="navbar-nav centered-nav"> -->
 
                 <!-- Customer Menu -->
-                <li class="nav-item dropdown">
+                <!--<li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="customerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Customer
                     </a>
@@ -29,10 +27,10 @@
                         <li><a class="dropdown-item" href="#">Reminders</a></li>
                         <li><a class="dropdown-item" href="ContactPage.php">Contact Us</a></li>
                     </ul>
-                </li>
+                </li>-->
 
                 <!-- Homeowner Menu -->
-                <li class="nav-item dropdown">
+                <!--<li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="homeownerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Homeowner
                     </a>
@@ -40,10 +38,10 @@
                         <li><a class="dropdown-item" href="EditChargePoints.php">Manage Charger Point</a></li>
                         <li><a class="dropdown-item" href="">Manage Booking Request</a></li>
                     </ul>
-                </li>
+                </li>-->
 
                 <!-- Admin Menu -->
-                <li class="nav-item dropdown">
+                <!--<li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Admin
                     </a>
@@ -55,23 +53,26 @@
                     </ul>
                 </li>
 
-            </ul>
+            </ul>-->
 
             <!-- User Account Dropdown -->
-            <div class="dropdown ms-3">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span id="userName">Logged In User</span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <?php if (empty($_SESSION["userID"])): ?>
-                        <li><a class="dropdown-item" href="Login.php">Login</a></li>
-                        <li><a class="dropdown-item" href="Signup.php">Signup</a></li>
-                    <?php else: ?>
-                        <li><a class="dropdown-item" href="Profile.php">Profile</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="Logout.php">Logout</a></li>
-                    <?php endif; ?>
-                </ul>
+            <div class="d-flex align-items-center ms-auto">
+                <div class="dropdown ms-3">
+                    <button class="btn btn-transparent d-flex align-items-center dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="images/profileicon.png" alt="Profile Icon" id="profileIcon">
+                        <span id="userName" class="text-white fw-semibold me-2">Logged In User</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <?php if (empty($_SESSION["userID"])): ?>
+                            <li><a class="dropdown-item" href="Login.php">Login</a></li>
+                            <li><a class="dropdown-item" href="Signup.php">Signup</a></li>
+                        <?php else: ?>
+                            <li><a class="dropdown-item" href="Profile.php">Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="Logout.php">Logout</a></li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
