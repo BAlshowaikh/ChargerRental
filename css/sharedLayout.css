@@ -230,10 +230,12 @@ footer {
 .table-wrapper {
     max-width: 900px;
     margin: 0 auto;
+    overflow-x: auto;
     background-color: #ffffff;
     padding: 20px;
     border: 3px solid #1f3c56;
     border-radius: 8px;
+    box-sizing: border-box;
 }
 
 .user-table {

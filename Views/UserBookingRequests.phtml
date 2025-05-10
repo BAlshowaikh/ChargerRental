@@ -15,9 +15,42 @@ require("template/CustomerNavBar.phtml");
     </head>
     <body>
     <main class="manage-container">
-        <h2 class="page-title">Your Booking Requests</h2>
+        <div class="manage-users-container">
+            <h2 class="page-title">Your Booking Requests</h2>
 
-
+            <div class="table-wrapper">
+                <table class="user-table">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Booking Start Date</th>
+                        <th>Booking End Date</th>
+                        <th>Booking Status</th>
+                        <th></th> <!-- Action column -->
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <button class="btn edit-btn">Details</button>
+                                </td>
+                                <td>
+                                    <button class="btn toggle-btn">Approve</button>
+                                </td>
+                                <td>
+                                    <button class="btn delete-btn">Reject</button>
+                                </td>
+                            </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     </main>
     </body>
