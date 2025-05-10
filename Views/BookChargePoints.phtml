@@ -12,11 +12,39 @@ require("template/CustomerNavBar.phtml");
 <html>
     <head>
         <link href="/css/sharedLayout.css" rel="stylesheet">
+        <!-- The leaflet css for the map-->
+        <link rel="stylesheet" href="/Leaflet/leaflet.css">
     </head>
     <body>
-
     <main class="manage-container">
         <h2 class="page-title">Book Charge Points</h2>
+
+        <!-- Divide the container into two parts for the map and details-->
+        <div class="row">
+            <!-- Left column: Charger details -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4>Charger Details</h4>
+                        <hr class="divider">
+                        <p id="select-message" class="text-muted mb-3">Select a charger on the map to view details here.</p>
+                        <div id="charger-info" class="card-details"></div>
+                        <a href="#" class="btn add-btn">Book now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right column: Map -->
+            <div class="col-md-8">
+                <!-- No card, no border -->
+                <div id="map" style="height: 500px; width: 100%;"></div>
+            </div>
+        </div>
+
+
+        <!-- Leaflet JS -->
+        <script src="/Leaflet/leaflet.js"></script>
+        <script src="/js/Map.js"></script>
     </main>
 
     </body>
