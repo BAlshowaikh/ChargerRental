@@ -9,7 +9,7 @@ class userDataSet
 
     public function __construct()
     {
-        $this->_dbInstance = \Models\Database::getInstance();
+        $this->_dbInstance = \Database::getInstance();
         $this->_dbHandle = $this->_dbInstance->getConnection();
     }
 
