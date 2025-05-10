@@ -8,6 +8,16 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
+// Custom user icon
+const userIcon = L.icon({
+    iconUrl: 'Leaflet/images/user-marker.png',
+    shadowUrl: 'Leaflet/images/marker-shadow.png',
+    iconSize: [50, 50],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 // Custom charger icon
 const chargerIcon = L.icon({
     iconUrl: 'Leaflet/images/marker-icon.png',
@@ -28,7 +38,7 @@ if (navigator.geolocation) {
             };
             map.setView([userPosition.lat, userPosition.lng], 14);
 
-            L.marker([userPosition.lat, userPosition.lng], { icon: chargerIcon })
+            L.marker([userPosition.lat, userPosition.lng], { icon: userIcon })
                 .addTo(map)
                 .bindPopup("You are here!")
                 .openPopup();
@@ -37,16 +47,20 @@ if (navigator.geolocation) {
     );
 }
 
-// Fetch charger data from PHP
-fetch('API/getChargerPoints.php')
-    .then(response => response.json())
-    .then(data => {
+// Fetch charger data from PHP using ajax
+$.ajax({
+    url: 'API/getChargerPoints.php',
+    method: 'GET',
+    dataType: 'json',
+    success: function(data) {
         allChargers = data;
         displayChargers(allChargers);
-    })
-    .catch(error => {
+    },
+    error: function(xhr, status, error) {
         console.error('Error loading charger data:', error);
-    });
+    }
+});
+
 
 // Display markers for all chargers
 function displayChargers(chargers) {
@@ -77,16 +91,23 @@ function displayChargers(chargers) {
 function displayChargerDetails(point) {
     const detailsCard = document.getElementById('charger-info');
     const message = document.getElementById('select-message');
+    const bookBtnContainer = document.getElementById('book-button-container');
 
     if (message) {
         message.style.display = 'none';
     }
 
+    if (bookBtnContainer) {
+        bookBtnContainer.classList.remove('d-none');
+    }
+
     detailsCard.innerHTML = `
-        <h5 class="mb-3">Charger ID: ${point.Charger_point_ID}</h5>
+        <h5 class="mb-2">Charger ID: ${point.Charger_point_ID}</h5>
         <ul class="card-details">
+            <li><strong>Name:</strong> ${point.Name}</li>
             <li><strong>Description:</strong> ${point.Charger_point_description}</li>
             <li><strong>Price per kWatt:</strong> ${point.Price_per_kWatt} BD</li>
+             <li><strong>Availability:</strong> ${point.Availability_status}</li>
             <li><strong>Connector Type:</strong> ${point.Connector_type}</li>
             <li><strong>Rating:</strong> ${point.Rating} / 5</li>
         </ul>

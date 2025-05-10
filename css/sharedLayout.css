@@ -1,3 +1,4 @@
+
 /*Main Page Layout - Nav Bar, Container, Heading, Footer*/
 html, body {
     min-height: 100%;
@@ -288,8 +289,36 @@ footer {
     box-shadow: none !important;
 }
 
-/* The code below is for the map*/
+/* The code below is for the map page*/
 #charger-info ul {
     margin-bottom: 0;
 }
 
+/* General Styles for the map container */
+/* General Styles for the map container */
+#map {
+    position: relative; /* Ensure the map is the reference for absolute positioning */
+    height: 500px;
+    width: 100%;
+}
+
+/* Position the filter button at the top-right corner inside the map */
+.filter-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+}
+
+/* Position the filter panel just below the button */
+.filter-panel {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    width: 250px;
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+}
