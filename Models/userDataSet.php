@@ -113,4 +113,36 @@ class userDataSet
         $stmt->bindParam(':locationID', $locationID);
         return $stmt->execute();
     }
+
+    public function getAllUsers() {
+        $sql = "SELECT user_ID, f_Name, l_Name, username, password, Phone_no, Registration_date, Approved, user_role_User_role_ID FROM User";
+        $stmt = $this->_dbHandle->prepare($sql);
+        $stmt->execute();
+        $users = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $users[] = new userData($row);
+        }
+        return $users;
+    }
+
+    public function approveUser($userId) {
+        $sql = "UPDATE User SET Approved = 'Yes' WHERE user_ID = :userId";
+        $stmt = $this->_dbHandle->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function suspendUser($userId) {
+        $sql = "UPDATE User SET Approved = 'no' WHERE user_ID = :userId";
+        $stmt = $this->_dbHandle->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function deleteUser($userId) {
+        $sql = "DELETE FROM User WHERE user_ID = :userId";
+        $stmt = $this->_dbHandle->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }
