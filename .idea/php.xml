@@ -15,6 +15,7 @@
     <option name="highlightLevel" value="WARNING" />
     <option name="transferred" value="true" />
   </component>
+
   <component name="PhpCSFixer">
     <phpcsfixer_settings>
       <phpcs_fixer_by_interpreter asDefaultInterpreter="true" interpreter_id="251c811e-c8bf-4eb5-9d30-05ec45c6f426" timeout="30000" />

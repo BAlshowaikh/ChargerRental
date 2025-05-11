@@ -47,21 +47,21 @@ if (navigator.geolocation) {
     );
 }
 
-// Fetch charger data from PHP using ajax
+// Fetch charger data using AJAX
 $.ajax({
-    url: 'API/getChargerPoints.php',
+    url: '/SearchChargePoints.php?action=getChargers',
     method: 'GET',
     dataType: 'json',
-    success: function(data) {
-        allChargers = data;
+    success: function (chargers) {
+        allChargers = chargers;
         displayChargers(allChargers);
     },
-    error: function(xhr, status, error) {
+    error: function (xhr, status, error) {
         console.error('Error loading charger data:', error);
     }
 });
 
-
+// The below code is map view
 // Display markers for all chargers
 function displayChargers(chargers) {
     // Clear previous markers
@@ -87,7 +87,7 @@ function displayChargers(chargers) {
     });
 }
 
-// Inject charger details into Bootstrap card
+// Inject charger details for map view
 function displayChargerDetails(point) {
     const detailsCard = document.getElementById('charger-info');
     const message = document.getElementById('select-message');
@@ -102,20 +102,68 @@ function displayChargerDetails(point) {
     }
 
     detailsCard.innerHTML = `
+    <div class="d-flex flex-column h-100">
         <h5 class="mb-2">Charger ID: ${point.Charger_point_ID}</h5>
-        <ul class="card-details">
+        <ul class="card-details mb-4">
             <li><strong>Name:</strong> ${point.Name}</li>
             <li><strong>Description:</strong> ${point.Charger_point_description}</li>
             <li><strong>Price per kWatt:</strong> ${point.Price_per_kWatt} BD</li>
-             <li><strong>Availability:</strong> ${point.Availability_status}</li>
+            <li><strong>Availability:</strong> ${point.Availability_status}</li>
             <li><strong>Connector Type:</strong> ${point.Connector_type}</li>
             <li><strong>Rating:</strong> ${point.Rating} / 5</li>
         </ul>
-    `;
+        <div class="mt-auto d-flex justify-content-center">
+            <a href="BookChargePoints.php?id=${point.Charger_point_ID}" 
+               class="add-btn w-75 py-2 text-center">Book now</a>
+        </div>
+    </div>
+`;
 }
 
-// Logic for filter
+// The below code is for List View
+// Function to render the charger points in the list view
+function loadChargerList() {
+    $.ajax({
+        url: '/SearchChargePoints.php?action=getChargers',
+        method: 'GET',
+        dataType: 'json',
+        success: function (chargers) {
+            let html = '';
+            chargers.forEach(function (charger) {
+                html += `
+<div class="col-md-4 mb-4">
+    <div class="card-list shadow h-100 card-hover" data-id="${charger.Charger_point_ID}">
+        <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
+            <i class="bi bi-lightning-charge" style="font-size: 4rem; color: #2b44d4;"></i>
+        </div>
+        <div class="card-body d-flex flex-column justify-content-between">
+            <h5 class="card-title fw-bold">${charger.Name}</h5> <!-- Blue color for the name -->
+            <p class="card-text">${charger.Charger_point_description}</p>
+            <ul class="list-unstyled small">
+                <li><strong>Price:</strong> $${charger.Price_per_kWatt}/kWh</li>
+                <li><strong>Connector:</strong> ${charger.Connector_type}</li>
+                <li><strong>Status:</strong> ${charger.Availability_status}</li>
+                <li><strong>Rating:</strong> ${charger.Rating}</li>
+            </ul>
+            <!-- Center the "Book Now" button inside the card-body -->
+            <div class="d-flex justify-content-center">
+             <!-- Dynamic link to booking page with the charger point ID -->
+            <a href="BookChargePoints.php?id=${charger.Charger_point_ID}" class="add-btn w-50 py-1 d-flex justify-content-center align-items-center mb-3">Book Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+                `;
+            });
+            $('#charger-list').html(html);
+        },
+        error: function () {
+            $('#charger-list').html('<div class="col-12 text-danger">Failed to load charger points.</div>');
+        }
+    });
+}
 
+// Code below is for filter system
 // Function to calculate the distance
 function getDistance(lat1, lon1, lat2, lon2) {
     const R = 6371; // Earth radius in km
@@ -131,57 +179,18 @@ function getDistance(lat1, lon1, lat2, lon2) {
 function toRad(deg) {
     return deg * Math.PI / 180;
 }
-
-// Function to render the chrager points in the list view
-function loadChargerList() {
-    $.ajax({
-        url: '/API/getChargerPoints.php',
-        method: 'GET',
-        dataType: 'json',
-        success: function (chargers) {
-            let html = '';
-            chargers.forEach(function (charger) {
-                html += `
-<div class="col-md-4 mb-4">
-    <div class="card-list shadow h-100 card-hover">
-        <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
-            <i class="bi bi-lightning-charge" style="font-size: 4rem; color: #2b44d4;"></i>
-        </div>
-        <div class="card-body d-flex flex-column justify-content-between">
-            <h5 class="card-title fw-bold">${charger.Name}</h5> <!-- Blue color for the name -->
-            <p class="card-text">${charger.Charger_point_description}</p>
-            <ul class="list-unstyled small">
-                <li><strong>Price:</strong> $${charger.Price_per_kWatt}/kWh</li>
-                <li><strong>Connector:</strong> ${charger.Connector_type}</li>
-                <li><strong>Status:</strong> ${charger.Availability_status}</li>
-                <li><strong>Rating:</strong> ${charger.Rating}</li>
-            </ul>
-            <!-- Center the "Book Now" button inside the card-body -->
-            <div class="d-flex justify-content-center">
-                <a href="#" class="add-btn w-50 py-1 d-flex justify-content-center align-items-center mb-3">Book Now</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-                `;
-            });
-            $('#charger-list').html(html);
-        },
-        error: function () {
-            $('#charger-list').html('<div class="col-12 text-danger">Failed to load charger points.</div>');
-        }
-    });
-}
-
-
 $(document).ready(function () {
-    // SHOW the filter panel
+    // Show or hide filter panel
     $("#filterButton").on("click", function () {
         $("#filter-panel").toggleClass("d-none");
     });
 
-    // APPLY filters and HIDE the panel
+    // Update displayed price when range slider moves
+    $("#priceRange").on("input", function () {
+        $("#priceValue").text($(this).val());
+    });
+
+    // Apply filters
     $("#applyFilters").on("click", function () {
         const nearest = $("#nearest").is(":checked");
         const maxPrice = parseFloat($("#priceRange").val());
@@ -195,8 +204,6 @@ $(document).ready(function () {
 
             if (isNaN(lat) || isNaN(lng)) return false;
             if (!isNaN(price) && price > maxPrice) return false;
-
-            // Check availability filter against Availability status ID
             if (availability && availability !== "" && availabilityStatus !== availability) return false;
 
             if (nearest && userPosition) {
@@ -207,25 +214,35 @@ $(document).ready(function () {
             return true;
         });
 
-        // Display filtered chargers
+        // Update map markers
         displayChargers(filtered);
-        // Hide filter panel after applying filters
-        $("#filter-panel").addClass("d-none");
 
-        $("#resetButton").on("click", function () {
-            // Reset filter fields
-            $("#nearest").prop("checked", false);
-            $("#priceRange").val(10);
-            $("#priceValue").text(10);
-            $("#availability").val("");
-
-            // Show all charger markers
-            displayChargers(allChargers);
-
-            // Hide the filter panel if open
-            $("#filter-panel").addClass("d-none");
+        // Hide/show list cards based on filter
+        $(".card-list").each(function () {
+            const id = $(this).data("id");
+            const match = filtered.some(ch => ch.Charger_point_ID === id);
+            $(this).closest(".col-md-4").toggle(match);
         });
 
+        // Hide filter panel
+        $("#filter-panel").addClass("d-none");
+    });
+
+    // Reset all filters
+    $("#resetButton").on("click", function () {
+        $("#nearest").prop("checked", false);
+        $("#priceRange").val(10);
+        $("#priceValue").text(10);
+        $("#availability").val("");
+
+        // Reset map
+        displayChargers(allChargers);
+
+        // Show all list cards
+        $(".card-list").closest(".col-md-4").show();
+
+        // Hide filter panel
+        $("#filter-panel").addClass("d-none");
     });
 });
 
