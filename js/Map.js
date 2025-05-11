@@ -216,7 +216,7 @@ $(document).ready(function () {
         // Hide/show list cards based on filter
         $(".card-list").each(function () {
             const id = $(this).data("id");
-            const match = filtered.some(ch => ch.Charger_point_ID == id);
+            const match = filtered.some(ch => ch.Charger_point_ID === id);
             $(this).closest(".col-md-4").toggle(match);
         });
 
