@@ -132,6 +132,49 @@ function toRad(deg) {
     return deg * Math.PI / 180;
 }
 
+// Function to render the chrager points in the list view
+function loadChargerList() {
+    $.ajax({
+        url: '/API/getChargerPoints.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function (chargers) {
+            let html = '';
+            chargers.forEach(function (charger) {
+                html += `
+<div class="col-md-4 mb-4">
+    <div class="card-list shadow h-100 card-hover">
+        <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
+            <i class="bi bi-lightning-charge" style="font-size: 4rem; color: #2b44d4;"></i>
+        </div>
+        <div class="card-body d-flex flex-column justify-content-between">
+            <h5 class="card-title fw-bold">${charger.Name}</h5> <!-- Blue color for the name -->
+            <p class="card-text">${charger.Charger_point_description}</p>
+            <ul class="list-unstyled small">
+                <li><strong>Price:</strong> $${charger.Price_per_kWatt}/kWh</li>
+                <li><strong>Connector:</strong> ${charger.Connector_type}</li>
+                <li><strong>Status:</strong> ${charger.Availability_status}</li>
+                <li><strong>Rating:</strong> ${charger.Rating}</li>
+            </ul>
+            <!-- Center the "Book Now" button inside the card-body -->
+            <div class="d-flex justify-content-center">
+                <a href="#" class="add-btn w-50 py-1 d-flex justify-content-center align-items-center mb-3">Book Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+                `;
+            });
+            $('#charger-list').html(html);
+        },
+        error: function () {
+            $('#charger-list').html('<div class="col-12 text-danger">Failed to load charger points.</div>');
+        }
+    });
+}
+
+
 $(document).ready(function () {
     // SHOW the filter panel
     $("#filterButton").on("click", function () {

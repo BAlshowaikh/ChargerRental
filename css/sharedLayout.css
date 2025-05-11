@@ -319,3 +319,81 @@ footer {
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 9999;
 }
+
+/* For toggoling between the list and map */
+/* Apply thick border to both buttons */
+.btn-check + .btn {
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 6px 16px;
+}
+
+/* Gradient background for the selected button */
+.btn-check:checked + .btn {
+    background: linear-gradient(to right, #3ce4d3, #2b44d4);
+    color: white;
+    border: 1px solid #2b44d4;
+}
+
+/* Code for the cards listed in the list view */
+.card-list {
+    height: 380px; /* Adjust height to your preference */
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px; /* Add some spacing between cards */
+}
+
+/* Ensure the "Book Now" button has a fixed size */
+.card-list .btn {
+    height: 45px; /* Fixed height for the button */
+    font-size: 1rem; /* Optional: Make the text consistent */
+}
+
+/* Ensure all cards look consistent */
+.card-list .card-body {
+    flex-grow: 1; /* Ensures body grows to fill the space */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Add padding to make the text area more comfortable */
+.card-list .card-body .card-title{
+    font-size: 1.2rem; /* Adjust title size */
+    color: #0056b3;
+}
+
+.card-list .card-body .card-text {
+    font-size: 0.9rem; /* Adjust description size */
+    flex-grow: 1; /* Allow text to grow and take up space */
+}
+
+/* Optionally adjust the image container height */
+.card-list .card-img-top {
+    height: 180px; /* Or any other value you prefer */
+    background: #f4f4f4; /* Placeholder color for the image container */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Add margin between the rows of cards */
+.col-md-4 {
+    margin-bottom: 20px; /* Adjust this value for your desired gap */
+}
+
+/* Reducing space between card title and card body */
+.card-body {
+    padding-top: 10px; /* Reduced padding on top */
+}
+
+/* Add hover effect to scale up the card */
+.card-list {
+    transition: transform 0.3s ease-in-out;
+}
+
+.card-list:hover {
+    transform: scale(1.1); /* Scale the card to 1.1x */
+}
+
+
+

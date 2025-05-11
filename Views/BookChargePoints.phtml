@@ -1,9 +1,16 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
- */
+
+// Handle view toggle via POST request (AJAX)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view'])) {
+    $_SESSION['view'] = $_POST['view'];
+    exit;
+}
+
+// Set default view to 'map' if it's not set yet
+if (!isset($_SESSION['view'])) {
+    $_SESSION['view'] = 'map';
+}
 
 require("template/CustomerNavBar.phtml");
 
@@ -17,7 +24,6 @@ require("template/CustomerNavBar.phtml");
     <link href="/css/bootstrap.css" rel="stylesheet">
     <!-- The leaflet css for the map-->
     <link rel="stylesheet" href="/Leaflet/leaflet.css">
-
 </head>
 <body>
 <main class="manage-container">
@@ -25,10 +31,10 @@ require("template/CustomerNavBar.phtml");
         <!-- Toggle Button Group (left side) -->
         <div>
             <div class="btn-group" role="group" aria-label="View toggle">
-                <input type="radio" class="btn-check" name="viewToggle" id="toggleMap" autocomplete="off" checked>
+                <input type="radio" class="btn-check" name="viewToggle" id="toggleMap" autocomplete="off" <?php echo $_SESSION['view'] === 'map' ? 'checked' : ''; ?>>
                 <label class="btn" for="toggleMap">Map</label>
 
-                <input type="radio" class="btn-check" name="viewToggle" id="toggleList" autocomplete="off">
+                <input type="radio" class="btn-check" name="viewToggle" id="toggleList" autocomplete="off" <?php echo $_SESSION['view'] === 'list' ? 'checked' : ''; ?>>
                 <label class="btn" for="toggleList">List</label>
             </div>
         </div>
@@ -54,11 +60,9 @@ require("template/CustomerNavBar.phtml");
                 </div>
             </div>
 
-
             <!-- Filter Panel -->
             <div id="filter-panel" class="filter-panel d-none">
                 <h4>Filter Chargers</h4>
-
                 <label>
                     <input type="checkbox" id="nearest">
                     Nearest to me
@@ -81,31 +85,41 @@ require("template/CustomerNavBar.phtml");
         </div>
     </div>
 
-    <!-- Divide the container into two parts for the map and details-->
-    <div class="row">
-        <!-- Left column: Charger details -->
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 d-flex flex-column">
-                <div class="card-body d-flex flex-column">
-                    <h4>Charger Details</h4>
-                    <hr class="divider">
-                    <p id="select-message" class="text-muted mb-3">Select a charger on the map to view details here.</p>
-                    <div id="charger-info" class="card-details mb-4"></div>
+    <!-- Map View -->
+    <div id="map-view" class="<?php echo $_SESSION['view'] === 'map' ? '' : 'd-none'; ?>">
+        <!-- Divide the container into two parts for the map and details-->
+        <div class="row">
+            <!-- Left column: Charger details -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 d-flex flex-column">
+                    <div class="card-body d-flex flex-column">
+                        <h4>Charger Details</h4>
+                        <hr class="divider">
+                        <p id="select-message" class="text-muted mb-3">Select a charger on the map to view details here.</p>
+                        <div id="charger-info" class="card-details mb-4"></div>
 
-                    <!-- Spacer to push button to the bottom -->
-                    <div id="book-button-container" class="mt-auto d-none">
-                        <a href="#" class=" add-btn w-100">Book now</a>
+                        <!-- Spacer to push button to the bottom -->
+                        <div id="book-button-container" class="mt-auto d-none">
+                            <a href="#" class="add-btn w-100">Book now</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Right column: Map -->
-        <div class="col-md-8 position-relative">
-            <!-- Map container -->
-            <div id="map">
+            <!-- Right column: Map -->
+            <div class="col-md-8 position-relative">
+                <!-- Map container -->
+                <div id="map">
 
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- List  view -->
+    <div id="list-view" class="<?php echo $_SESSION['view'] === 'list' ? '' : 'd-none'; ?>">
+        <div class="row" id="charger-list">
+            <!--charger cards will be dynamically inserted -->
         </div>
     </div>
 
@@ -113,14 +127,43 @@ require("template/CustomerNavBar.phtml");
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- For ajax requests -->
     <script src="/Leaflet/leaflet.js"></script>
     <script src="/js/Map.js"></script>
-
-    <!-- Link to external JS -->
-    <!--<script src="/js/Filtration.js"></script>-->
 </main>
-
 
 </body>
 </html>
+
+<script>
+    $(document).ready(function () {
+        // Toggle between Map and List views
+        function switchView(view) {
+            if (view === 'map') {
+                $('#map-view').removeClass('d-none');
+                $('#list-view').addClass('d-none');
+            } else {
+                $('#map-view').addClass('d-none');
+                $('#list-view').removeClass('d-none');
+            }
+
+            // Save the selected view in the session (AJAX)
+            $.post('', { view: view });
+        }
+
+        // When toggling the radio buttons
+        $('#toggleMap').on('change', function () {
+            if ($(this).is(':checked')) {
+                switchView('map');
+            }
+        });
+
+        $('#toggleList').on('change', function () {
+            if ($(this).is(':checked')) {
+                loadChargerList();
+                switchView('list');
+
+            }
+        });
+    });
+</script>
 
 <?php
 require('template/footer.phtml');
