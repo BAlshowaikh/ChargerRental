@@ -14,16 +14,9 @@ class userData
         $this->phNo = $dbRow['Phone_no'];
         $this->registrationDate = $dbRow['Registration_date'];
 
-        if ($dbRow['approved'])
-        {
-            $this->approved = "Yes";
-        }
-        else
-        {
-            $this->approved = "No";
-        }
+        $this->approved = isset($dbRow['Approved']) && $dbRow['Approved'] === 'Yes' ? "Yes" : "No";
 
-        $this->userRoleId = $dbRow['user_role_User_role_ID'];
+        $this->userRoleId = isset($dbRow['user_role_User_role_ID']) ? $dbRow['user_role_User_role_ID'] : null;
     }
 
     public function getUserId()
