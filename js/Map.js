@@ -113,3 +113,120 @@ function displayChargerDetails(point) {
         </ul>
     `;
 }
+
+// Logic for filter
+
+// Function to calculate the distance
+function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth radius in km
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
+function toRad(deg) {
+    return deg * Math.PI / 180;
+}
+
+// Function to render the chrager points in the list view
+function loadChargerList() {
+    $.ajax({
+        url: '/API/getChargerPoints.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function (chargers) {
+            let html = '';
+            chargers.forEach(function (charger) {
+                html += `
+<div class="col-md-4 mb-4">
+    <div class="card-list shadow h-100 card-hover">
+        <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
+            <i class="bi bi-lightning-charge" style="font-size: 4rem; color: #2b44d4;"></i>
+        </div>
+        <div class="card-body d-flex flex-column justify-content-between">
+            <h5 class="card-title fw-bold">${charger.Name}</h5> <!-- Blue color for the name -->
+            <p class="card-text">${charger.Charger_point_description}</p>
+            <ul class="list-unstyled small">
+                <li><strong>Price:</strong> $${charger.Price_per_kWatt}/kWh</li>
+                <li><strong>Connector:</strong> ${charger.Connector_type}</li>
+                <li><strong>Status:</strong> ${charger.Availability_status}</li>
+                <li><strong>Rating:</strong> ${charger.Rating}</li>
+            </ul>
+            <!-- Center the "Book Now" button inside the card-body -->
+            <div class="d-flex justify-content-center">
+                <a href="#" class="add-btn w-50 py-1 d-flex justify-content-center align-items-center mb-3">Book Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+                `;
+            });
+            $('#charger-list').html(html);
+        },
+        error: function () {
+            $('#charger-list').html('<div class="col-12 text-danger">Failed to load charger points.</div>');
+        }
+    });
+}
+
+
+$(document).ready(function () {
+    // SHOW the filter panel
+    $("#filterButton").on("click", function () {
+        $("#filter-panel").toggleClass("d-none");
+    });
+
+    // APPLY filters and HIDE the panel
+    $("#applyFilters").on("click", function () {
+        const nearest = $("#nearest").is(":checked");
+        const maxPrice = parseFloat($("#priceRange").val());
+        const availability = $("#availability").val();
+
+        const filtered = allChargers.filter(point => {
+            const lat = parseFloat(point.Latitude);
+            const lng = parseFloat(point.Longitude);
+            const price = parseFloat(point.Price_per_kWatt);
+            const availabilityStatus = point.Availability_status;
+
+            if (isNaN(lat) || isNaN(lng)) return false;
+            if (!isNaN(price) && price > maxPrice) return false;
+
+            // Check availability filter against Availability status ID
+            if (availability && availability !== "" && availabilityStatus !== availability) return false;
+
+            if (nearest && userPosition) {
+                const distance = getDistance(userPosition.lat, userPosition.lng, lat, lng);
+                if (distance > 10) return false;
+            }
+
+            return true;
+        });
+
+        // Display filtered chargers
+        displayChargers(filtered);
+        // Hide filter panel after applying filters
+        $("#filter-panel").addClass("d-none");
+
+        $("#resetButton").on("click", function () {
+            // Reset filter fields
+            $("#nearest").prop("checked", false);
+            $("#priceRange").val(10);
+            $("#priceValue").text(10);
+            $("#availability").val("");
+
+            // Show all charger markers
+            displayChargers(allChargers);
+
+            // Hide the filter panel if open
+            $("#filter-panel").addClass("d-none");
+        });
+
+    });
+});
+
+
