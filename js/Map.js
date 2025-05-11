@@ -47,21 +47,21 @@ if (navigator.geolocation) {
     );
 }
 
-// Fetch charger data from PHP using ajax
+// Fetch charger data using AJAX
 $.ajax({
-    url: 'API/getChargerPoints.php',
+    url: '/SearchChargePoints.php?action=getChargers',
     method: 'GET',
     dataType: 'json',
-    success: function(data) {
-        allChargers = data;
+    success: function (chargers) {
+        allChargers = chargers;
         displayChargers(allChargers);
     },
-    error: function(xhr, status, error) {
+    error: function (xhr, status, error) {
         console.error('Error loading charger data:', error);
     }
 });
 
-
+// The below code is map view
 // Display markers for all chargers
 function displayChargers(chargers) {
     // Clear previous markers
@@ -87,7 +87,7 @@ function displayChargers(chargers) {
     });
 }
 
-// Inject charger details into Bootstrap card
+// Inject charger details for map view
 function displayChargerDetails(point) {
     const detailsCard = document.getElementById('charger-info');
     const message = document.getElementById('select-message');
@@ -102,40 +102,29 @@ function displayChargerDetails(point) {
     }
 
     detailsCard.innerHTML = `
+    <div class="d-flex flex-column h-100">
         <h5 class="mb-2">Charger ID: ${point.Charger_point_ID}</h5>
-        <ul class="card-details">
+        <ul class="card-details mb-4">
             <li><strong>Name:</strong> ${point.Name}</li>
             <li><strong>Description:</strong> ${point.Charger_point_description}</li>
             <li><strong>Price per kWatt:</strong> ${point.Price_per_kWatt} BD</li>
-             <li><strong>Availability:</strong> ${point.Availability_status}</li>
+            <li><strong>Availability:</strong> ${point.Availability_status}</li>
             <li><strong>Connector Type:</strong> ${point.Connector_type}</li>
             <li><strong>Rating:</strong> ${point.Rating} / 5</li>
         </ul>
-    `;
+        <div class="mt-auto d-flex justify-content-center">
+            <a href="BookChargePoints.php?id=${point.Charger_point_ID}" 
+               class="add-btn w-75 py-2 text-center">Book now</a>
+        </div>
+    </div>
+`;
 }
 
-// Logic for filter
-
-// Function to calculate the distance
-function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Earth radius in km
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
-    const a = Math.sin(dLat / 2) ** 2 +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) ** 2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-}
-
-function toRad(deg) {
-    return deg * Math.PI / 180;
-}
-
-// Function to render the chrager points in the list view
+// The below code is for List View
+// Function to render the charger points in the list view
 function loadChargerList() {
     $.ajax({
-        url: '/API/getChargerPoints.php',
+        url: '/SearchChargePoints.php?action=getChargers',
         method: 'GET',
         dataType: 'json',
         success: function (chargers) {
@@ -158,12 +147,12 @@ function loadChargerList() {
             </ul>
             <!-- Center the "Book Now" button inside the card-body -->
             <div class="d-flex justify-content-center">
-                <a href="#" class="add-btn w-50 py-1 d-flex justify-content-center align-items-center mb-3">Book Now</a>
+             <!-- Dynamic link to booking page with the charger point ID -->
+            <a href="BookChargePoints.php?id=${charger.Charger_point_ID}" class="add-btn w-50 py-1 d-flex justify-content-center align-items-center mb-3">Book Now</a>
             </div>
         </div>
     </div>
 </div>
-
                 `;
             });
             $('#charger-list').html(html);
@@ -175,6 +164,21 @@ function loadChargerList() {
 }
 
 // Code below is for filter system
+// Function to calculate the distance
+function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth radius in km
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
+function toRad(deg) {
+    return deg * Math.PI / 180;
+}
 $(document).ready(function () {
     // Show or hide filter panel
     $("#filterButton").on("click", function () {

@@ -16,7 +16,6 @@ require("template/CustomerNavBar.phtml");
 
 ?>
 
-<html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -97,11 +96,6 @@ require("template/CustomerNavBar.phtml");
                         <hr class="divider">
                         <p id="select-message" class="text-muted mb-3">Select a charger on the map to view details here.</p>
                         <div id="charger-info" class="card-details mb-4"></div>
-
-                        <!-- Spacer to push button to the bottom -->
-                        <div id="book-button-container" class="mt-auto d-none">
-                            <a href="#" class="add-btn w-100">Book now</a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -130,7 +124,7 @@ require("template/CustomerNavBar.phtml");
 </main>
 
 </body>
-</html>
+
 
 <script>
     $(document).ready(function () {
