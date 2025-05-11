@@ -1,30 +1,46 @@
-<?php
+<?php require("template/CustomerNavBar.phtml"); ?>
 
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
- */
+<main class="container py-5">
 
-require("template/CustomerNavBar.phtml");
+    <div class="card shadow-lg p-4 mx-auto" style="max-width: 700px;">
+        <h2 class="mb-4">Book Charger Point</h2>
 
-?>
+        <?php if (isset($view->chargerPoint)): ?>
+            <div class="mb-3">
+                <p><strong>Name:</strong> <?= htmlspecialchars($view->chargerPoint->getName()) ?></p>
+                <p><strong>Description:</strong> <?= nl2br(htmlspecialchars($view->chargerPoint->getDescription())) ?></p>
+                <p><strong>Price per kWh:</strong> <?= $view->chargerPoint->getPricePerKW() ?> BD</p>
+                <p><strong>Connector Type:</strong> <?= htmlspecialchars($view->chargerPoint->getConnectorType()) ?></p>
+                <p><strong>Rating:</strong> <?= $view->chargerPoint->getRating() ?> / 5</p>
+            </div>
+        <?php else: ?>
+            <p class="text-danger">Charger Point details not found.</p>
+        <?php endif; ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <link href="/css/sharedLayout.css" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Booking Details</title>
-</head>
-<body>
-    <main class="manage-container">
-        <h2 class="page-title">Booking Details</h2>
-    </main>
-</body>
-</html>
+        <?php if (isset($view->successMessage)): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($view->successMessage) ?></div>
+        <?php endif; ?>
 
+        <form method="post" action="">
+            <div class="mb-3">
+                <label for="start" class="form-label">Start Time</label>
+                <input type="datetime-local" id="start" name="start" class="form-control" required>
+            </div>
 
+            <div class="mb-3">
+                <label for="end" class="form-label">End Time</label>
+                <input type="datetime-local" id="end" name="end" class="form-control" required>
+            </div>
 
-<?php
-require('template/footer.phtml');
-?>
+            <div class="mb-3">
+                <label for="kw" class="form-label">Energy Required (kWh)</label>
+                <input type="number" id="kw" name="kw" step="0.1" min="0" class="form-control" required>
+            </div>
+
+            <button type="submit" name="book" class="btn btn-primary w-100">Submit Booking</button>
+        </form>
+    </div>
+
+</main>
+
+<?php require("template/footer.phtml"); ?>
