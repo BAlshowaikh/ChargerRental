@@ -1,11 +1,9 @@
 <?php
 
-class chargerPointData
-{
+class chargerPointData {
     private $id, $name, $description, $pricePerKW, $connectorType, $rating, $imageUrl, $availableStatusId, $userId, $locationId;
 
-    public function __construct($dbRow)
-    {
+    public function __construct(array $dbRow) {
         $this->id = $dbRow['Charger_point_ID'];
         $this->name = $dbRow['Name'];
         $this->description = $dbRow['Charger_point_description'];
@@ -18,14 +16,11 @@ class chargerPointData
         $this->locationId = $dbRow['Location_Location_ID'];
     }
 
-    public function getId() { return $this->id; }
-    public function getName() { return $this->name; }
-    public function getDescription() { return $this->description; }
-    public function getPricePerKW() { return $this->pricePerKW; }
-    public function getConnectorType() { return $this->connectorType; }
-    public function getRating() { return $this->rating; }
-    public function getImageUrl() { return $this->imageUrl; }
+    public function getName()              { return $this->name; }
+    public function getDescription()       { return $this->description; }
+    public function getPricePerKW()        { return $this->pricePerKW; }
+    public function getConnectorType()     { return $this->connectorType; }
+    public function getRating()            { return $this->rating; }
+    public function getImageUrl()          { return $this->imageUrl; }
     public function getAvailableStatusId() { return $this->availableStatusId; }
-    public function getUserId() { return $this->userId; }
-    public function getLocationId() { return $this->locationId; }
 }
