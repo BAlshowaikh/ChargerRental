@@ -1,82 +1,67 @@
 <?php
 require_once 'Models/Database.php';
-require_once 'models/ChargerPointData.php';
+require_once 'Models/chargerPointData.php';
 
 session_start();
 
-// Temporarily simulate login (for testing only)
-if (!isset($_SESSION['user_id'])) {
-    $_SESSION['user_id'] = 1; // Use actual user ID from your DB
+// ✅ Ensure user is logged in
+$userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+if (!$userId) {
+    header("Location: login.php");
+    exit;
 }
 
-$userId = $_SESSION['user_id']; // not hardcoded
-$model = new ChargerPointData($userId);
+$db = Database::getInstance()->getConnection();
 
+// ✅ Check if the user already has a charger point
+$stmt = $db->prepare("SELECT * FROM Charger_point WHERE User_user_ID = ?");
+$stmt->execute([$userId]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Connect to DB
-$db = Database::getInstance();
-$pdo = $db->getConnection();
+// ✅ Create chargerPointData instance if data exists
+$chargePoint = $row ? new chargerPointData($row) : null;
 
-$model = new ChargerPointData($userId);
-
-// ✅ Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check if user already has a charger point
-    $existing = $model->get();
-    if ($existing) {
-        echo "<script>alert('You already have a charger point.');</script>";
-        header("Location: ManageChargePoints.php");
-        exit;
-    }
-
-    // Gather form input
+// ✅ Handle new charger point submission ONLY if user doesn't have one
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $chargePoint === null) {
     $name = $_POST['name'];
     $description = $_POST['description'];
-    $price = $_POST['price'];
-    $connectorType = $_POST['connector_type'];
-    $rating = $_POST['rating'];
-    $availableId = $_POST['available_status'];
-    $locationId = $_POST['location_id'];
+    $price = $_POST['cost_per_kwh'];
+    $connector = $_POST['connector_type'];
+    $available = isset($_POST['is_available']) ? 1 : 0;
+    $locationId = 1;
+    $rating = 5; // default or static
+    $imagePath = '';
 
-    // Handle image upload
-    $imageUrl = '';
+    // ✅ Handle file upload if provided
     if (!empty($_FILES['image']['name'])) {
         $uploadDir = 'uploads/';
-        if (!is_dir($uploadDir)) mkdir($uploadDir);
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
         $fileName = uniqid() . '_' . basename($_FILES['image']['name']);
         $targetPath = $uploadDir . $fileName;
+
         if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-            $imageUrl = $targetPath;
+            $imagePath = $targetPath;
         }
     }
 
-    // Insert into DB
-    $stmt = $pdo->prepare("
+    // ✅ Insert charger point into DB
+    $insertStmt = $db->prepare("
         INSERT INTO Charger_point 
         (Name, Charger_point_description, Price_per_kWatt, Connector_type, Rating, Charger_image_url, Available_status_Available_ID, User_user_ID, Location_Location_ID)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
-    $success = $stmt->execute([
-        $name,
-        $description,
-        $price,
-        $connectorType,
-        $rating,
-        $imageUrl,
-        $availableId,
-        $userId,
-        $locationId
+    $insertStmt->execute([
+        $name, $description, $price, $connector, $rating,
+        $imagePath, $available, $userId, $locationId
     ]);
 
-    if (!$success) {
-        echo "<pre>"; print_r($stmt->errorInfo()); echo "</pre>";
-    }
-
+    // ✅ Redirect to prevent re-posting on refresh
     header("Location: ManageChargePoints.php");
     exit;
 }
 
-// Fetch updated charger point (after insert or for view)
-$chargePoint = $model->get();
+// ✅ Render the view and provide $chargePoint to the template
 include 'Views/ManageChargePoints.phtml';
