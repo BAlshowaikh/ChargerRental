@@ -1,170 +1,46 @@
-<?php
+<?php require("template/CustomerNavBar.phtml"); ?>
 
+<main class="container py-5">
 
-// Handle view toggle via POST request (AJAX)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view'])) {
-    $_SESSION['view'] = $_POST['view'];
-    exit;
-}
+    <div class="card shadow-lg p-4 mx-auto" style="max-width: 700px;">
+        <h2 class="mb-4">Book Charger Point</h2>
 
-// Set default view to 'map' if it's not set yet
-if (!isset($_SESSION['view'])) {
-    $_SESSION['view'] = 'map';
-}
-
-require("template/CustomerNavBar.phtml");
-
-?>
-
-<html>
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link href="/css/sharedLayout.css" rel="stylesheet">
-    <link href="/css/bootstrap.css" rel="stylesheet">
-    <!-- The leaflet css for the map-->
-    <link rel="stylesheet" href="/Leaflet/leaflet.css">
-</head>
-<body>
-<main class="manage-container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <!-- Toggle Button Group (left side) -->
-        <div>
-            <div class="btn-group" role="group" aria-label="View toggle">
-                <input type="radio" class="btn-check" name="viewToggle" id="toggleMap" autocomplete="off" <?php echo $_SESSION['view'] === 'map' ? 'checked' : ''; ?>>
-                <label class="btn" for="toggleMap">Map</label>
-
-                <input type="radio" class="btn-check" name="viewToggle" id="toggleList" autocomplete="off" <?php echo $_SESSION['view'] === 'list' ? 'checked' : ''; ?>>
-                <label class="btn" for="toggleList">List</label>
+        <?php if (isset($view->chargerPoint)): ?>
+            <div class="mb-3">
+                <p><strong>Name:</strong> <?= htmlspecialchars($view->chargerPoint->getName()) ?></p>
+                <p><strong>Description:</strong> <?= nl2br(htmlspecialchars($view->chargerPoint->getDescription())) ?></p>
+                <p><strong>Price per kWh:</strong> <?= $view->chargerPoint->getPricePerKW() ?> BD</p>
+                <p><strong>Connector Type:</strong> <?= htmlspecialchars($view->chargerPoint->getConnectorType()) ?></p>
+                <p><strong>Rating:</strong> <?= $view->chargerPoint->getRating() ?> / 5</p>
             </div>
-        </div>
+        <?php else: ?>
+            <p class="text-danger">Charger Point details not found.</p>
+        <?php endif; ?>
 
-        <!-- Spacer for centering the title -->
-        <div class="flex-grow-1 text-center">
-            <h2 class="page-title mb-0">Book Charge Point</h2>
-        </div>
+        <?php if (isset($view->successMessage)): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($view->successMessage) ?></div>
+        <?php endif; ?>
 
-        <!-- Filter Button (right side) -->
-        <div class="filter-container position-relative ms-auto">
-            <!-- Filter button and Reset button(right side) -->
-            <div class="d-flex justify-content-start gap-2">
-                <div id="filterButton">
-                    <button class="btn btn-primary btn-sm">
-                        <i class="bi bi-funnel"></i> Filters
-                    </button>
-                </div>
-                <div id="resetButton">
-                    <button class="btn btn-outline-secondary btn-sm" >
-                        <i class="bi bi-arrow-counterclockwise"></i> Reset
-                    </button>
-                </div>
+        <form method="post" action="">
+            <div class="mb-3">
+                <label for="start" class="form-label">Start Time</label>
+                <input type="datetime-local" id="start" name="start" class="form-control" required>
             </div>
 
-            <!-- Filter Panel -->
-            <div id="filter-panel" class="filter-panel d-none">
-                <h4>Filter Chargers</h4>
-                <label>
-                    <input type="checkbox" id="nearest">
-                    Nearest to me
-                </label><br><br>
-
-                <label for="priceRange">Price per kWatt (0–10):</label><br>
-                <input type="range" id="priceRange" min="0" max="10" step="1" value="10">
-                <span id="priceValue">10</span><br><br>
-
-                <label for="availability">Availability:</label><br>
-                <select id="availability">
-                    <option value="">All</option>
-                    <option value="Available">Available</option>
-                    <option value="In Use">In Use</option>
-                    <option value="Maintenance">Maintenance</option>
-                </select><br><br>
-
-                <button id="applyFilters" class="add-btn w-50 py-1">Apply</button>
+            <div class="mb-3">
+                <label for="end" class="form-label">End Time</label>
+                <input type="datetime-local" id="end" name="end" class="form-control" required>
             </div>
-        </div>
+
+            <div class="mb-3">
+                <label for="kw" class="form-label">Energy Required (kWh)</label>
+                <input type="number" id="kw" name="kw" step="0.1" min="0" class="form-control" required>
+            </div>
+
+            <button type="submit" name="book" class="btn btn-primary w-100">Submit Booking</button>
+        </form>
     </div>
 
-    <!-- Map View -->
-    <div id="map-view" class="<?php echo $_SESSION['view'] === 'map' ? '' : 'd-none'; ?>">
-        <!-- Divide the container into two parts for the map and details-->
-        <div class="row">
-            <!-- Left column: Charger details -->
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 d-flex flex-column">
-                    <div class="card-body d-flex flex-column">
-                        <h4>Charger Details</h4>
-                        <hr class="divider">
-                        <p id="select-message" class="text-muted mb-3">Select a charger on the map to view details here.</p>
-                        <div id="charger-info" class="card-details mb-4"></div>
-
-                        <!-- Spacer to push button to the bottom -->
-                        <div id="book-button-container" class="mt-auto d-none">
-                            <a href="#" class="add-btn w-100">Book now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right column: Map -->
-            <div class="col-md-8 position-relative">
-                <!-- Map container -->
-                <div id="map">
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- List  view -->
-    <div id="list-view" class="<?php echo $_SESSION['view'] === 'list' ? '' : 'd-none'; ?>">
-        <div class="row" id="charger-list">
-            <!--charger cards will be dynamically inserted -->
-        </div>
-    </div>
-
-    <!-- Leaflet JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- For ajax requests -->
-    <script src="/Leaflet/leaflet.js"></script>
-    <script src="/js/Map.js"></script>
 </main>
 
-</body>
-</html>
-
-<script>
-    $(document).ready(function () {
-        // Toggle between Map and List views
-        function switchView(view) {
-            if (view === 'map') {
-                $('#map-view').removeClass('d-none');
-                $('#list-view').addClass('d-none');
-            } else {
-                $('#map-view').addClass('d-none');
-                $('#list-view').removeClass('d-none');
-            }
-
-            // Save the selected view in the session (AJAX)
-            $.post('', { view: view });
-        }
-
-        // When toggling the radio buttons
-        $('#toggleMap').on('change', function () {
-            if ($(this).is(':checked')) {
-                switchView('map');
-            }
-        });
-
-        $('#toggleList').on('change', function () {
-            if ($(this).is(':checked')) {
-                loadChargerList();
-                switchView('list');
-
-            }
-        });
-    });
-</script>
-
-<?php
-require('template/footer.phtml');
-?>
+<?php require("template/footer.phtml"); ?>
