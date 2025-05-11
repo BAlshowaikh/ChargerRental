@@ -1,38 +1,48 @@
 <?php require_once 'template/AdminNavBar.phtml'; ?>
-<link rel="stylesheet" href="/css/sharedLayout.css">
-<main class="manage-users-container">
-    <h2 class="page-title">Manage Users</h2>
+    <link rel="stylesheet" href="/css/sharedLayout.css">
+    <main class="manage-users-container">
+        <h2 class="page-title">Manage Users</h2>
 
-    <div class="table-wrapper">
-        <table class="user-table">
-            <thead>
-            <tr>
-                <th>User ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>User Role</th>
-                <th></th> <!-- Action column -->
-            </tr>
-            </thead>
-            <tbody>
-            <?php if (isset($view->users) && is_array($view->users)): ?>
-                <?php foreach ($view->users as $user): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($user->getId()) ?></td>
-                        <td><?= htmlspecialchars($user->getFirstName()) ?></td>
-                        <td><?= htmlspecialchars($user->getLastName()) ?></td>
-                        <td><?= htmlspecialchars($user->getRole()) ?></td>
-                        <td><button class="btn suspend-btn">Suspend</button></td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
+        <div class="table-wrapper">
+            <table class="user-table">
+                <thead>
                 <tr>
-                    <td colspan="5" style="text-align:center;">No users found.</td>
+                    <th>User ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>User Role</th>
+                    <th>Actions</th>
                 </tr>
-            <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
-</main>
+                </thead>
+                <tbody>
+                <?php if (isset($view->users) && is_array($view->users)): ?>
+                    <?php foreach ($view->users as $user): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($user->getUserId()) ?></td>
+                            <td><?= htmlspecialchars($user->getFName()) ?></td>
+                            <td><?= htmlspecialchars($user->getLName()) ?></td>
+                            <td><?= htmlspecialchars($user->getUserRoleId()) ?></td>
+                            <td>
+                                <form method="POST" class="action-form">
+                                    <input type="hidden" name="userId" value="<?= $user->getUserId() ?>">
+                                    <?php if ($user->getApproved() === "Yes"): ?>
+                                        <button type="submit" name="action" value="suspend" class="btn suspend-btn">Suspend</button>
+                                    <?php else: ?>
+                                        <button type="submit" name="action" value="approve" class="btn suspend-btn">Approve</button>
+                                    <?php endif; ?>
+                                    <button type="submit" name="action" value="delete" class="btn delete-btn">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="5" style="text-align:center;">No users found.</td>
+                    </tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </main>
 
 <?php require_once 'template/footer.phtml'; ?>
