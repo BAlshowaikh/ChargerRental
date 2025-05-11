@@ -113,3 +113,77 @@ function displayChargerDetails(point) {
         </ul>
     `;
 }
+
+// Logic for filter
+
+// Function to calculate the distance
+function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth radius in km
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
+function toRad(deg) {
+    return deg * Math.PI / 180;
+}
+
+$(document).ready(function () {
+    // SHOW the filter panel
+    $("#filterButton").on("click", function () {
+        $("#filter-panel").toggleClass("d-none");
+    });
+
+    // APPLY filters and HIDE the panel
+    $("#applyFilters").on("click", function () {
+        const nearest = $("#nearest").is(":checked");
+        const maxPrice = parseFloat($("#priceRange").val());
+        const availability = $("#availability").val();
+
+        const filtered = allChargers.filter(point => {
+            const lat = parseFloat(point.Latitude);
+            const lng = parseFloat(point.Longitude);
+            const price = parseFloat(point.Price_per_kWatt);
+            const availabilityStatus = point.Availability_status;
+
+            if (isNaN(lat) || isNaN(lng)) return false;
+            if (!isNaN(price) && price > maxPrice) return false;
+
+            // Check availability filter against Availability status ID
+            if (availability && availability !== "" && availabilityStatus !== availability) return false;
+
+            if (nearest && userPosition) {
+                const distance = getDistance(userPosition.lat, userPosition.lng, lat, lng);
+                if (distance > 10) return false;
+            }
+
+            return true;
+        });
+
+        // Display filtered chargers
+        displayChargers(filtered);
+        // Hide filter panel after applying filters
+        $("#filter-panel").addClass("d-none");
+
+        $("#resetButton").on("click", function () {
+            // Reset filter fields
+            $("#nearest").prop("checked", false);
+            $("#priceRange").val(10);
+            $("#priceValue").text(10);
+            $("#availability").val("");
+
+            // Show all charger markers
+            displayChargers(allChargers);
+
+            // Hide the filter panel if open
+            $("#filter-panel").addClass("d-none");
+        });
+
+    });
+});
+
+

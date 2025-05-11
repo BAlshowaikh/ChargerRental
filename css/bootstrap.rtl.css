@@ -4438,6 +4438,11 @@ textarea.form-control-lg {
   border-top: 0;
 }
 
+.card .card-body h4 {
+  color: #0056b3 !important;
+}
+
+
 .card-body {
   flex: 1 1 auto;
   padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);

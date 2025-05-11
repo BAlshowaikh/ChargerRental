@@ -218,10 +218,10 @@ footer {
 
 .add-btn {
     display: inline-block;
-    padding: 10px 20px;
+    padding: 10px 10px;
     font-weight: bold;
-    font-size: 14px;
-    color: white;
+    font-size: 16px;
+    color: black;
     border: none;
     border-radius: 20px;
     background: linear-gradient(to right, #3ce4d3, #2b44d4);
@@ -231,6 +231,7 @@ footer {
 
 .add-btn:hover {
     opacity: 0.9;
+    color: #FFFFFF;
 }
 
 
@@ -304,17 +305,13 @@ footer {
 
 /* Position the filter button at the top-right corner inside the map */
 .filter-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 9999;
 }
 
 /* Position the filter panel just below the button */
 .filter-panel {
     position: absolute;
-    top: 50px;
-    right: 10px;
+    top: 100%;
+    right: 0;
     width: 250px;
     background-color: white;
     border: 1px solid #ddd;
