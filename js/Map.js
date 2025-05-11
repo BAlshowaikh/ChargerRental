@@ -143,7 +143,7 @@ function loadChargerList() {
             chargers.forEach(function (charger) {
                 html += `
 <div class="col-md-4 mb-4">
-    <div class="card-list shadow h-100 card-hover">
+    <div class="card-list shadow h-100 card-hover" data-id="${charger.Charger_point_ID}">
         <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
             <i class="bi bi-lightning-charge" style="font-size: 4rem; color: #2b44d4;"></i>
         </div>
@@ -174,14 +174,19 @@ function loadChargerList() {
     });
 }
 
-
+// Code below is for filter system
 $(document).ready(function () {
-    // SHOW the filter panel
+    // Show or hide filter panel
     $("#filterButton").on("click", function () {
         $("#filter-panel").toggleClass("d-none");
     });
 
-    // APPLY filters and HIDE the panel
+    // Update displayed price when range slider moves
+    $("#priceRange").on("input", function () {
+        $("#priceValue").text($(this).val());
+    });
+
+    // Apply filters
     $("#applyFilters").on("click", function () {
         const nearest = $("#nearest").is(":checked");
         const maxPrice = parseFloat($("#priceRange").val());
@@ -195,8 +200,6 @@ $(document).ready(function () {
 
             if (isNaN(lat) || isNaN(lng)) return false;
             if (!isNaN(price) && price > maxPrice) return false;
-
-            // Check availability filter against Availability status ID
             if (availability && availability !== "" && availabilityStatus !== availability) return false;
 
             if (nearest && userPosition) {
@@ -207,25 +210,35 @@ $(document).ready(function () {
             return true;
         });
 
-        // Display filtered chargers
+        // Update map markers
         displayChargers(filtered);
-        // Hide filter panel after applying filters
-        $("#filter-panel").addClass("d-none");
 
-        $("#resetButton").on("click", function () {
-            // Reset filter fields
-            $("#nearest").prop("checked", false);
-            $("#priceRange").val(10);
-            $("#priceValue").text(10);
-            $("#availability").val("");
-
-            // Show all charger markers
-            displayChargers(allChargers);
-
-            // Hide the filter panel if open
-            $("#filter-panel").addClass("d-none");
+        // Hide/show list cards based on filter
+        $(".card-list").each(function () {
+            const id = $(this).data("id");
+            const match = filtered.some(ch => ch.Charger_point_ID == id);
+            $(this).closest(".col-md-4").toggle(match);
         });
 
+        // Hide filter panel
+        $("#filter-panel").addClass("d-none");
+    });
+
+    // Reset all filters
+    $("#resetButton").on("click", function () {
+        $("#nearest").prop("checked", false);
+        $("#priceRange").val(10);
+        $("#priceValue").text(10);
+        $("#availability").val("");
+
+        // Reset map
+        displayChargers(allChargers);
+
+        // Show all list cards
+        $(".card-list").closest(".col-md-4").show();
+
+        // Hide filter panel
+        $("#filter-panel").addClass("d-none");
     });
 });
 
