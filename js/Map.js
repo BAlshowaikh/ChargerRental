@@ -48,25 +48,28 @@ if (navigator.geolocation) {
 }
 
 // Fetch charger data using XMLHttpRequest
-const xhr = new XMLHttpRequest();
-xhr.open('GET', '/SearchChargePoints.php?action=getChargers', true);
-xhr.responseType = 'json';
+function loadMapChargers() {
+    const filters = getFilters();
+    const query = new URLSearchParams({
+        action: 'getChargers',
+        mode: 'map',
+        max_price: filters.max_price,
+        availability: filters.availability
+    }).toString();
 
-xhr.onload = function () {
-    if (xhr.status === 200) {
-        const chargers = xhr.response;
-        allChargers = chargers;
-        displayChargers(allChargers);
-    } else {
-        console.error('Error loading charger data: HTTP', xhr.status);
-    }
-};
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', `/SearchChargePoints.php?${query}`, true);
+    xhr.responseType = 'json';
 
-xhr.onerror = function () {
-    console.error('Network error while loading charger data.');
-};
-
-xhr.send();
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            const chargers = xhr.response.chargers;
+            allChargers = chargers;
+            displayChargers(allChargers);
+        }
+    };
+    xhr.send();
+}
 
 
 // The below code is map view
@@ -130,25 +133,41 @@ function displayChargerDetails(point) {
 
 // The below code is for List View
 // Function to render the charger points in the list view
-function loadChargerList() {
+let currentPage = 1;
+
+function loadChargerList(page = 1) {
+    currentPage = page;
+    const filters = getFilters();
+    const query = new URLSearchParams({
+        action: 'getChargers',
+        mode: 'list',
+        page,
+        max_price: filters.max_price,
+        availability: filters.availability
+    }).toString();
+
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', '/SearchChargePoints.php?action=getChargers', true);
+    xhr.open('GET', `/SearchChargePoints.php?${query}`, true);
     xhr.responseType = 'json';
 
     xhr.onload = function () {
         if (xhr.status === 200) {
-            const chargers = xhr.response;
+            const data = xhr.response;
+            const chargers = data.chargers;
+            const totalPages = data.totalPages;
+
+            const chargerList = document.getElementById('charger-list');
+            const pagination = document.getElementById('pagination');
+
             let html = '';
 
             chargers.forEach(function (charger) {
                 html += `
 <div class="col-md-4 mb-4">
     <div class="card-list shadow h-100 card-hover" data-id="${charger.Charger_point_ID}">
-    <!-- Div for the charger point image -->
         <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
             <img src="/images/ChargerPoints/${charger.Charger_image_url}" alt="${charger.Name}" class="img-fluid" style="max-height: 100%; max-width: 100%;">
         </div>
-
         <div class="card-body d-flex flex-column justify-content-between">
             <h5 class="card-title fw-bold">${charger.Name}</h5>
             <p class="card-text">${charger.Charger_point_description}</p>
@@ -166,7 +185,18 @@ function loadChargerList() {
 </div>`;
             });
 
-            document.getElementById('charger-list').innerHTML = html;
+            chargerList.innerHTML = html;
+
+            // Render pagination buttons
+            let paginationHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHTML += `
+                    <button class="btn ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'} mx-1" onclick="loadChargerList(${i})">${i}</button>
+                `;
+            }
+
+            pagination.innerHTML = paginationHTML;
+
         } else {
             document.getElementById('charger-list').innerHTML = '<div class="col-12 text-danger">Failed to load charger points.</div>';
         }
@@ -177,6 +207,11 @@ function loadChargerList() {
     };
 
     xhr.send();
+}
+
+// Initial load (only if in list view)
+if (document.getElementById('list-view') && !document.getElementById('list-view').classList.contains('d-none')) {
+    loadChargerList(1);
 }
 
 
@@ -196,71 +231,59 @@ function getDistance(lat1, lon1, lat2, lon2) {
 function toRad(deg) {
     return deg * Math.PI / 180;
 }
+
+// Create a function to collect filters from the UI:
+function getFilters() {
+    return {
+        max_price: document.getElementById('priceRange').value,
+        availability: document.getElementById('availability').value,
+    };
+}
+
 $(document).ready(function () {
-    // Show or hide filter panel
+    // Restore or initialize filter state
+    const defaultFilters = {
+        nearest: false,
+        maxPrice: 10,
+        availability: ""
+    };
+
+    // Initial load when the page is opened or returned to
+    loadMapChargers(defaultFilters);
+    loadChargerList(1, defaultFilters);
+
+    // Rest of your existing code...
     $("#filterButton").on("click", function () {
         $("#filter-panel").toggleClass("d-none");
     });
 
-    // Update displayed price when range slider moves
     $("#priceRange").on("input", function () {
         $("#priceValue").text($(this).val());
     });
 
-    // Apply filters
     $("#applyFilters").on("click", function () {
-        const nearest = $("#nearest").is(":checked");
-        const maxPrice = parseFloat($("#priceRange").val());
-        const availability = $("#availability").val();
+        const filters = {
+            nearest: $("#nearest").is(":checked"),
+            maxPrice: parseFloat($("#priceRange").val()),
+            availability: $("#availability").val()
+        };
 
-        const filtered = allChargers.filter(point => {
-            const lat = parseFloat(point.Latitude);
-            const lng = parseFloat(point.Longitude);
-            const price = parseFloat(point.Price_per_kWatt);
-            const availabilityStatus = point.Availability_status;
-
-            if (isNaN(lat) || isNaN(lng)) return false;
-            if (!isNaN(price) && price > maxPrice) return false;
-            if (availability && availability !== "" && availabilityStatus !== availability) return false;
-
-            if (nearest && userPosition) {
-                const distance = getDistance(userPosition.lat, userPosition.lng, lat, lng);
-                if (distance > 10) return false;
-            }
-
-            return true;
-        });
-
-        // Update map markers
-        displayChargers(filtered);
-
-        // Hide/show list cards based on filter
-        $(".card-list").each(function () {
-            const id = $(this).data("id");
-            const match = filtered.some(ch => ch.Charger_point_ID === id);
-            $(this).closest(".col-md-4").toggle(match);
-        });
-
-        // Hide filter panel
+        loadMapChargers(filters);
+        loadChargerList(1, filters);
         $("#filter-panel").addClass("d-none");
     });
 
-    // Reset all filters
     $("#resetButton").on("click", function () {
         $("#nearest").prop("checked", false);
         $("#priceRange").val(10);
         $("#priceValue").text(10);
         $("#availability").val("");
 
-        // Reset map
-        displayChargers(allChargers);
-
-        // Show all list cards
-        $(".card-list").closest(".col-md-4").show();
-
-        // Hide filter panel
+        loadMapChargers(defaultFilters);
+        loadChargerList(1, defaultFilters);
         $("#filter-panel").addClass("d-none");
     });
 });
+
 
 

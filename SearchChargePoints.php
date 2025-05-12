@@ -7,26 +7,50 @@ $view = new stdClass();
 require_once("Models/Database.php");
 require_once("Models/chargerPointDataSet.php");
 
-// Set default view if not already stored in session
+// Set default view mode
 if (!isset($_SESSION['view'])) {
     $_SESSION['view'] = 'map';
 }
 
-// Handle AJAX request for charger point details
+// Handle AJAX request
 if (isset($_GET['action']) && $_GET['action'] === 'getChargers') {
     header('Content-Type: application/json');
-
     $chargerDataSet = new chargerPointDataSet();
 
     try {
-        $chargers = $chargerDataSet->fetchAllDetailedChargerPoints();
-        echo json_encode($chargers);
+        $mode = $_GET['mode'] ?? 'list';
+
+        // Extract filters
+        $filters = [
+            'max_price' => $_GET['max_price'] ?? null,
+            'availability' => $_GET['availability'] ?? null
+        ];
+
+        if ($mode === 'map') {
+            $chargers = $chargerDataSet->fetchFilteredChargerPoints($filters);
+            echo json_encode(['chargers' => $chargers]);
+        } elseif ($mode === 'list') {
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $limit = 6;
+            $offset = ($page - 1) * $limit;
+
+            $chargers = $chargerDataSet->fetchFilteredChargerPoints($filters, $limit, $offset);
+            $totalCount = $chargerDataSet->getFilteredChargerCount($filters);
+            $totalPages = ceil($totalCount / $limit);
+
+            echo json_encode([
+                'chargers' => $chargers,
+                'totalPages' => $totalPages,
+                'currentPage' => $page
+            ]);
+        }
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(["error" => "Failed to load data", "details" => $e->getMessage()]);
     }
+
     exit;
 }
 
-// Otherwise, load the view as normal
+// Load normal page view
 require_once("Views/SearchChargePoints.phtml");

@@ -111,12 +111,16 @@ require("template/CustomerNavBar.phtml");
         </div>
     </div>
 
-    <!-- List  view -->
+    <!-- List View -->
     <div id="list-view" class="<?php echo $_SESSION['view'] === 'list' ? '' : 'd-none'; ?>">
         <div class="row" id="charger-list">
-            <!--charger cards will be dynamically inserted -->
+            <!-- Charger cards will be dynamically inserted here -->
+        </div>
+        <div id="pagination" class="mt-4 d-flex justify-content-center">
+            <!-- Pagination buttons will be dynamically inserted here -->
         </div>
     </div>
+
 
     <!-- Leaflet JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- For ajax requests -->
