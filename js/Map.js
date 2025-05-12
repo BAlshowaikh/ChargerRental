@@ -47,19 +47,27 @@ if (navigator.geolocation) {
     );
 }
 
-// Fetch charger data using AJAX
-$.ajax({
-    url: '/SearchChargePoints.php?action=getChargers',
-    method: 'GET',
-    dataType: 'json',
-    success: function (chargers) {
+// Fetch charger data using XMLHttpRequest
+const xhr = new XMLHttpRequest();
+xhr.open('GET', '/SearchChargePoints.php?action=getChargers', true);
+xhr.responseType = 'json';
+
+xhr.onload = function () {
+    if (xhr.status === 200) {
+        const chargers = xhr.response;
         allChargers = chargers;
         displayChargers(allChargers);
-    },
-    error: function (xhr, status, error) {
-        console.error('Error loading charger data:', error);
+    } else {
+        console.error('Error loading charger data: HTTP', xhr.status);
     }
-});
+};
+
+xhr.onerror = function () {
+    console.error('Network error while loading charger data.');
+};
+
+xhr.send();
+
 
 // The below code is map view
 // Display markers for all chargers
@@ -123,21 +131,25 @@ function displayChargerDetails(point) {
 // The below code is for List View
 // Function to render the charger points in the list view
 function loadChargerList() {
-    $.ajax({
-        url: '/SearchChargePoints.php?action=getChargers',
-        method: 'GET',
-        dataType: 'json',
-        success: function (chargers) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', '/SearchChargePoints.php?action=getChargers', true);
+    xhr.responseType = 'json';
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            const chargers = xhr.response;
             let html = '';
+
             chargers.forEach(function (charger) {
                 html += `
 <div class="col-md-4 mb-4">
     <div class="card-list shadow h-100 card-hover" data-id="${charger.Charger_point_ID}">
         <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
-            <i class="bi bi-lightning-charge" style="font-size: 4rem; color: #2b44d4;"></i>
+            <img src="/images/ChargerPoints/${charger.Charger_image_url}" alt="${charger.Name}" class="img-fluid" style="max-height: 100%; max-width: 100%;">
         </div>
+
         <div class="card-body d-flex flex-column justify-content-between">
-            <h5 class="card-title fw-bold">${charger.Name}</h5> <!-- Blue color for the name -->
+            <h5 class="card-title fw-bold">${charger.Name}</h5>
             <p class="card-text">${charger.Charger_point_description}</p>
             <ul class="list-unstyled small">
                 <li><strong>Price:</strong> $${charger.Price_per_kWatt}/kWh</li>
@@ -145,23 +157,27 @@ function loadChargerList() {
                 <li><strong>Status:</strong> ${charger.Availability_status}</li>
                 <li><strong>Rating:</strong> ${charger.Rating}</li>
             </ul>
-            <!-- Center the "Book Now" button inside the card-body -->
             <div class="d-flex justify-content-center">
-             <!-- Dynamic link to booking page with the charger point ID -->
-            <a href="BookChargePoints.php?id=${charger.Charger_point_ID}" class="add-btn w-50 py-1 d-flex justify-content-center align-items-center mb-3">Book Now</a>
+                <a href="BookChargePoints.php?id=${charger.Charger_point_ID}" class="add-btn w-50 py-1 d-flex justify-content-center align-items-center mb-3">Book Now</a>
             </div>
         </div>
     </div>
-</div>
-                `;
+</div>`;
             });
-            $('#charger-list').html(html);
-        },
-        error: function () {
-            $('#charger-list').html('<div class="col-12 text-danger">Failed to load charger points.</div>');
+
+            document.getElementById('charger-list').innerHTML = html;
+        } else {
+            document.getElementById('charger-list').innerHTML = '<div class="col-12 text-danger">Failed to load charger points.</div>';
         }
-    });
+    };
+
+    xhr.onerror = function () {
+        document.getElementById('charger-list').innerHTML = '<div class="col-12 text-danger">Failed to load charger points.</div>';
+    };
+
+    xhr.send();
 }
+
 
 // Code below is for filter system
 // Function to calculate the distance
