@@ -2,7 +2,7 @@
 
 class bookingRequestData
 {
-    private $id, $created, $start, $end, $isPaid, $kw, $chargerPointId, $userId, $statusId;
+    private $id, $created, $start, $end, $isPaid, $kw, $pricePerKWh, $chargerPointId, $userId, $statusId;
 
     public function __construct($dbRow)
     {
@@ -12,6 +12,7 @@ class bookingRequestData
         $this->end = $dbRow['Booking_end'];
         $this->isPaid = $dbRow['Is_paid'];
         $this->kw = $dbRow['Amount_of_KW'];
+        $this->pricePerKWh = $dbRow['Price_per_KWh'];
         $this->chargerPointId = $dbRow['Charger_point_Charger_point_ID'];
         $this->userId = $dbRow['User_user_ID'];
         $this->statusId = $dbRow['Booking_Status_Booking_status_ID'];
@@ -23,6 +24,7 @@ class bookingRequestData
     public function getEnd() { return $this->end; }
     public function isPaid() { return $this->isPaid; }
     public function getKW() { return $this->kw; }
+    public function getPricePerKWh() { return $this->pricePerKWh; }
     public function getChargerPointId() { return $this->chargerPointId; }
     public function getUserId() { return $this->userId; }
     public function getStatusId() { return $this->statusId; }

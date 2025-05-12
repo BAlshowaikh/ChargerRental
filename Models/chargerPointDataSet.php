@@ -57,4 +57,31 @@ class chargerPointDataSet
 
         return $dataSet;
     }
+
+    // Function to retrieve the chrager points details
+
+    public function fetchAllDetailedChargerPoints()
+    {
+        $sql = "
+        SELECT 
+          cp.Name,
+          cp.Charger_point_ID,
+          cp.Charger_point_description,
+          cp.Price_per_kWatt,
+          cp.Connector_type,
+          cp.Rating,
+          cp.Charger_image_url,
+          l.Latitude, 
+          l.Longitude,
+          a.Available_status AS Availability_status
+        FROM Charger_point cp
+        JOIN Location l ON cp.Location_Location_ID = l.Location_ID
+        JOIN Available_status a ON cp.Available_status_Available_ID = a.Available_ID
+    ";
+
+        $statement = $this->_dbHandle->prepare($sql);
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
