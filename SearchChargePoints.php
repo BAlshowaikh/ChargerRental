@@ -7,6 +7,11 @@ $view = new stdClass();
 require_once("Models/Database.php");
 require_once("Models/chargerPointDataSet.php");
 
+// Set default view if not already stored in session
+if (!isset($_SESSION['view'])) {
+    $_SESSION['view'] = 'map';
+}
+
 // Handle AJAX request for charger point details
 if (isset($_GET['action']) && $_GET['action'] === 'getChargers') {
     header('Content-Type: application/json');

@@ -1,16 +1,16 @@
 <?php
 
 
-// Handle view toggle via POST request (AJAX)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view'])) {
-    $_SESSION['view'] = $_POST['view'];
-    exit;
-}
-
-// Set default view to 'map' if it's not set yet
-if (!isset($_SESSION['view'])) {
-    $_SESSION['view'] = 'map';
-}
+//// Handle view toggle via POST request (AJAX)
+//if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view'])) {
+//    $_SESSION['view'] = $_POST['view'];
+//    exit;
+//}
+//
+//// Set default view to 'map' if it's not set yet
+//if (!isset($_SESSION['view'])) {
+//    $_SESSION['view'] = 'map';
+//}
 
 require("template/CustomerNavBar.phtml");
 
@@ -35,6 +35,7 @@ require("template/CustomerNavBar.phtml");
 
                 <input type="radio" class="btn-check" name="viewToggle" id="toggleList" autocomplete="off" <?php echo $_SESSION['view'] === 'list' ? 'checked' : ''; ?>>
                 <label class="btn" for="toggleList">List</label>
+
             </div>
         </div>
 
@@ -128,34 +129,52 @@ require("template/CustomerNavBar.phtml");
 
 <script>
     $(document).ready(function () {
-        // Toggle between Map and List views
+        // Function to toggle between Map and List views
         function switchView(view) {
             if (view === 'map') {
+                // Show map view, hide list
                 $('#map-view').removeClass('d-none');
                 $('#list-view').addClass('d-none');
+
+                // Force the leaflet map to reload correctly
+                setTimeout(function () {
+                    if (typeof map !== 'undefined') {
+                        map.invalidateSize();
+                    }
+                }, 300);
             } else {
+                // Show list view, hide map
                 $('#map-view').addClass('d-none');
                 $('#list-view').removeClass('d-none');
             }
 
-            // Save the selected view in the session (AJAX)
+            // Persist view selection in PHP session
             $.post('', { view: view });
         }
 
-        // When toggling the radio buttons
+        // Attach event handler to map toggle
         $('#toggleMap').on('change', function () {
             if ($(this).is(':checked')) {
                 switchView('map');
             }
         });
 
+        //  Attach event handler to list toggle
         $('#toggleList').on('change', function () {
             if ($(this).is(':checked')) {
                 loadChargerList();
                 switchView('list');
-
             }
         });
+
+        // Inject initial view directly using session value from PHP
+        var initialView = "<?php echo $_SESSION['view']; ?>";
+        if (initialView === 'map') {
+            switchView('map');
+        } else {
+            loadChargerList();
+            switchView('list');
+        }
     });
 </script>
 
