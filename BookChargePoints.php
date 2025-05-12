@@ -73,5 +73,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
         'totalCost' => $totalCost
     ];
 }
-
 require_once("Views/BookChargePoints.phtml");
