@@ -1,416 +1,179 @@
-<?php require 'template/HomeownerNavBar.phtml'; ?>
-<link rel="stylesheet" href="/css/sharedLayout.css">
+<?php require_once 'template/HomeownerNavBar.phtml'; ?>
+
+
 
 <main class="manage-container">
-    <h2 class="page-title">Manage Charger Points</h2>
-    <?php if (!isset($chargePoint)) $chargePoint = null; ?>
+    <h2 class="page-title">Charger Point Details</h2>
 
-    <div class="add-button-wrapper">
-        <?php if ($chargePoint === null): ?>
-            <div class="add-button-wrapper">
-                <button class="btn add-btn" onclick="openAddModal()">+ Add Charger Point</button>
-            </div>
-        <?php endif; ?>
-    </div>
-
-
-    <?php if ($chargePoint): ?>
-        <div class="card-container">
+    <?php if (isset($chargePoint)): ?>
+        <form id="editForm" method="post" action="updateChargePoint.php">
             <div class="card">
                 <div class="card-section card-image">
+                    <small style="color: gray;">Image Path: <?= $chargePoint->getImageUrl() ?></small>
+
                     <?php if (!empty($chargePoint->getImageUrl())): ?>
-                        <img src="<?= htmlspecialchars($chargePoint->getImageUrl()) ?>" alt="Charger Image" width="100">
+                        <img class="charger-img" src="<?= htmlspecialchars($chargePoint->getImageUrl()) ?>" alt="Charger Image" onerror="this.style.display='none';">
                     <?php else: ?>
                         <span>No Image</span>
                     <?php endif; ?>
                 </div>
 
-                <div class="divider"></div>
+                <div class="card-section card-details">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input class="editable-field" type="text" name="name" id="name" value="<?= htmlspecialchars($chargePoint->getName()) ?>" readonly>
+                    </div>
 
-                <div class="card-section card-details" id="chargerDetails">
-                    <p><strong>Cost per kWh:</strong> <?= htmlspecialchars($chargePoint->getPricePerKW()) ?></p>
-                    <p><strong>Status:</strong> <?= $chargePoint->getAvailableStatusId() ? 'Available' : 'Unavailable' ?></p>
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea class="editable-field" name="description" id="description" rows="2" readonly><?= htmlspecialchars($chargePoint->getDescription()) ?></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cost_per_kwh">Cost per kWh:</label>
+                        <input class="editable-field" type="number" name="cost_per_kwh" id="cost_per_kwh" value="<?= htmlspecialchars($chargePoint->getPricePerKW()) ?>" step="0.01" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="connector_type">Connector Type:</label>
+                        <input class="editable-field" type="text" name="connector_type" id="connector_type" value="<?= htmlspecialchars($chargePoint->getConnectorType()) ?>" readonly>
+                    </div>
+
+                    <p><strong>Rating:</strong> <?= htmlspecialchars($chargePoint->getRating()) ?> / 5</p>
+                    <p><strong>Availability:</strong> <?= $chargePoint->getAvailableStatusId() == 1 ? 'Available' : 'Unavailable' ?></p>
                 </div>
-                <div class="card-actions" style="display: flex; justify-content: center; margin-top: 15px;">
-                    <?php
-                    $editData = [
-                        'id' => $chargePoint->getId(),
-                        'name' => $chargePoint->getName(),
-                        'cost_per_kwh' => $chargePoint->getPricePerKW(),
-                        'connector_type' => $chargePoint->getConnectorType(),
-                        'description' => $chargePoint->getDescription(),
-                        'is_available' => (bool)$chargePoint->getAvailableStatusId()
-                    ];
-                    ?>
-
-                        <button class="btn edit-btn" onclick='openEditModal(<?= json_encode($editData) ?>)'>
-                            Edit
-                        </button>
-
-                        <button class="btn toggle-btn" onclick="toggleChargerDetails(this)">
-                            Hide Details
-                        </button>
-
-
-
+                <div class="button-row">
+                    <button type="button" id="editBtn" class="btn" onclick="enableEditMode()">Edit</button>
+                    <button type="submit" id="saveBtn" class="btn" style="display:none;">Save</button>
+                    <button type="button" id="cancelBtn" class="btn" onclick="cancelEditMode()" style="display:none;">Cancel</button>
+                    <button type="button" class="btn delete-btn" onclick="confirmDelete()">Delete</button>
                 </div>
-
             </div>
-        </div>
+
+
+        </form>
+    <?php else: ?>
+        <p>No charger point found.</p>
     <?php endif; ?>
-
-    <!-- Add Charger Point Modal -->
-    <div id="addModal" class="modal" data-modal style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeAddModal()">&times;</span>
-            <h2 class="form-title">Add Charger Point</h2>
-
-            <form method="post" enctype="multipart/form-data">
-                <div class="form-row">
-                    <label for="name">Name:</label>
-                    <input type="text" name="name" id="name" required>
-                </div>
-
-                <div class="form-row">
-                    <label for="cost_per_kwh">Cost per kWh:</label>
-                    <input type="number" name="cost_per_kwh" id="cost_per_kwh" step="0.01" required>
-                </div>
-
-                <div class="form-row">
-                    <label for="connector_type">Connector Type:</label>
-                    <select name="connector_type" id="connector_type" required>
-                        <option value="" disabled selected>Select type</option>
-                        <option value="Type 1">Type 1</option>
-                        <option value="Type 2">Type 2</option>
-                        <option value="CCS">CCS</option>
-                        <option value="CHAdeMO">CHAdeMO</option>
-                    </select>
-                </div>
-
-                <div class="form-row">
-                    <label for="description">Description:</label>
-                    <textarea name="description" id="description" rows="3" required></textarea>
-                </div>
-
-                <div class="form-row">
-                    <label for="image">Upload Image:</label>
-                    <input type="file" name="image" id="image">
-                </div>
-
-                <div class="form-row">
-                    <label><input type="checkbox" name="is_available"> Available</label>
-                </div>
-
-                <div class="form-row">
-                    <button type="submit" class="btn">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
-    <!-- Edit Charger Point Modal -->
-    <div id="editModal" class="modal" data-modal style="display:none;"> <!-- Added data-modal -->
-        <div class="modal-content">
-            <span class="close" onclick="closeEditModal()">&times;</span>
-            <h2 class="form-title">Edit Charger Point</h2>
-            <form method="post" enctype="multipart/form-data">
-                <input type="hidden" name="edit_id" id="edit_id">
-
-                <div class="form-row">
-                    <label for="edit_name">Name:</label>
-                    <input type="text" name="edit_name" id="edit_name" required>
-                </div>
-
-                <div class="form-row">
-                    <label for="edit_cost">Cost per kWh:</label>
-                    <input type="number" name="edit_cost" id="edit_cost" step="0.01" required>
-                </div>
-
-                <div class="form-row">
-                    <label for="edit_connector_type">Connector Type:</label>
-                    <select name="edit_connector_type" id="edit_connector_type" required>
-                        <option value="Type 1">Type 1</option>
-                        <option value="Type 2">Type 2</option>
-                        <option value="CCS">CCS</option>
-                        <option value="CHAdeMO">CHAdeMO</option>
-                    </select>
-                </div>
-
-                <div class="form-row">
-                    <label for="edit_description">Description:</label>
-                    <textarea name="edit_description" id="edit_description" rows="3" required></textarea>
-                </div>
-
-                <div class="form-row">
-                    <label><input type="checkbox" name="edit_available" id="edit_available"> Available</label>
-                </div>
-
-                <div class="form-row">
-                    <button type="submit" class="btn">Update</button>
-                </div>
-            </form>
-
-        </div>
-    </div>
-
-
-
-
-
 </main>
 
-<!-- Styling -->
+<script>
+    function enableEditMode() {
+        document.querySelectorAll('.editable-field').forEach(el => el.removeAttribute('readonly'));
+        document.getElementById('editBtn').style.display = 'none';
+        document.getElementById('saveBtn').style.display = 'inline-block';
+        document.getElementById('cancelBtn').style.display = 'inline-block';
+    }
+
+    function cancelEditMode() {
+        window.location.reload();
+    }
+
+    function confirmDelete() {
+        if (confirm("Are you sure you want to delete this charger point?")) {
+            window.location.href = "deleteChargerPoint.php";
+        }
+    }
+</script>
+
 <style>
 
-    .modal-content {
-        background-color: #fff;
-        margin: 10% auto;
-        padding: 30px;
-        border-radius: 12px;
-        width: 500px;
-        border: 2px solid #0c3b5c;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    body {
+        background: linear-gradient(to right, #2cc4b0, #3a95dd);
     }
-
-    .close {
-        float: right;
-        font-size: 24px;
-        font-weight: bold;
-        color: #444;
-        cursor: pointer;
-    }
-
-    .form-title {
+    .page-title {
+        color: #005b7f;
         text-align: center;
+        font-weight: 700;
+    }
+
+    .manage-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 40px;
+        border-radius: 16px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .page-title {
+        font-size: 28px;
         margin-bottom: 20px;
-        color: #003366;
-    }
-
-    .form-row {
-        margin-bottom: 15px;
-    }
-
-    .form-row label {
-        display: block;
-        font-weight: bold;
-        color: #003366;
-        margin-bottom: 5px;
-    }
-
-    .form-row input[type="text"],
-    .form-row input[type="number"],
-    .form-row select,
-    .form-row textarea {
-        width: 100%;
-        padding: 10px;
-        font-size: 15px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-    }
-
-    .form-row input[type="checkbox"] {
-        margin-right: 10px;
-    }
-
-    .btn {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 16px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    .btn:hover {
-        background-color: #0056b3;
-    }
-
-    .add-button-wrapper {
-        text-align: right;
-        margin-bottom: 20px;
-    }
-
-    .card-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
     }
 
     .card {
-        border: 1px solid #ddd;
-        border-radius: 10px;
         padding: 20px;
+        border: 2px solid #005b7f;
+        border-radius: 12px;
         background-color: #f9f9f9;
-        width: 300px;
+
+        /* Add this */
+        width: 100%;
+        max-width: 700px;
+        margin: 0 auto;
     }
 
     .card-section {
-        margin-bottom: 15px;
-    }
-
-    .card-actions {
         display: flex;
-        justify-content: space-between;
-
+        flex-direction: column;
+        gap: 10px;
     }
 
-    .modal {
-        position: fixed;
-        z-index: 1000;
-        inset: 0;
+    .charger-img {
+        max-width: 100%;
+        max-height: 200px;
+        object-fit: contain;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+
+    .form-group {
         display: flex;
         align-items: center;
-        justify-content: center;
-        background-color: rgba(0, 0, 0, 0.5);
+        gap: 10px;
+        flex-wrap: wrap;
     }
 
-    .modal-content {
-        background-color: #fff;
-        width: 100%;
-        max-width: 520px;
-        padding: 32px 28px;
-        border-radius: 12px;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-        animation: fadeIn 0.3s ease-in-out;
-        position: relative;
-
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to { opacity: 1; transform: scale(1); }
-    }
-
-    .close {
-        position: absolute;
-        top: 16px;
-        right: 20px;
-        font-size: 24px;
-        color: #333;
-        cursor: pointer;
+    .form-group label {
+        min-width: 120px;
         font-weight: bold;
     }
 
-    .form-title {
-        font-size: 1.75rem;
-        font-weight: 700;
-        text-align: center;
-        color: #003366;
-        margin-bottom: 30px;
-    }
-
-    .form-row {
-        margin-bottom: 20px;
-    }
-
-    .form-row label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #003366;
-    }
-
-    .form-row input[type="text"],
-    .form-row input[type="number"],
-    .form-row select,
-    .form-row textarea {
+    .form-group input,
+    .form-group textarea {
+        flex: 1;
+        min-width: 300px; /* Increased */
         width: 100%;
-        padding: 12px 14px;
-        font-size: 16px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        transition: border-color 0.3s;
     }
 
-    .form-row input:focus,
-    .form-row textarea:focus,
-    .form-row select:focus {
-        outline: none;
-        border-color: #007bff;
-    }
 
-    .form-row input[type="checkbox"] {
-        margin-right: 8px;
-    }
-
-    .btn {
-        background: linear-gradient(to right, #007bff, #0056b3);
-        color: #fff;
-        padding: 12px 20px;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        width: 100%;
+    .button-row .btn {
+        min-width: 100px;
+        font-weight: bold;
         transition: background 0.3s;
     }
 
+
+    .btn {
+        padding: 10px 18px;
+        border: none;
+        border-radius: 5px;
+        background-color: #005b7f;
+        color: white;
+        cursor: pointer;
+    }
+
+    .btn.delete-btn {
+        background-color: #b00020;
+    }
+
     .btn:hover {
-        background: linear-gradient(to right, #0056b3, #004494);
+        opacity: 0.9;
     }
 
 </style>
 
-<!-- Scripts --><script>
-        function openAddModal() {
-        document.getElementById('addModal').style.display = 'flex';
-    }
 
-        function closeAddModal() {
-        document.getElementById('addModal').style.display = 'none';
-    }
-
-        function openEditModal(data) {
-        document.getElementById('edit_id').value = data.id;
-        document.getElementById('edit_name').value = data.name;
-        document.getElementById('edit_cost').value = data.cost_per_kwh;
-        document.getElementById('edit_connector_type').value = data.connector_type;
-        document.getElementById('edit_description').value = data.description;
-        document.getElementById('edit_available').checked = data.is_available;
-
-        document.getElementById('editModal').style.display = 'flex';
-    }
-
-        function closeEditModal() {
-        document.getElementById('editModal').style.display = 'none';
-    }
-
-
-
-        // ✅ Generic close on outside click
-        window.addEventListener('click', function(event) {
-        const modals = document.querySelectorAll('[data-modal]');
-        modals.forEach(function(modal) {
-        if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-    });
-    });
-
-        // ✅ Close modals with Escape key
-        window.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-        const modals = document.querySelectorAll('[data-modal]');
-        modals.forEach(modal => modal.style.display = 'none');
-    }
-    });
-        function toggleChargerDetails(button) {
-            const details = document.getElementById("chargerDetails");
-            if (details.style.display === "none") {
-                details.style.display = "block";
-                button.textContent = "Hide Details";
-            } else {
-                details.style.display = "none";
-                button.textContent = "Show Details";
-            }
-        }
-</script>
-
-
-
-<?php require_once 'template/footer.phtml'; ?>
