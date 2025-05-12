@@ -13,13 +13,13 @@ $view->pageTitle = "Book a Charger Point";
 //}
 
 // Get the charger point ID from query string
-//if (!isset($_GET['id'])) {
-//    echo "Invalid access: Charger Point ID is required.";
-//    exit();
-//}
+if (!isset($_GET['id'])) {
+    echo "Invalid access: Charger Point ID is required.";
+    exit();
+}
 
-//$cpId = $_GET['id'];
-$cpId =3;
+$cpId = $_GET['id'];
+//$cpId =3;
 $chargerPointSet = new chargerPointDataSet();
 $view->chargerPoint = $chargerPointSet->fetchChargerPointById($cpId);
 
