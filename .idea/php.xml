@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="MessDetector">
-    <phpmd_settings>
-      <phpmd_by_interpreter asDefaultInterpreter="true" interpreter_id="47672606-b284-48dc-93d7-03573bff8f74" timeout="30000" />
-    </phpmd_settings>
-  </component>
   <component name="MessDetectorOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>
@@ -15,31 +10,8 @@
     <option name="highlightLevel" value="WARNING" />
     <option name="transferred" value="true" />
   </component>
-  <component name="PhpCSFixer">
-    <phpcsfixer_settings>
-      <phpcs_fixer_by_interpreter asDefaultInterpreter="true" interpreter_id="251c811e-c8bf-4eb5-9d30-05ec45c6f426" timeout="30000" />
-    </phpcsfixer_settings>
-  </component>
-  <component name="PhpCodeSniffer">
-    <phpcs_settings>
-      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="47672606-b284-48dc-93d7-03573bff8f74" timeout="30000" />
-    </phpcs_settings>
-  </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="8.0">
-    <option name="suggestChangeDefaultLanguageLevel" value="false" />
-  </component>
-  <component name="PhpStan">
-    <PhpStan_settings>
-      <phpstan_by_interpreter asDefaultInterpreter="true" interpreter_id="251c811e-c8bf-4eb5-9d30-05ec45c6f426" timeout="60000" />
-    </PhpStan_settings>
-  </component>
   <component name="PhpStanOptionsConfiguration">
     <option name="transferred" value="true" />
-  </component>
-  <component name="Psalm">
-    <Psalm_settings>
-      <psalm_fixer_by_interpreter asDefaultInterpreter="true" interpreter_id="251c811e-c8bf-4eb5-9d30-05ec45c6f426" timeout="60000" />
-    </Psalm_settings>
   </component>
   <component name="PsalmOptionsConfiguration">
     <option name="transferred" value="true" />

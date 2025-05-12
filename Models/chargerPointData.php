@@ -23,4 +23,6 @@ class chargerPointData {
     public function getRating()            { return $this->rating; }
     public function getImageUrl()          { return $this->imageUrl; }
     public function getAvailableStatusId() { return $this->availableStatusId; }
+    public function getId()                 {return $this->id;}
+
 }

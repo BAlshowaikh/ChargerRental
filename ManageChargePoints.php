@@ -3,9 +3,8 @@ require_once 'Models/Database.php';
 require_once 'Models/chargerPointData.php';
 
 session_start();
+$userId = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
 
-// ✅ Ensure user is logged in
-$userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
 if (!$userId) {
     header("Location: login.php");

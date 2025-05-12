@@ -27,24 +27,32 @@
 
                 <div class="divider"></div>
 
-                <div class="card-section card-details">
+                <div class="card-section card-details" id="chargerDetails">
                     <p><strong>Cost per kWh:</strong> <?= htmlspecialchars($chargePoint->getPricePerKW()) ?></p>
                     <p><strong>Status:</strong> <?= $chargePoint->getAvailableStatusId() ? 'Available' : 'Unavailable' ?></p>
                 </div>
                 <div class="card-actions" style="display: flex; justify-content: center; margin-top: 15px;">
-                    <button
-                            class="btn edit-btn"
-                            onclick='openEditModal({
-                                    id: <?= $chargePoint->getId() ?>,
-                                    name: "<?= addslashes($chargePoint->getName()) ?>",
-                                    cost_per_kwh: <?= $chargePoint->getPricePerKW() ?>,
-                                    connector_type: "<?= $chargePoint->getConnectorType() ?>",
-                                    description: "<?= addslashes($chargePoint->getDescription()) ?>",
-                                    is_available: <?= $chargePoint->getAvailableStatusId() ? 'true' : 'false' ?>
-                                    })'
-                    >
-                        Edit
-                    </button>
+                    <?php
+                    $editData = [
+                        'id' => $chargePoint->getId(),
+                        'name' => $chargePoint->getName(),
+                        'cost_per_kwh' => $chargePoint->getPricePerKW(),
+                        'connector_type' => $chargePoint->getConnectorType(),
+                        'description' => $chargePoint->getDescription(),
+                        'is_available' => (bool)$chargePoint->getAvailableStatusId()
+                    ];
+                    ?>
+
+                        <button class="btn edit-btn" onclick='openEditModal(<?= json_encode($editData) ?>)'>
+                            Edit
+                        </button>
+
+                        <button class="btn toggle-btn" onclick="toggleChargerDetails(this)">
+                            Hide Details
+                        </button>
+
+
+
                 </div>
 
             </div>
@@ -106,7 +114,43 @@
         <div class="modal-content">
             <span class="close" onclick="closeEditModal()">&times;</span>
             <h2 class="form-title">Edit Charger Point</h2>
-            <!-- form contents unchanged -->
+            <form method="post" enctype="multipart/form-data">
+                <input type="hidden" name="edit_id" id="edit_id">
+
+                <div class="form-row">
+                    <label for="edit_name">Name:</label>
+                    <input type="text" name="edit_name" id="edit_name" required>
+                </div>
+
+                <div class="form-row">
+                    <label for="edit_cost">Cost per kWh:</label>
+                    <input type="number" name="edit_cost" id="edit_cost" step="0.01" required>
+                </div>
+
+                <div class="form-row">
+                    <label for="edit_connector_type">Connector Type:</label>
+                    <select name="edit_connector_type" id="edit_connector_type" required>
+                        <option value="Type 1">Type 1</option>
+                        <option value="Type 2">Type 2</option>
+                        <option value="CCS">CCS</option>
+                        <option value="CHAdeMO">CHAdeMO</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label for="edit_description">Description:</label>
+                    <textarea name="edit_description" id="edit_description" rows="3" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <label><input type="checkbox" name="edit_available" id="edit_available"> Available</label>
+                </div>
+
+                <div class="form-row">
+                    <button type="submit" class="btn">Update</button>
+                </div>
+            </form>
+
         </div>
     </div>
 
@@ -355,6 +399,16 @@
         modals.forEach(modal => modal.style.display = 'none');
     }
     });
+        function toggleChargerDetails(button) {
+            const details = document.getElementById("chargerDetails");
+            if (details.style.display === "none") {
+                details.style.display = "block";
+                button.textContent = "Hide Details";
+            } else {
+                details.style.display = "none";
+                button.textContent = "Show Details";
+            }
+        }
 </script>
 
 
