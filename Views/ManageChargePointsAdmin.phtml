@@ -1,42 +1,263 @@
 <?php require_once 'template/AdminNavBar.phtml'; ?>
 <link rel="stylesheet" href="/css/sharedLayout.css">
+
 <main class="manage-container">
-    <h2 class="page-title">Manage All Charger Points</h2>
+    <h2 class="page-title">Manage Charger Points</h2>
 
     <div class="card-container">
-        <?php if (isset($view->chargerPoints) && is_array($view->chargerPoints)): ?>
-            <?php foreach ($view->chargerPoints as $point): ?>
+        <?php if (!empty($chargerPointObjs)): ?>
+            <?php foreach ($chargerPointObjs as $point): ?>
                 <div class="card">
                     <div class="card-section card-image">
-                        <img src="<?= htmlspecialchars($point->getImageUrl()) ?>" alt="Charger Image" class="card-img">
+                        <?php if (!empty($point->getImageUrl())): ?>
+                            <img src="<?= htmlspecialchars($point->getImageUrl()) ?>" alt="Charger Image" class="card-img">
+                        <?php else: ?>
+                            <p class="no-img">No Image</p>
+                        <?php endif; ?>
                     </div>
+
                     <div class="divider"></div>
+
                     <div class="card-section card-details">
-                        <p><strong>Location:</strong> <?= htmlspecialchars($point->getLocation()) ?></p>
-                        <p><strong>Price:</strong> <?= htmlspecialchars($point->getPrice()) ?> / kWh</p>
-                        <p><strong>Status:</strong> <?= htmlspecialchars($point->getAvailability()) ?></p>
+                        <p><strong>Name:</strong> <?= htmlspecialchars($point->getName()) ?></p>
+                        <p><strong>Description:</strong> <?= htmlspecialchars($point->getDescription()) ?></p>
+                        <p><strong>Price:</strong> <?= htmlspecialchars($point->getPricePerKW()) ?> BHD / kWh</p>
+                        <p><strong>Connector:</strong> <?= htmlspecialchars($point->getConnectorType()) ?></p>
+                        <p><strong>Status:</strong> <?= $point->getAvailableStatusId() == 1 ? 'Available' : 'Unavailable' ?></p>
                     </div>
+
                     <div class="card-actions">
-                        <a href="#id=<?= $point->getId() ?>" class="btn edit-btn">Edit</a>
-                        <button onclick="toggleDetails(this)" class="btn toggle-btn">Show/Hide</button>
-                        <form method="post" action="#" style="display:inline;">
+                        <form action="EditChargePoint.php" method="get" class="card-button-form">
                             <input type="hidden" name="id" value="<?= $point->getId() ?>">
-                            <button type="submit" class="btn delete-btn">Delete</button>
+                            <button type="submit" class="btn edit-btn">Edit</button>
                         </form>
+
+                        <div class="card-button-form">
+                            <button class="btn delete-btn" onclick="openDeleteModal(<?= $point->getId() ?>)">Delete</button>
+                        </div>
                     </div>
+
+
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
             <p style="text-align:center;">No charger points found.</p>
         <?php endif; ?>
     </div>
+
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Confirm Delete</h3>
+            <p>Are you sure you want to delete this charger point?</p>
+            <form method="post" action="DeleteChargerPointAdmin.php">
+                <input type="hidden" name="id" id="deleteChargerId">
+                <div class="modal-button-group">
+                    <button type="button" class="btn cancel-btn" onclick="closeDeleteModal()">Cancel</button>
+                    <button type="submit" class="btn delete-btn">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
 </main>
 
 <script>
     function toggleDetails(button) {
         const details = button.closest('.card').querySelector('.card-details');
-        details.style.display = details.style.display === 'none' ? 'block' : 'none';
+        details.style.display = (details.style.display === 'none' || details.style.display === '') ? 'block' : 'none';
     }
 </script>
+
+<script>
+    function openDeleteModal(id) {
+        document.getElementById('deleteChargerId').value = id;
+        document.getElementById('deleteModal').style.display = 'block';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+    }
+</script>
+
+
+<style>
+    .manage-container {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 28px;
+        color: #00458a;
+        margin-bottom: 30px;
+    }
+
+    .card-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+        gap: 30px;
+        justify-items: center;
+    }
+
+
+    .card {
+        background-color: #fff;
+        border: 3px solid #2e4a68;
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding-bottom: 20px;
+        width: 100%;
+        max-width: 500px;
+
+    }
+
+    .card {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        border: 2px solid #003b5c;
+        border-radius: 12px;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+
+    .card-img {
+        width: 100%;
+        height: 150px;
+        object-fit: contain;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .no-img {
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f3f3f3;
+        border-radius: 8px;
+        width: 100%;
+        color: gray;
+    }
+
+    .divider {
+        width: 100%;
+        height: 2px;
+        background-color: #2e4a68;
+        margin: 10px 0;
+    }
+
+    .card-details {
+        font-size: 14px;
+        width: 100%;
+    }
+
+    .card-details p {
+        margin: 4px 0;
+    }
+    .card-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 16px;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .card-button-form {
+        flex: 1 1 45%;
+        max-width: 120px;
+        display: flex;
+        justify-content: center;
+    }
+
+
+    .btn {
+        padding: 10px 0;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+        text-align: center;
+        transition: background 0.3s ease;
+        width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .edit-btn {
+        background: linear-gradient(to right, #26d0ce, #1a2980);
+    }
+
+    .delete-btn {
+        background: linear-gradient(to right, #f85032, #e73827);
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+
+
+
+</style>
+
+<style>
+    .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: grid;
+        place-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 30px 20px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    .modal-button-group {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .cancel-btn {
+        background-color: #888;
+    }
+
+    .delete-btn {
+        background: linear-gradient(to right, #f85032, #e73827);
+    }
+
+
+</style>
 
 <?php require_once 'template/footer.phtml'; ?>
