@@ -3,6 +3,35 @@
     <main class="manage-users-container">
         <h2 class="page-title">Manage Users</h2>
 
+        <!-- Search Form -->
+        <div class="search-form-container">
+            <form method="GET" class="search-form">
+                <input type="text" name="search" value="<?= isset($view->searchTerm) ? htmlspecialchars($view->searchTerm) : '' ?>" placeholder="Search by name or ID...">
+
+                <select name="role">
+                    <option value="">All Roles</option>
+                    <?php foreach ($view->roles as $role): ?>
+                        <option value="<?= $role->User_role_ID ?>" <?= ($role->User_role_ID == $view->selectedRole) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($role->User_role) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <select name="status">
+                    <option value="">All Statuses</option>
+                    <option value="Pending" <?= ($view->selectedStatus == 'Pending') ? 'selected' : '' ?>>Pending</option>
+                    <option value="Approve" <?= ($view->selectedStatus == 'Approve') ? 'selected' : '' ?>>Approve</option>
+                    <option value="Suspend" <?= ($view->selectedStatus == 'Suspend') ? 'selected' : '' ?>>Suspend</option>
+                    <option value="Reject" <?= ($view->selectedStatus == 'Reject') ? 'selected' : '' ?>>Reject</option>
+                </select>
+
+                <button type="submit">Search</button>
+                <button type="button" class="reset-button" onclick="resetFilters()">Reset Filter</button>
+            </form>
+        </div>
+
+        <br>
+
         <div class="table-wrapper">
             <table class="user-table">
                 <thead>
@@ -11,7 +40,7 @@
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>User Role</th>
-                    <th>Actions</th>
+                    <th style="text-align: center;">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -19,18 +48,30 @@
                     <?php foreach ($view->users as $user): ?>
                         <tr>
                             <td><?= htmlspecialchars($user->getUserId()) ?></td>
-                            <td><?= htmlspecialchars($user->getFName()) ?></td>
-                            <td><?= htmlspecialchars($user->getLName()) ?></td>
-                            <td><?= htmlspecialchars($user->getUserRoleId()) ?></td>
-                            <td>
+                            <td><?= htmlspecialchars($user->getFirstName()) ?></td>
+                            <td><?= htmlspecialchars($user->getLastName()) ?></td>
+                            <td><?= htmlspecialchars($user->getUserRoleName()) ?></td>
+                            <td style="text-align: center;">
                                 <form method="POST" class="action-form">
                                     <input type="hidden" name="userId" value="<?= $user->getUserId() ?>">
-                                    <?php if ($user->getApproved() === "Yes"): ?>
-                                        <button type="submit" name="action" value="suspend" class="btn suspend-btn">Suspend</button>
-                                    <?php else: ?>
-                                        <button type="submit" name="action" value="approve" class="btn suspend-btn">Approve</button>
+                                    <input type="hidden" name="userRoleId" value="<?= $user->getUserRoleId() ?>">
+
+                                    <?php if ($user->getUserStatus() === "Pending"): ?>
+                                        <button type="submit" name="action" value="approve" class="btn add-btn py-1">Approve</button>
+                                        <button type="submit" name="action" value="reject" class="btn delete-btn py-1">Reject</button>
+                                    <?php elseif ($user->getUserStatus() === "Approve"): ?>
+                                        <?php if ($user->getUserRoleId() != 1): ?>
+                                            <button type="submit" name="action" value="suspend" class="btn delete-btn py-1">Suspend</button>
+                                        <?php endif; ?>
+                                        <?php if ($user->getUserRoleId() === 2): ?>
+                                            <a href="ManageChargePoints.php?userId=<?= htmlspecialchars($user->getUserId()) ?>" class="btn add-btn py-1">View Charge Points</a>
+                                        <?php endif; ?>
+                                    <?php elseif ($user->getUserStatus() === "Suspend"): ?>
+                                        <button type="submit" name="action" value="unsuspend" class="btn add-btn py-1">Unsuspend</button>
+                                        <button type="submit" name="action" value="delete" class="btn delete-btn py-1">Delete</button>
+                                    <?php elseif ($user->getUserStatus() === "Reject"): ?>
+                                        <p style="text-align: center;">Rejected User</p>
                                     <?php endif; ?>
-                                    <button type="submit" name="action" value="delete" class="btn delete-btn">Delete</button>
                                 </form>
                             </td>
                         </tr>
@@ -43,6 +84,33 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination Links -->
+        <div class="pagination">
+            <?php if ($view->currentPage > 1): ?>
+                <a href="?page=<?= $view->currentPage - 1 ?>&search=<?= urlencode($view->searchTerm) ?>&role=<?= urlencode($view->selectedRole) ?>">Previous</a>
+            <?php endif; ?>
+
+            <?php
+            for ($page = max(1, $view->currentPage - 1); $page <= min($view->totalPages, $view->currentPage + 1); $page++): ?>
+                <a href="?page=<?= $page ?>&search=<?= urlencode($view->searchTerm) ?>&role=<?= urlencode($view->selectedRole) ?>" class="<?= ($page == $view->currentPage) ? 'active' : '' ?>">
+                    <?= $page ?>
+                </a>
+            <?php endfor; ?>
+
+            <?php if ($view->currentPage < $view->totalPages): ?>
+                <a href="?page=<?= $view->currentPage + 1 ?>&search=<?= urlencode($view->searchTerm) ?>&role=<?= urlencode($view->selectedRole) ?>">Next</a>
+            <?php endif; ?>
+        </div>
     </main>
+
+    <script>
+        function resetFilters() {
+            document.querySelector('input[name="search"]').value = '';
+            document.querySelector('select[name="role"]').selectedIndex = 0;
+            document.querySelector('select[name="status"]').selectedIndex = 0;
+            document.querySelector('.search-form').submit(); // Submit the form to refresh the user list
+        }
+    </script>
 
 <?php require_once 'template/footer.phtml'; ?>
