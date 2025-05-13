@@ -114,35 +114,129 @@ class userDataSet
         return $stmt->execute();
     }
 
-    public function getAllUsers() {
-        $sql = "SELECT user_ID, f_Name, l_Name, username, password, Phone_no, Registration_date, Approved, user_role_User_role_ID FROM User";
+    public function getAllUsers($offset, $limit) {
+        $sql = "SELECT u.*, ur.user_role 
+            FROM User u 
+            JOIN User_role ur ON u.user_role_id = ur.User_role_ID
+            LIMIT :offset, :limit";
         $stmt = $this->_dbHandle->prepare($sql);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
+
         $users = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $users[] = new userData($row);
         }
+
         return $users;
     }
 
+    public function getTotalUsers($searchTerm, $selectedRole, $selectedStatus) {
+        $query = "SELECT COUNT(*) FROM User WHERE (first_name LIKE :search OR last_name LIKE :search OR user_id = :userId)";
+
+        if ($selectedRole) {
+            $query .= " AND user_role_id = :role"; // Adjust role filtering
+        }
+
+        if ($selectedStatus) {
+            $query .= " AND user_status = :status"; // Filter by user status
+        }
+
+        $stmt = $this->_dbHandle->prepare($query);
+        $stmt->bindValue(':search', '%' . $searchTerm . '%', PDO::PARAM_STR);
+        $stmt->bindValue(':userId', $searchTerm, PDO::PARAM_INT);
+
+        if ($selectedRole) {
+            $stmt->bindValue(':role', $selectedRole, PDO::PARAM_INT);
+        }
+
+        if ($selectedStatus) {
+            $stmt->bindValue(':status', $selectedStatus, PDO::PARAM_STR);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function approveUser($userId) {
-        $sql = "UPDATE User SET Approved = 'Yes' WHERE user_ID = :userId";
+        $sql = "UPDATE User SET user_status = 'Approve' WHERE user_id = :userId";
+        $stmt = $this->_dbHandle->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function rejectUser($userId) {
+        $sql = "UPDATE User SET user_status = 'Reject' WHERE user_id = :userId";
         $stmt = $this->_dbHandle->prepare($sql);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
     public function suspendUser($userId) {
-        $sql = "UPDATE User SET Approved = 'no' WHERE user_ID = :userId";
+        $sql = "UPDATE User SET user_status = 'Suspend' WHERE user_id = :userId";
+        $stmt = $this->_dbHandle->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function unsuspendUser($userId) {
+        $sql = "UPDATE User SET user_status = 'Approve' WHERE user_id = :userId";
         $stmt = $this->_dbHandle->prepare($sql);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
     public function deleteUser($userId) {
-        $sql = "DELETE FROM User WHERE user_ID = :userId";
+        $sql = "DELETE FROM User WHERE user_id = :userId";
         $stmt = $this->_dbHandle->prepare($sql);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         return $stmt->execute();
+    }
+
+    public function searchUsers($searchTerm, $selectedRole, $selectedStatus, $offset, $limit) {
+        $query = "SELECT u.*, ur.user_role 
+              FROM User u 
+              JOIN User_role ur ON u.user_role_id = ur.User_role_ID 
+              WHERE (first_name LIKE :search OR last_name LIKE :search OR u.user_id = :userId)";
+
+        if ($selectedRole) {
+            $query .= " AND u.user_role_id = :role"; // Adjust role filtering
+        }
+
+        if ($selectedStatus) {
+            $query .= " AND u.user_status = :status"; // Filter by user status
+        }
+
+        $query .= " LIMIT :offset, :limit";
+        $stmt = $this->_dbHandle->prepare($query);
+        $stmt->bindValue(':search', '%' . $searchTerm . '%', PDO::PARAM_STR);
+        $stmt->bindValue(':userId', $searchTerm, PDO::PARAM_INT);
+
+        if ($selectedRole) {
+            $stmt->bindValue(':role', $selectedRole, PDO::PARAM_INT);
+        }
+
+        if ($selectedStatus) {
+            $stmt->bindValue(':status', $selectedStatus, PDO::PARAM_STR);
+        }
+
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $users = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $users[] = new userData($row); // Create instances of userData
+        }
+
+        return $users;
+    }
+
+    public function getUserRoles() {
+        $query = "SELECT * FROM User_role";
+        $stmt = $this->_dbHandle->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 }

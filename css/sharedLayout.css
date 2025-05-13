@@ -197,9 +197,22 @@ footer {
 }
 
 .delete-btn {
+    display: inline-block;
+    padding: 10px 10px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 20px;
     background: linear-gradient(to right, #d9534f, #c9302c);
+    text-decoration: none;
+    transition: background 0.3s ease;
 }
 
+.delete-btn:hover {
+    opacity: 0.9;
+    color: black;
+}
 /* Make it look good on small screens too */
 @media (max-width: 768px) {
     .card-container {
@@ -221,7 +234,7 @@ footer {
     padding: 10px 10px;
     font-weight: bold;
     font-size: 16px;
-    color: black;
+    color: #FFFFFF;
     border: none;
     border-radius: 20px;
     background: linear-gradient(to right, #3ce4d3, #2b44d4);
@@ -231,7 +244,7 @@ footer {
 
 .add-btn:hover {
     opacity: 0.9;
-    color: #FFFFFF;
+    color: black;
 }
 
 
@@ -395,5 +408,92 @@ footer {
     transform: scale(1.1); /* Scale the card to 1.1x */
 }
 
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
 
+.pagination a {
+    color: #0056b3;
+    padding: 10px 15px;
+    margin: 0 5px;
+    text-decoration: none;
+    border: 1px solid#0056b3;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
 
+.pagination a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination a.active {
+    background-color: #0056b3;
+    color: white;
+    border: 1px solid #0056b3;
+}
+
+.pagination a:disabled {
+    color: #ccc;
+    border: 1px solid #ccc;
+    pointer-events: none;
+}
+
+/* Search Form Styles */
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    max-width: 900px; /* Set the maximum width */
+    width: 100%; /* Ensure it takes full available width */
+    margin: 0 auto; /* Center the form */
+}
+
+.search-form input[type="text"],
+.search-form select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1; /* Allows the input to take available space */
+}
+
+.search-form button,
+.reset-button {
+    padding: 10px 15px;
+    background-color: #007bff; /* Match the search button color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-form button:hover,
+.reset-button:hover {
+    background-color: #0056b3; /* Darker shade on hover for search button */
+}
+
+.reset-button {
+    background-color: #6c757d; /* Different color for reset button */
+}
+
+.reset-button:hover {
+    background-color: #5a6268; /* Darker shade on hover for reset button */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .search-form {
+        flex-direction: column; /* Stack elements vertically on small screens */
+    }
+
+    .search-form input[type="text"],
+    .search-form select,
+    .search-form button,
+    .search-form .reset-button {
+        width: 100%; /* Full width on small screens */
+    }
+}
