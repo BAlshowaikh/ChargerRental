@@ -2,7 +2,7 @@
 
 class bookingRequestData
 {
-    private $id, $created, $start, $end, $isPaid, $kw, $pricePerKWh, $chargerPointId, $userId, $statusId;
+    private $id, $created, $start, $end, $pricePerKW, $chargerPointId, $userId, $statusId;
 
     public function __construct($dbRow)
     {
@@ -10,22 +10,20 @@ class bookingRequestData
         $this->created = $dbRow['Created_timestamp'];
         $this->start = $dbRow['Booking_start'];
         $this->end = $dbRow['Booking_end'];
-        $this->isPaid = $dbRow['Is_paid'];
-        $this->kw = $dbRow['Amount_of_KW'];
-        $this->pricePerKWh = $dbRow['Price_per_KWh'];
-        $this->chargerPointId = $dbRow['Charger_point_Charger_point_ID'];
-        $this->userId = $dbRow['User_user_ID'];
-        $this->statusId = $dbRow['Booking_Status_Booking_status_ID'];
+        $this->pricePerKW = $dbRow['Price_per_kwatt'];
+        $this->chargerPointId = $dbRow['Charger_point_ID'];
+        $this->userId = $dbRow['User_ID'];
+        $this->statusId = $dbRow['Booking_status_ID'];
     }
 
+    // Getters for all properties
     public function getId() { return $this->id; }
     public function getCreated() { return $this->created; }
     public function getStart() { return $this->start; }
     public function getEnd() { return $this->end; }
-    public function isPaid() { return $this->isPaid; }
-    public function getKW() { return $this->kw; }
-    public function getPricePerKWh() { return $this->pricePerKWh; }
+    public function getPricePerKW() { return $this->pricePerKW; }
     public function getChargerPointId() { return $this->chargerPointId; }
     public function getUserId() { return $this->userId; }
     public function getStatusId() { return $this->statusId; }
 }
+

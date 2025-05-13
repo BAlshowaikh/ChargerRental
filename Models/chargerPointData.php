@@ -1,28 +1,29 @@
 <?php
 
 class chargerPointData {
-    private $id, $name, $description, $pricePerKW, $connectorType, $rating, $imageUrl, $availableStatusId, $userId, $locationId;
+    private $id, $name, $description, $pricePerKW, $connectorType, $imageUrl, $availableStatusId, $locationId;
 
-    public function __construct(array $dbRow) {
-        $this->id = $dbRow['Charger_point_ID'];
+    public function __construct($dbRow) {
+        $this->id = $dbRow['charger_point_id'];
         $this->name = $dbRow['Name'];
-        $this->description = $dbRow['Charger_point_description'];
-        $this->pricePerKW = $dbRow['Price_per_kWatt'];
-        $this->connectorType = $dbRow['Connector_type'];
-        $this->rating = $dbRow['Rating'];
-        $this->imageUrl = $dbRow['Charger_image_url'];
-        $this->availableStatusId = $dbRow['Available_status_Available_ID'];
-        $this->userId = $dbRow['User_user_ID'];
-        $this->locationId = $dbRow['Location_Location_ID'];
+        $this->description = $dbRow['charger_point_description'];
+        $this->pricePerKW = $dbRow['price_per_kwatt'];
+        $this->connectorType = $dbRow['connector_type'];
+        $this->imageUrl = $dbRow['charger_image_url'];
+        $this->availableStatusId = $dbRow['available_status_id'];
+        $this->userId = $dbRow['user_id'];
+        $this->locationId = $dbRow['location_id'];
     }
 
+    // Getters
+    public function getId()                { return $this->id; }
     public function getName()              { return $this->name; }
     public function getDescription()       { return $this->description; }
     public function getPricePerKW()        { return $this->pricePerKW; }
     public function getConnectorType()     { return $this->connectorType; }
-    public function getRating()            { return $this->rating; }
     public function getImageUrl()          { return $this->imageUrl; }
     public function getAvailableStatusId() { return $this->availableStatusId; }
-    public function getId()                 {return $this->id;}
-
+    public function getUserId()            { return $this->userId; }
+    public function getLocationId()        { return $this->locationId; }
 }
+

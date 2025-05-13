@@ -125,7 +125,6 @@
                         <p><strong>Description:</strong> <?= nl2br(htmlspecialchars($view->chargerPoint->getDescription())) ?></p>
                         <p><strong>Price per kWh:</strong> <?= $view->chargerPoint->getPricePerKW() ?> BD</p>
                         <p><strong>Connector Type:</strong> <?= htmlspecialchars($view->chargerPoint->getConnectorType()) ?></p>
-                        <p><strong>Rating:</strong> <?= $view->chargerPoint->getRating() ?> / 5</p>
                     </div>
                 <?php else: ?>
                     <p class="text-danger">Charger Point details not found.</p>
