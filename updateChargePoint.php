@@ -15,15 +15,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = $_POST['description'];
     $cost = $_POST['cost_per_kwh'];
     $connectorType = $_POST['connector_type'];
+    $imageUrl = $_POST['image_url'];
 
     $db = Database::getInstance()->getConnection();
 
     $stmt = $db->prepare("UPDATE Charger_point 
-                          SET Name = ?, Charger_point_description = ?, Price_per_kWatt = ?, Connector_type = ?
-                          WHERE Charger_point_ID = ? AND User_user_ID = ?");
-    $stmt->execute([$name, $description, $cost, $connectorType, $chargerId, $userId]);
+                          SET Name = ?, 
+                              Charger_point_description = ?, 
+                              Price_per_kWatt = ?, 
+                              Connector_type = ?, 
+                              Charger_image_url = ?
+                          WHERE Charger_point_ID = ? AND user_ID = ?");
+
+    $stmt->execute([$name, $description, $cost, $connectorType, $imageUrl, $chargerId, $userId]);
 
     header("Location: ManageChargePoints.php");
     exit;
 }
+
 ?>

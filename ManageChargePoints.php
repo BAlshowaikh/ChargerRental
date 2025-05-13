@@ -4,7 +4,11 @@ require_once 'Models/chargerPointData.php';
 
 session_start();
 
-// Check if user is logged in
+// TEMPORARY - manually fake login session
+$_SESSION['userID'] = 3; // Replace with your test user ID
+
+
+//Check if user is logged in
 $userId = $_SESSION['userID'] ?? null;
 
 if (!$userId) {
@@ -15,7 +19,7 @@ if (!$userId) {
 $db = Database::getInstance()->getConnection();
 
 // Fetch charger point data for this user
-$stmt = $db->prepare("SELECT * FROM Charger_point WHERE User_user_ID = ?");
+$stmt = $db->prepare("SELECT * FROM Charger_point WHERE user_ID = ?");
 $stmt->execute([$userId]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
