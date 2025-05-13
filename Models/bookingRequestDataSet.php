@@ -107,6 +107,29 @@ class bookingRequestDataSet
         return $statement->fetchColumn();
     }
 
+    public function fetchBookingsForHomeowner($homeownerId, $status = 'all')
+    {
+        $query = "SELECT br.*, cp.Name AS charger_name, bs.Booking_status
+              FROM Booking_request br
+              INNER JOIN Charger_point cp ON br.Charger_point_ID = cp.charger_point_id
+              INNER JOIN Booking_Status bs ON br.Booking_status_ID = bs.Booking_status_id
+              WHERE cp.user_id = :homeownerId";
+
+        if ($status !== 'all') {
+            $query .= " AND br.Booking_status_ID = :status";
+        }
+
+        $statement = $this->_dbHandle->prepare($query);
+        $statement->bindParam(':homeownerId', $homeownerId);
+
+        if ($status !== 'all') {
+            $statement->bindParam(':status', $status);
+        }
+
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getBookingsWithStatusByUserId($userId)
     {
         $query = "SELECT br.*, bs.Booking_status 

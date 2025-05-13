@@ -12,6 +12,5 @@ if (isset($_POST['charger_id'])) {
         'description' => $charger->getDescription(),
         'connector_type' => $charger->getConnectorType(),
         'price_per_kw' => $charger->getPricePerKW(),
-        'rating' => $charger->getRating()
     ]);
 }

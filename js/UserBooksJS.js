@@ -19,13 +19,12 @@ function loadChargerDetails(chargerId) {
                     <p><strong>Description:</strong> ${charger.description.replace(/\n/g, '<br>')}</p>
                     <p><strong>Connector Type:</strong> ${charger.connector_type}</p>
                     <p><strong>Price per kWh:</strong> ${charger.price_per_kw} BD</p>
-                    <p><strong>Rating:</strong> ${charger.rating} / 5</p>
                 </div>
             `;
 
             document.body.appendChild(popup);
         }
     };
-
+    console.log(chargerId);
     xhr.send("charger_id=" + encodeURIComponent(chargerId));
 }

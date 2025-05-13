@@ -1,30 +1,120 @@
-<?php
-    require ("template/HomeownerNavBar.phtml");
-?>
-<html>
-<head>
-    <link href="/css/sharedLayout.css" rel="stylesheet">
-</head>
-<body>
-<main class="manage-container">
-    <h2 class="page-title"> Booking Request </h2>
-    <table>
-        <thead>
-            <tr>
-                <th>
+<?php require("template/CustomerNavBar.phtml"); ?>
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/shared.css">
 
-                </th>
-            </tr>
-        </thead>
-        <tbody>
+<div class="container py-5">
+    <h2 class="text-white mb-4">Incoming Booking Requests</h2>
 
-        </tbody>
-    </table>
-</main>
-</body>
-</html>
+    <!-- Filter Controls -->
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <select name="status" class="form-select" onchange="this.form.submit()">
+                <option value="all" <?= $statusFilter === 'all' ? 'selected' : '' ?>>All Statuses</option>
+                <option value="1" <?= $statusFilter === '1' ? 'selected' : '' ?>>Pending</option>
+                <option value="2" <?= $statusFilter === '2' ? 'selected' : '' ?>>Approved</option>
+                <option value="3" <?= $statusFilter === '3' ? 'selected' : '' ?>>Declined</option>
+            </select>
+        </div>
+    </form>
 
+    <?php if (empty($view->bookingRequests)): ?>
+        <div class="alert alert-light">No requests found.</div>
+    <?php else: ?>
+        <div class="row g-4">
+            <?php foreach ($view->bookingRequests as $b): ?>
+                <?php
+                $status = $b['Booking_status'];
+                $statusId = (int)$b['Booking_status_ID'];
 
-<?php
-require ("template/footer.phtml");
-?>
+                $badge = match ($status) {
+                    'Approved' => 'success',
+                    'Pending' => 'warning',
+                    'Declined' => 'danger',
+                    default => 'secondary'
+                };
+
+                $statusClass = match ($statusId) {
+                    1 => 'status-pending',
+                    2 => 'status-approved',
+                    3 => 'status-declined',
+                    default => ''
+                };
+
+                $backText = $statusId === 1 ? 'Click to change status' : 'Status is final';
+                ?>
+                <div class="col-md-4">
+                    <div class="card card-hover border-0 bg-transparent p-0 <?= $statusClass ?>" style="height: 250px;"
+                         onclick="openPopup(<?= $b['Booking_ID'] ?>, '<?= htmlspecialchars($b['Booking_start']) ?>', <?= $statusId ?>)">
+                        <div class="card-inner">
+                            <!-- Front -->
+                            <div class="card-front card-body border h-100">
+                                <h5 class="card-title"><?= htmlspecialchars($b['charger_name']) ?></h5>
+                                <p class="card-text mb-1"><strong>Start:</strong> <?= date("Y-m-d H:i", strtotime($b['Booking_start'])) ?></p>
+                                <p class="card-text mb-1"><strong>End:</strong> <?= date("Y-m-d H:i", strtotime($b['Booking_end'])) ?></p>
+                                <p class="card-text"><strong>Status:</strong> <span class="badge bg-<?= $badge ?>"><?= $status ?></span></p>
+                            </div>
+
+                            <!-- Back -->
+                            <div class="card-back d-flex justify-content-center align-items-center">
+                                <p class="m-0"><?= $backText ?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</div>
+
+<!-- Popup -->
+<div id="popup" class="popup-overlay">
+    <div class="popup-card">
+        <span class="popup-close" onclick="closePopup()">&times;</span>
+        <h5>Confirm Status Change</h5>
+        <p id="bookingTimeText"></p>
+        <form method="post" action="UpdateBookingStatus.php">
+            <input type="hidden" name="booking_id" id="popupBookingId">
+            <input type="hidden" name="status" id="popupStatus">
+
+            <div id="statusButtons" class="mb-3">
+                <button type="button" class="btn btn-success me-2" onclick="submitStatus(2)">Approve</button>
+                <button type="button" class="btn btn-danger" onclick="submitStatus(3)">Decline</button>
+            </div>
+
+            <div id="lockedMessage" class="mb-3 d-none">
+                <p class="text-muted">Status cannot be changed.</p>
+            </div>
+
+            <button type="submit" class="btn btn-primary d-none" id="confirmBtn">Confirm</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openPopup(id, startTime, statusId) {
+        document.getElementById("popupBookingId").value = id;
+        document.getElementById("popupStatus").value = '';
+        document.getElementById("bookingTimeText").textContent = `Booking starts: ${startTime}`;
+
+        if (statusId === 1) {
+            document.getElementById("statusButtons").classList.remove("d-none");
+            document.getElementById("lockedMessage").classList.add("d-none");
+        } else {
+            document.getElementById("statusButtons").classList.add("d-none");
+            document.getElementById("lockedMessage").classList.remove("d-none");
+        }
+
+        document.getElementById("popup").style.display = 'flex';
+    }
+
+    function closePopup() {
+        document.getElementById("popup").style.display = 'none';
+    }
+
+    function submitStatus(statusVal) {
+        document.getElementById("popupStatus").value = statusVal;
+        document.getElementById("confirmBtn").click();
+    }
+</script>
+
+<?php require("template/footer.phtml"); ?>

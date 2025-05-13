@@ -1,116 +1,22 @@
 <?php require("template/CustomerNavBar.phtml"); ?>
-<link rel="stylesheet" href="css/bootstrap.min.css">
-
-<style>
-    body {
-        background: linear-gradient(135deg, #00c9a7, #3f87a6);
-        min-height: 100vh;
-    }
-
-    .card-hover {
-        perspective: 1000px;
-        cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        height: 100%;
-    }
-
-    .card-hover:hover {
-        transform: scale(1.02);
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-    }
-
-    .card-inner {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        transform-style: preserve-3d;
-        transition: transform 0.6s;
-    }
-
-    .card-hover:hover .card-inner {
-        transform: rotateY(180deg);
-    }
-
-    .card-front, .card-back {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        padding: 15px;
-        border-radius: 12px;
-        backface-visibility: hidden;
-        box-sizing: border-box;
-    }
-
-    .card-front {
-        background-color: #fff;
-        z-index: 2;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-    }
-
-    .card-back {
-        background: #007b8f;
-        color: #fff;
-        transform: rotateY(180deg);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1;
-    }
-
-    .popup-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-    }
-
-    .popup-card {
-        background: #fff;
-        border-radius: 12px;
-        max-width: 500px;
-        width: 90%;
-        padding: 20px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        position: relative;
-    }
-
-    .popup-close {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        cursor: pointer;
-        font-size: 1.2rem;
-        color: #000;
-    }
-</style>
 
 <div class="container py-5">
     <h2 class="text-white mb-4">My Booking Requests</h2>
 
+    <!-- Filters -->
     <form method="get" class="row g-3 mb-4">
         <div class="col-md-4">
             <select name="status" class="form-select">
                 <option value="">Filter by Status</option>
-                <option value="Pending">Pending</option>
-                <option value="Approved">Approved</option>
-                <option value="Declined">Declined</option>
+                <option value="1" <?= $_GET['status'] ?? '' === '1' ? 'selected' : '' ?>>Pending</option>
+                <option value="2" <?= $_GET['status'] ?? '' === '2' ? 'selected' : '' ?>>Approved</option>
+                <option value="3" <?= $_GET['status'] ?? '' === '3' ? 'selected' : '' ?>>Declined</option>
             </select>
         </div>
         <div class="col-md-4">
             <select name="sort" class="form-select">
-                <option value="newest">Sort by Newest</option>
-                <option value="oldest">Sort by Oldest</option>
+                <option value="newest" <?= $_GET['sort'] ?? '' === 'newest' ? 'selected' : '' ?>>Sort by Newest</option>
+                <option value="oldest" <?= $_GET['sort'] ?? '' === 'oldest' ? 'selected' : '' ?>>Sort by Oldest</option>
             </select>
         </div>
         <div class="col-md-4">
@@ -118,45 +24,68 @@
         </div>
     </form>
 
+    <!-- Booking Cards -->
     <?php if (empty($view->bookings)): ?>
         <div class="alert alert-light">No bookings found.</div>
     <?php else: ?>
         <div class="row g-4">
             <?php foreach ($view->bookings as $b): ?>
                 <?php
-                $status = $b['Booking_status'];
-                $badge = match($status) {
-                    'Approved' => 'success',
-                    'Pending' => 'warning',
-                    'Declined' => 'danger',
+                $statusId = (int) $b['Booking_status_ID'];
+                $statusText = $b['Booking_status'];
+                $badge = match ($statusId) {
+                    1 => 'warning',
+                    2 => 'success',
+                    3 => 'danger',
                     default => 'secondary'
                 };
+                $statusClass = match ($statusId) {
+                    1 => 'status-pending',
+                    2 => 'status-approved',
+                    3 => 'status-declined',
+                    default => ''
+                };
+
+                $start = new DateTime($b['Booking_start']);
+                $end   = new DateTime($b['Booking_end']);
+                $duration = $start->diff($end);
+                $kwh = $duration->h + ($duration->i >= 30 ? 1 : 0);
+                $cost = number_format($kwh * $b['Price_per_kwatt'], 2);
                 ?>
                 <div class="col-md-4">
-                    <div class="card card-hover w-100 border-0 bg-transparent p-0" style="height: 270px;" onclick="loadChargerDetails(<?= $b['Charger_point_Charger_point_ID'] ?>)">
+                    <div class="card card-hover bg-transparent border-0 p-0 <?= $statusClass ?>" onclick="loadChargerDetails(<?= $b['Charger_point_ID'] ?>)">
                         <div class="card-inner">
+                            <!-- Front -->
                             <div class="card-front card-body border">
-                                <h5 class="card-title">Booking on <?= date("Y-m-d", strtotime($b['Booking_start'])) ?></h5>
-                                <p class="card-text mb-1"><strong>Start:</strong> <?= date("H:i", strtotime($b['Booking_start'])) ?></p>
-                                <p class="card-text mb-1"><strong>End:</strong> <?= date("H:i", strtotime($b['Booking_end'])) ?></p>
-                                <p class="card-text mb-1"><strong>Status:</strong> <span class="badge bg-<?= $badge ?>"><?= $status ?></span></p>
-                                <p class="card-text mb-1"><strong>kWh:</strong> <?= $b['Amount_of_KW'] ?></p>
-                                <p class="card-text"><strong>Cost:</strong> <?= number_format($b['Amount_of_KW'] * $b['Price_per_KWh'], 2) ?> BD</p>
+                                <h5 class="card-title">⚡ Booking on <?= $start->format('Y-m-d') ?></h5>
+                                <p class="card-text"><strong>Start:</strong> <?= $start->format('H:i') ?></p>
+                                <p class="card-text"><strong>End:</strong> <?= $end->format('H:i') ?></p>
+                                <p class="card-text">
+                                    <strong>Status:</strong>
+                                    <span class="badge bg-<?= $badge ?>"><?= strtoupper($statusText) ?></span>
+                                </p>
+                                <p class="card-text"><strong>kWh:</strong> <?= $kwh ?></p>
+                                <p class="card-text"><strong>Cost:</strong> <?= $cost ?> BD</p>
                             </div>
+
+                            <!-- Back -->
                             <div class="card-back">
                                 <p class="m-0">Click to view Charger Point Details</p>
                             </div>
                         </div>
                     </div>
                 </div>
+
             <?php endforeach; ?>
         </div>
 
+
+        <!-- Pagination -->
         <nav class="mt-4">
             <ul class="pagination justify-content-center">
                 <?php if ($view->currentPage > 1): ?>
                     <li class="page-item">
-                        <a class="page-link" href="?page=<?= $view->currentPage - 1 ?>&status=<?= $status ?>&sort=<?= $sort ?>">Previous</a>
+                        <a class="page-link" href="?page=<?= $view->currentPage - 1 ?>&status=<?= $_GET['status'] ?? '' ?>&sort=<?= $_GET['sort'] ?? '' ?>">Previous</a>
                     </li>
                 <?php else: ?>
                     <li class="page-item disabled"><span class="page-link">Previous</span></li>
@@ -164,13 +93,13 @@
 
                 <?php for ($i = 1; $i <= $view->totalPages; $i++): ?>
                     <li class="page-item <?= $i === $view->currentPage ? 'active' : '' ?>">
-                        <a class="page-link" href="?page=<?= $i ?>&status=<?= $status ?>&sort=<?= $sort ?>"><?= $i ?></a>
+                        <a class="page-link" href="?page=<?= $i ?>&status=<?= $_GET['status'] ?? '' ?>&sort=<?= $_GET['sort'] ?? '' ?>"><?= $i ?></a>
                     </li>
                 <?php endfor; ?>
 
                 <?php if ($view->currentPage < $view->totalPages): ?>
                     <li class="page-item">
-                        <a class="page-link" href="?page=<?= $view->currentPage + 1 ?>&status=<?= $status ?>&sort=<?= $sort ?>">Next</a>
+                        <a class="page-link" href="?page=<?= $view->currentPage + 1 ?>&status=<?= $_GET['status'] ?? '' ?>&sort=<?= $_GET['sort'] ?? '' ?>">Next</a>
                     </li>
                 <?php else: ?>
                     <li class="page-item disabled"><span class="page-link">Next</span></li>
