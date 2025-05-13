@@ -18,8 +18,8 @@ $view->pageTitle = "Book a Charger Point";
 //    exit();
 //}
 
-//$cpId = $_GET['id'];
-$cpId =3;
+$cpId = $_GET['id'];
+//$cpId =3;
 $chargerPointSet = new chargerPointDataSet();
 $view->chargerPoint = $chargerPointSet->fetchChargerPointById($cpId);
 

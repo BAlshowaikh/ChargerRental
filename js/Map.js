@@ -48,12 +48,34 @@ if (navigator.geolocation) {
 }
 
 // Fetch charger data using XMLHttpRequest
-function loadMapChargers() {
-    const filters = getFilters();
+// function loadMapChargers() {
+//     const filters = getFilters();
+//     const query = new URLSearchParams({
+//         action: 'getChargers',
+//         mode: 'map',
+//         max_price: filters.max_price,
+//         availability: filters.availability
+//     }).toString();
+//
+//     const xhr = new XMLHttpRequest();
+//     xhr.open('GET', `/SearchChargePoints.php?${query}`, true);
+//     xhr.responseType = 'json';
+//
+//     xhr.onload = function () {
+//         if (xhr.status === 200) {
+//             const chargers = xhr.response.chargers;
+//             allChargers = chargers;
+//             displayChargers(allChargers);
+//         }
+//     };
+//     xhr.send();
+// }
+
+function loadMapChargers(filters) {
     const query = new URLSearchParams({
         action: 'getChargers',
         mode: 'map',
-        max_price: filters.max_price,
+        max_price: filters.maxPrice,
         availability: filters.availability
     }).toString();
 
@@ -159,7 +181,7 @@ function loadChargerList(page = 1) {
 <div class="col-md-4 mb-4">
     <div class="card-list shadow h-100 card-hover" data-id="${charger.charger_point_id}">
         <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
-            <img src="/images/ChargerPoints/${charger.charger_image_url}" alt="${charger.Name}" class="img-fluid" style="max-height: 100%; max-width: 100%;">
+            <img src="/images/ChargerPoints/${charger.charger_image_url}.jpg" alt="${charger.Name}" class="img-fluid" style="max-height: 100%; max-width: 100%;">
         </div>
         <div class="card-body d-flex flex-column justify-content-between">
             <h5 class="card-title fw-bold">${charger.Name}</h5>
@@ -226,12 +248,20 @@ function toRad(deg) {
 }
 
 // Create a function to collect filters from the UI:
+// function getFilters() {
+//     return {
+//         max_price: document.getElementById('priceRange').value,
+//         availability: document.getElementById('availability').value,
+//     };
+// }
+
 function getFilters() {
     return {
-        max_price: document.getElementById('priceRange').value,
-        availability: document.getElementById('availability').value,
+        max_price: parseFloat(document.getElementById('priceRange').value),
+        availability: document.getElementById('availability').value
     };
 }
+
 
 $(document).ready(function () {
     // Restore or initialize filter state
