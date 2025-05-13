@@ -14,7 +14,7 @@ $view->pageTitle = "My Booking Requests";
 // }
 
 // $userId = $_SESSION['user']->getUserId();
-$userId = 2;
+$userId = 123;
 
 // GET filters and pagination
 $status = $_GET['status'] ?? '';
