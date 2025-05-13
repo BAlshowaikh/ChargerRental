@@ -15,27 +15,25 @@ if (!isset($_SESSION['view'])) {
 // Handle AJAX request
 if (isset($_GET['action']) && $_GET['action'] === 'getChargers') {
     header('Content-Type: application/json');
+
     $chargerDataSet = new chargerPointDataSet();
 
     try {
         $mode = $_GET['mode'] ?? 'list';
 
-        // Extract filters
-        $filters = [
-            'max_price' => $_GET['max_price'] ?? null,
-            'availability' => $_GET['availability'] ?? null
-        ];
-
         if ($mode === 'map') {
-            $chargers = $chargerDataSet->fetchFilteredChargerPoints($filters);
+            // Return all charger points (for map)
+            $chargers = $chargerDataSet->fetchAllDetailedChargerPoints();
             echo json_encode(['chargers' => $chargers]);
+
         } elseif ($mode === 'list') {
+            // Return paginated results (for list view)
             $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
             $limit = 6;
             $offset = ($page - 1) * $limit;
 
-            $chargers = $chargerDataSet->fetchFilteredChargerPoints($filters, $limit, $offset);
-            $totalCount = $chargerDataSet->getFilteredChargerCount($filters);
+            $chargers = $chargerDataSet->fetchDetailedChargerPointsPaginated($limit, $offset);
+            $totalCount = $chargerDataSet->getTotalChargerCount();
             $totalPages = ceil($totalCount / $limit);
 
             echo json_encode([
@@ -43,7 +41,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'getChargers') {
                 'totalPages' => $totalPages,
                 'currentPage' => $page
             ]);
+        } else {
+            throw new Exception("Invalid mode.");
         }
+
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(["error" => "Failed to load data", "details" => $e->getMessage()]);

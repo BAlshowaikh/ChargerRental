@@ -21,8 +21,19 @@ class chargerPointDataSet
 
         $dataSet = [];
 
-        while ($row = $statement->fetch()) {
-            $dataSet[] = new chargerPointData($row);
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            // Update field names to match the data class column names
+            $dataSet[] = new chargerPointData([
+                'charger_point_id' => $row['charger_point_id'],
+                'Name' => $row['Name'],
+                'charger_point_description' => $row['charger_point_description'],
+                'price_per_kwatt' => $row['price_per_kwatt'],
+                'connector_type' => $row['connector_type'],
+                'charger_image_url' => $row['charger_image_url'],
+                'available_status_id' => $row['available_status_id'],
+                'user_id' => $row['user_id'],
+                'location_id' => $row['location_id']
+            ]);
         }
 
         return $dataSet;
@@ -30,13 +41,24 @@ class chargerPointDataSet
 
     public function fetchChargerPointById($id)
     {
-        $sqlQuery = 'SELECT * FROM Charger_point WHERE Charger_point_ID = :id';
+        $sqlQuery = 'SELECT * FROM Charger_point WHERE charger_point_id = :id';
         $statement = $this->_dbHandle->prepare($sqlQuery);
         $statement->bindParam(':id', $id);
         $statement->execute();
 
-        if ($row = $statement->fetch()) {
-            return new chargerPointData($row);
+        if ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            // Update field names to match the data class column names
+            return new chargerPointData([
+                'charger_point_id' => $row['charger_point_id'],
+                'Name' => $row['Name'],
+                'charger_point_description' => $row['charger_point_description'],
+                'price_per_kwatt' => $row['price_per_kwatt'],
+                'connector_type' => $row['connector_type'],
+                'charger_image_url' => $row['charger_image_url'],
+                'available_status_id' => $row['available_status_id'],
+                'user_id' => $row['user_id'],
+                'location_id' => $row['location_id']
+            ]);
         }
 
         return null;
@@ -44,39 +66,50 @@ class chargerPointDataSet
 
     public function fetchChargerPointsByUserId($userId)
     {
-        $sqlQuery = 'SELECT * FROM Charger_point WHERE User_user_ID = :userId';
+        $sqlQuery = 'SELECT * FROM Charger_point WHERE user_id = :userId';
         $statement = $this->_dbHandle->prepare($sqlQuery);
         $statement->bindParam(':userId', $userId);
         $statement->execute();
 
         $dataSet = [];
 
-        while ($row = $statement->fetch()) {
-            $dataSet[] = new chargerPointData($row);
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            // Update field names to match the data class column names
+            $dataSet[] = new chargerPointData([
+                'charger_point_id' => $row['charger_point_id'],
+                'Name' => $row['Name'],
+                'charger_point_description' => $row['charger_point_description'],
+                'price_per_kwatt' => $row['price_per_kwatt'],
+                'connector_type' => $row['connector_type'],
+                'charger_image_url' => $row['charger_image_url'],
+                'available_status_id' => $row['available_status_id'],
+                'user_id' => $row['user_id'],
+                'location_id' => $row['location_id']
+            ]);
         }
 
         return $dataSet;
     }
 
-    // Function to retrieve the chrager points details
-
     public function fetchAllDetailedChargerPoints()
     {
         $sql = "
-        SELECT 
-          cp.Name,
-          cp.Charger_point_ID,
-          cp.Charger_point_description,
-          cp.Price_per_kWatt,
-          cp.Connector_type,
-          cp.Rating,
-          cp.Charger_image_url,
-          l.Latitude, 
-          l.Longitude,
-          a.Available_status AS Availability_status
-        FROM Charger_point cp
-        JOIN Location l ON cp.Location_Location_ID = l.Location_ID
-        JOIN Available_status a ON cp.Available_status_Available_ID = a.Available_ID
+    SELECT 
+        cp.charger_point_id AS charger_point_id,
+        cp.Name AS Name,
+        cp.charger_point_description AS charger_point_description,
+        cp.price_per_kwatt AS price_per_kwatt,
+        cp.connector_type AS connector_type,
+        cp.charger_image_url AS charger_image_url,
+        cp.available_status_id AS available_status_id,
+        cp.user_id AS user_id,
+        cp.location_id AS location_id,
+        l.Latitude AS Latitude,
+        l.Longitude AS Longitude,
+        a.Available_status AS Available_status
+    FROM Charger_point cp
+    JOIN Location l ON cp.location_id = l.location_id
+    JOIN Available_status a ON cp.available_status_id = a.available_id
     ";
 
         $statement = $this->_dbHandle->prepare($sql);
@@ -85,25 +118,26 @@ class chargerPointDataSet
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Code for pagination
     public function fetchDetailedChargerPointsPaginated($limit, $offset)
     {
         $sql = "
-        SELECT 
-            cp.Name,
-            cp.Charger_point_ID,
-            cp.Charger_point_description,
-            cp.Price_per_kWatt,
-            cp.Connector_type,
-            cp.Rating,
-            cp.Charger_image_url,
-            l.Latitude, 
-            l.Longitude,
-            a.Available_status AS Availability_status
-        FROM Charger_point cp
-        JOIN Location l ON cp.Location_Location_ID = l.Location_ID
-        JOIN Available_status a ON cp.Available_status_Available_ID = a.Available_ID
-        LIMIT :limit OFFSET :offset
+    SELECT 
+        cp.charger_point_id AS charger_point_id,
+        cp.Name AS Name,
+        cp.charger_point_description AS charger_point_description,
+        cp.price_per_kwatt AS price_per_kwatt,
+        cp.connector_type AS connector_type,
+        cp.charger_image_url AS charger_image_url,
+        cp.available_status_id AS available_status_id,
+        cp.user_id AS user_id,
+        cp.location_id AS location_id,
+        l.Latitude AS Latitude,
+        l.Longitude AS Longitude,
+        a.Available_status AS Available_status
+    FROM Charger_point cp
+    JOIN Location l ON cp.location_id = l.location_id
+    JOIN Available_status a ON cp.available_status_id = a.available_id
+    LIMIT :limit OFFSET :offset
     ";
 
         $statement = $this->_dbHandle->prepare($sql);
@@ -121,86 +155,5 @@ class chargerPointDataSet
         $statement->execute();
         return $statement->fetch(PDO::FETCH_ASSOC)['total'];
     }
-
-    public function fetchFilteredChargerPoints($filters, $limit = null, $offset = null) {
-        $sql = "
-        SELECT 
-            cp.Name,
-            cp.Charger_point_ID,
-            cp.Charger_point_description,
-            cp.Price_per_kWatt,
-            cp.Connector_type,
-            cp.Rating,
-            cp.Charger_image_url,
-            l.Latitude, 
-            l.Longitude,
-            a.Available_status AS Availability_status
-        FROM Charger_point cp
-        JOIN Location l ON cp.Location_Location_ID = l.Location_ID
-        JOIN Available_status a ON cp.Available_status_Available_ID = a.Available_ID
-        WHERE 1=1
-    ";
-
-        $params = [];
-
-        if (isset($filters['max_price'])) {
-            $sql .= " AND cp.Price_per_kWatt <= :max_price";
-            $params[':max_price'] = $filters['max_price'];
-        }
-
-        if (!empty($filters['availability'])) {
-            $sql .= " AND a.Available_status = :availability";
-            $params[':availability'] = $filters['availability'];
-        }
-
-        if (isset($limit) && isset($offset)) {
-            $sql .= " LIMIT :limit OFFSET :offset";
-        }
-
-        $statement = $this->_dbHandle->prepare($sql);
-
-        foreach ($params as $key => $value) {
-            $statement->bindValue($key, $value);
-        }
-
-        if (isset($limit) && isset($offset)) {
-            $statement->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
-            $statement->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-        }
-
-        $statement->execute();
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-
-    public function getFilteredChargerCount($filters) {
-        $sql = "
-        SELECT COUNT(*) as total
-        FROM Charger_point cp
-        JOIN Available_status a ON cp.Available_status_Available_ID = a.Available_ID
-        WHERE 1=1
-    ";
-
-        $params = [];
-
-        if (isset($filters['max_price'])) {
-            $sql .= " AND cp.Price_per_kWatt <= :max_price";
-            $params[':max_price'] = $filters['max_price'];
-        }
-
-        if (!empty($filters['availability'])) {
-            $sql .= " AND a.Available_status = :availability";
-            $params[':availability'] = $filters['availability'];
-        }
-
-        $statement = $this->_dbHandle->prepare($sql);
-
-        foreach ($params as $key => $value) {
-            $statement->bindValue($key, $value);
-        }
-
-        $statement->execute();
-        return $statement->fetch(PDO::FETCH_ASSOC)['total'];
-    }
-
 }
+

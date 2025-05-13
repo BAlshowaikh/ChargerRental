@@ -75,7 +75,6 @@ function loadMapChargers() {
 // The below code is map view
 // Display markers for all chargers
 function displayChargers(chargers) {
-    // Clear previous markers
     chargerMarkers.forEach(marker => map.removeLayer(marker));
     chargerMarkers = [];
 
@@ -87,9 +86,9 @@ function displayChargers(chargers) {
             const marker = L.marker([lat, lng], { icon: chargerIcon })
                 .addTo(map)
                 .bindPopup(`
-                    <strong>ID:</strong> ${point.Charger_point_ID}<br>
-                    <strong>Type:</strong> ${point.Connector_type}<br>
-                    <strong>Price:</strong> ${point.Price_per_kWatt} BD
+                    <strong>ID:</strong> ${point.charger_point_id}<br>
+                    <strong>Type:</strong> ${point.connector_type}<br>
+                    <strong>Price:</strong> ${point.price_per_kwatt} BD
                 `);
 
             marker.on('click', () => displayChargerDetails(point));
@@ -104,32 +103,26 @@ function displayChargerDetails(point) {
     const message = document.getElementById('select-message');
     const bookBtnContainer = document.getElementById('book-button-container');
 
-    if (message) {
-        message.style.display = 'none';
-    }
-
-    if (bookBtnContainer) {
-        bookBtnContainer.classList.remove('d-none');
-    }
+    if (message) message.style.display = 'none';
+    if (bookBtnContainer) bookBtnContainer.classList.remove('d-none');
 
     detailsCard.innerHTML = `
     <div class="d-flex flex-column h-100">
-        <h5 class="mb-2">Charger ID: ${point.Charger_point_ID}</h5>
+        <h5 class="mb-2">Charger ID: ${point.charger_point_id}</h5>
         <ul class="card-details mb-4">
             <li><strong>Name:</strong> ${point.Name}</li>
-            <li><strong>Description:</strong> ${point.Charger_point_description}</li>
-            <li><strong>Price per kWatt:</strong> ${point.Price_per_kWatt} BD</li>
-            <li><strong>Availability:</strong> ${point.Availability_status}</li>
-            <li><strong>Connector Type:</strong> ${point.Connector_type}</li>
-            <li><strong>Rating:</strong> ${point.Rating} / 5</li>
+            <li><strong>Description:</strong> ${point.charger_point_description}</li>
+            <li><strong>Price per kWatt:</strong> ${point.price_per_kwatt} BD</li>
+            <li><strong>Availability:</strong> ${point.Available_status}</li>
+            <li><strong>Connector Type:</strong> ${point.connector_type}</li>
         </ul>
         <div class="mt-auto d-flex justify-content-center">
-            <a href="BookChargePoints.php?id=${point.Charger_point_ID}" 
+            <a href="BookChargePoints.php?id=${point.charger_point_id}" 
                class="add-btn w-75 py-2 text-center">Book now</a>
         </div>
-    </div>
-`;
+    </div>`;
 }
+
 
 // The below code is for List View
 // Function to render the charger points in the list view
@@ -164,26 +157,26 @@ function loadChargerList(page = 1) {
             chargers.forEach(function (charger) {
                 html += `
 <div class="col-md-4 mb-4">
-    <div class="card-list shadow h-100 card-hover" data-id="${charger.Charger_point_ID}">
+    <div class="card-list shadow h-100 card-hover" data-id="${charger.charger_point_id}">
         <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
-            <img src="/images/ChargerPoints/${charger.Charger_image_url}" alt="${charger.Name}" class="img-fluid" style="max-height: 100%; max-width: 100%;">
+            <img src="/images/ChargerPoints/${charger.charger_image_url}" alt="${charger.Name}" class="img-fluid" style="max-height: 100%; max-width: 100%;">
         </div>
         <div class="card-body d-flex flex-column justify-content-between">
             <h5 class="card-title fw-bold">${charger.Name}</h5>
-            <p class="card-text">${charger.Charger_point_description}</p>
+            <p class="card-text">${charger.charger_point_description}</p>
             <ul class="list-unstyled small">
-                <li><strong>Price:</strong> $${charger.Price_per_kWatt}/kWh</li>
-                <li><strong>Connector:</strong> ${charger.Connector_type}</li>
-                <li><strong>Status:</strong> ${charger.Availability_status}</li>
-                <li><strong>Rating:</strong> ${charger.Rating}</li>
+                <li><strong>Price:</strong> ${charger.price_per_kwatt} BD/kWh</li>
+                <li><strong>Connector:</strong> ${charger.connector_type}</li>
+                <li><strong>Status:</strong> ${charger.Available_status}</li>
             </ul>
             <div class="d-flex justify-content-center">
-                <a href="BookChargePoints.php?id=${charger.Charger_point_ID}" class="add-btn w-50 py-1 d-flex justify-content-center align-items-center mb-3">Book Now</a>
+                <a href="BookChargePoints.php?id=${charger.charger_point_id}" class="add-btn w-50 py-1 d-flex justify-content-center align-items-center mb-3">Book Now</a>
             </div>
         </div>
     </div>
 </div>`;
             });
+
 
             chargerList.innerHTML = html;
 

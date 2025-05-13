@@ -6,20 +6,20 @@ require_once("Models/chargerPointDataSet.php");
 $view = new stdClass();
 $view->pageTitle = "Book a Charger Point";
 
- //Redirect to login if not logged in
+//Redirect to login if not logged in
 //if (!isset($_SESSION['user'])) {
 //    header("Location: Login.php");
 //    exit();
 //}
 
 // Get the charger point ID from query string
-if (!isset($_GET['id'])) {
-    echo "Invalid access: Charger Point ID is required.";
-    exit();
-}
+//if (!isset($_GET['id'])) {
+//    echo "Invalid access: Charger Point ID is required.";
+//    exit();
+//}
 
-$cpId = $_GET['id'];
-//$cpId =3;
+//$cpId = $_GET['id'];
+$cpId =3;
 $chargerPointSet = new chargerPointDataSet();
 $view->chargerPoint = $chargerPointSet->fetchChargerPointById($cpId);
 
