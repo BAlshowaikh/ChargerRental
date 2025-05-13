@@ -6,7 +6,7 @@
         <!-- Search Form -->
         <div class="search-form-container">
             <form method="GET" class="search-form">
-                <input type="text" name="search" value="<?= htmlspecialchars($view->searchTerm) ?>" placeholder="Search by name or ID...">
+                <input type="text" name="search" value="<?= isset($view->searchTerm) ? htmlspecialchars($view->searchTerm) : '' ?>" placeholder="Search by name or ID...">
 
                 <select name="role">
                     <option value="">All Roles</option>
@@ -50,7 +50,7 @@
                             <td><?= htmlspecialchars($user->getUserId()) ?></td>
                             <td><?= htmlspecialchars($user->getFirstName()) ?></td>
                             <td><?= htmlspecialchars($user->getLastName()) ?></td>
-                            <td><?= htmlspecialchars($user->getUserRoleName()) ?></td> <!-- Use existing method -->
+                            <td><?= htmlspecialchars($user->getUserRoleName()) ?></td>
                             <td style="text-align: center;">
                                 <form method="POST" class="action-form">
                                     <input type="hidden" name="userId" value="<?= $user->getUserId() ?>">
@@ -64,7 +64,7 @@
                                             <button type="submit" name="action" value="suspend" class="btn delete-btn py-1">Suspend</button>
                                         <?php endif; ?>
                                         <?php if ($user->getUserRoleId() === 2): ?>
-                                            <a href="#" class="btn add-btn py-1">View Charge Points</a>
+                                            <a href="ManageChargePoints.php?userId=<?= htmlspecialchars($user->getUserId()) ?>" class="btn add-btn py-1">View Charge Points</a>
                                         <?php endif; ?>
                                     <?php elseif ($user->getUserStatus() === "Suspend"): ?>
                                         <button type="submit" name="action" value="unsuspend" class="btn add-btn py-1">Unsuspend</button>
@@ -109,7 +109,7 @@
             document.querySelector('input[name="search"]').value = '';
             document.querySelector('select[name="role"]').selectedIndex = 0;
             document.querySelector('select[name="status"]').selectedIndex = 0;
-            document.querySelector('.search-form').submit();
+            document.querySelector('.search-form').submit(); // Submit the form to refresh the user list
         }
     </script>
 
