@@ -5,7 +5,7 @@ require_once 'Models/chargerPointData.php';
 session_start();
 
 // TEMPORARY - manually fake login session
-$_SESSION['userID'] = 3; // Replace with your test user ID
+$_SESSION['userID'] = 4; // Replace with your test user ID
 
 
 //Check if user is logged in

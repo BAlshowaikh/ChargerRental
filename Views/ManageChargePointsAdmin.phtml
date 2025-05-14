@@ -10,9 +10,13 @@
                 <div class="card">
                     <div class="card-section card-image">
                         <?php if (!empty($point->getImageUrl())): ?>
-                            <img src="<?= htmlspecialchars($point->getImageUrl()) ?>" alt="Charger Image" class="card-img">
+                            <img
+                                    src="/images/ChargerPoints/<?= htmlspecialchars($point->getImageUrl()) ?>.jpg"
+                                    alt="Charger Image"
+                                    class="card-img"
+                                    onerror="this.src='/images/profileicon.png';">
                         <?php else: ?>
-                            <p class="no-img">No Image</p>
+                            <div class="no-img">No Image</div>
                         <?php endif; ?>
                     </div>
 
@@ -36,8 +40,6 @@
                             <button class="btn delete-btn" onclick="openDeleteModal(<?= $point->getId() ?>)">Delete</button>
                         </div>
                     </div>
-
-
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
@@ -59,21 +61,12 @@
             </form>
         </div>
     </div>
-
-
 </main>
-
-<script>
-    function toggleDetails(button) {
-        const details = button.closest('.card').querySelector('.card-details');
-        details.style.display = (details.style.display === 'none' || details.style.display === '') ? 'block' : 'none';
-    }
-</script>
 
 <script>
     function openDeleteModal(id) {
         document.getElementById('deleteChargerId').value = id;
-        document.getElementById('deleteModal').style.display = 'block';
+        document.getElementById('deleteModal').style.display = 'grid';
     }
 
     function closeDeleteModal() {
@@ -81,6 +74,7 @@
     }
 </script>
 
+<?php require_once 'template/footer.phtml'; ?>
 
 <style>
     .manage-container {
@@ -101,26 +95,27 @@
 
     .card-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 30px;
-        justify-items: center;
+        justify-content: center;
+        padding: 0 20px;
     }
 
 
     .card {
-        background-color: #fff;
-        border: 3px solid #2e4a68;
-        border-radius: 16px;
-        padding: 20px;
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
         align-items: center;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        padding-bottom: 20px;
-        width: 100%;
-        max-width: 500px;
-
+        padding: 20px;
+        background-color: #fff;
+        border: 2px solid #003b5c;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        max-width: 480px;
+        height: auto; /* Let it grow with content */
     }
+
 
     .card {
         transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -129,6 +124,7 @@
         background-color: #fff;
         padding: 20px;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
     }
 
     .card:hover {
@@ -139,12 +135,15 @@
 
     .card-img {
         width: 100%;
-        height: 150px;
+        max-width: 160px;
+        height: 160px;
         object-fit: contain;
-        border: 1px solid #ccc;
         border-radius: 8px;
-        margin-bottom: 10px;
+        margin: 0 auto 12px auto;
+        display: block;
     }
+
+
 
     .no-img {
         height: 150px;
@@ -165,9 +164,11 @@
     }
 
     .card-details {
-        font-size: 14px;
         width: 100%;
+        text-align: left;
+        padding: 0 10px;
     }
+
 
     .card-details p {
         margin: 4px 0;
