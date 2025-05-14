@@ -497,3 +497,11 @@ footer {
         width: 100%; /* Full width on small screens */
     }
 }
+
+.visualization-container {
+    background-color: white; /* White background */
+    padding: 20px;          /* Padding around the content */
+    border-radius: 8px;     /* Optional: rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+    margin: 20px;           /* Margin around the container */
+}

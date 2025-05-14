@@ -145,4 +145,41 @@ class bookingRequestDataSet
         $statement->bindParam(':id', $bookingId);
         $statement->execute();
     }
+
+    public function getBookingsByMonth($attribute, $month) {
+        $query = "SELECT * FROM Booking_request WHERE MONTH($attribute) = :month";
+        $stmt = $this->_dbHandle->prepare($query);
+        $stmt->bindParam(':month', $month, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getBookingsGroupedByChargerID() {
+        $stmt = $this->_dbHandle->query("SELECT Charger_point_ID, COUNT(*) AS num_requests, AVG(Price_per_kwatt) AS avg_price FROM Booking_request GROUP BY Charger_point_ID");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getBookingsGroupedByUserID() {
+        $stmt = $this->_dbHandle->query("SELECT User_ID, COUNT(*) AS num_requests FROM Booking_request GROUP BY User_ID");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getBookingsGroupedByStatusID() {
+        $stmt = $this->_dbHandle->query("SELECT Booking_status_ID, COUNT(*) AS num_requests FROM Booking_request GROUP BY Booking_status_ID");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getUniqueMonths() {
+        $stmt = $this->_dbHandle->query("SELECT DISTINCT MONTH(Created_timestamp) AS month FROM Booking_request ORDER BY month");
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function getRequestsCountByPrice() {
+        $stmt = $this->_dbHandle->query("
+        SELECT ROUND(Price_per_kwatt, 2) AS rounded_price, COUNT(*) AS num_requests 
+        FROM Booking_request 
+        GROUP BY rounded_price
+    ");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

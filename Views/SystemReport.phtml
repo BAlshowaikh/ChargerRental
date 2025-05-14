@@ -1,0 +1,69 @@
+<?php require_once 'template/HomeownerNavBar.phtml'; ?>
+<link rel="stylesheet" href="/css/sharedLayout.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<main class="manage-users-container">
+    <h2 class="page-title">View Booking Requests</h2>
+
+    <form method="POST" class="search-form">
+        <label for="attribute">Select Attribute:</label>
+        <select name="attribute" id="attribute" required onchange="this.form.submit()">
+            <option value="">--Select an Attribute--</option>
+            <?php foreach ($view->attributes as $attribute): ?>
+                <option value="<?= htmlspecialchars($attribute) ?>" <?= $attribute === $view->selectedAttribute ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($attribute) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <?php if (in_array($view->selectedAttribute, ['Created_timestamp', 'Booking_start', 'Booking_end'])): ?>
+            <label for="month">Select Month:</label>
+            <select name="month" id="month" required>
+                <option value="">--Select Month--</option>
+                <?php foreach ($view->months as $month): ?>
+                    <option value="<?= htmlspecialchars($month) ?>" <?= $month == $view->selectedMonth ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($month) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        <?php endif; ?>
+
+        <button type="submit">View Data</button>
+    </form>
+
+    <?php if (!empty($view->barData)): ?>
+        <h3>Visualization</h3>
+        <div id="bar-chart" class="visualization-container">
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const data = <?= json_encode($view->barData) ?>;
+
+                    const ctx = document.createElement('canvas');
+                    document.getElementById('bar-chart').appendChild(ctx);
+                    const myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: Object.keys(data),
+                            datasets: [{
+                                label: 'Number of Requests',
+                                data: Object.values(data),
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                });
+            </script>
+        </div>
+    <?php else: ?>
+        <p>No data available for the selected criteria.</p>
+    <?php endif; ?>
+</main>
