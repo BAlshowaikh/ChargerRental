@@ -1,74 +1,86 @@
 <?php require_once 'template/HomeownerNavBar.phtml'; ?>
 
-
-
 <main class="manage-container">
     <h2 class="page-title">Charger Point Details</h2>
 
     <?php if (isset($chargePoint)): ?>
         <form id="editForm" method="post" action="updateChargePoint.php">
             <input type="hidden" name="charger_id" value="<?= htmlspecialchars($chargePoint->getId()) ?>">
-            <div class="card">
-                <div class="card-section card-image">
-                    <small style="color: gray;">Image Path: <?= $chargePoint->getImageUrl() ?></small>
 
-                    <?php if (!empty($chargePoint->getImageUrl())): ?>
-                        <img class="charger-img"
-                             src="<?= htmlspecialchars($chargePoint->getImageUrl()) ?>"
+            <div class="card redesigned">
+                <div class="card-body">
+                    <!-- LEFT: Details -->
+                    <div class="card-left">
+                        <div class="info-grid">
+                            <div class="label">Name:</div>
+                            <div class="value">
+                                <input type="text" name="name" class="editable-field" value="<?= htmlspecialchars($chargePoint->getName()) ?>" readonly>
+                            </div>
+
+                            <div class="label">Description:</div>
+                            <div class="value">
+                                <textarea name="description" class="editable-field" rows="2" readonly><?= htmlspecialchars($chargePoint->getDescription()) ?></textarea>
+                            </div>
+
+                            <div class="label">Cost per kWh:</div>
+                            <div class="value">
+                                <input type="number" name="cost_per_kwh" class="editable-field" step="0.01" value="<?= htmlspecialchars($chargePoint->getPricePerKW()) ?>" readonly>
+                            </div>
+
+                            <div class="label">Connector Type:</div>
+                            <div class="value">
+                                <input type="text" name="connector_type" class="editable-field" value="<?= htmlspecialchars($chargePoint->getConnectorType()) ?>" readonly>
+                            </div>
+
+                            <div class="label">Image Filename:</div>
+                            <div class="value">
+                                <input type="text" name="image_url" class="editable-field" value="<?= htmlspecialchars($chargePoint->getImageUrl()) ?>" readonly>
+                            </div>
+
+                        </div>
+
+                        <!-- BUTTONS: Now inside card-body -->
+                        <div class="card-actions">
+                            <button type="button" id="editBtn" class="btn" onclick="enableEditMode()">Edit</button>
+                            <button type="submit" id="saveBtn" class="btn" style="display:none;">Save</button>
+                            <button type="button" id="cancelBtn" class="btn cancel-btn" onclick="cancelEditMode()" style="display:none;">Cancel</button>
+                            <button type="button" class="btn delete-btn" onclick="confirmDelete()">Delete</button>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: Image -->
+                    <div class="card-right">
+                        <?php
+                        $imageDir = $_SERVER['DOCUMENT_ROOT'] . '/images/ChargerPoints/';
+                        $imageBase = $chargePoint->getImageUrl(); // stored value with no extension
+                        $possibleExts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+                        $imagePath = '/images/profileicon.png'; // fallback if nothing is found
+
+                        foreach ($possibleExts as $ext) {
+                            $fullPath = $imageDir . $imageBase . '.' . $ext;
+                            if (file_exists($fullPath)) {
+                                $imagePath = '/images/ChargerPoints/' . $imageBase . '.' . $ext;
+                                break;
+                            }
+                        }
+                        ?>
+
+                        <img src="<?= $imagePath ?>"
                              alt="Charger Image"
-                             onerror="this.style.display='none';">
-                    <?php else: ?>
-                        <span>No Image</span>
-                    <?php endif; ?>
+                             class="charger-image">
 
-                    <!-- Editable Image URL Field -->
-                    <div class="form-group">
-                        <label for="image_url">Image URL:</label>
-                        <input class="editable-field" type="text" name="image_url" id="image_url"
-                               value="<?= htmlspecialchars($chargePoint->getImageUrl()) ?>" readonly>
-                    </div>
-                </div>
-
-
-                <div class="card-section card-details">
-                    <div class="form-group">
-                        <label for="name">Name:</label>
-                        <input class="editable-field" type="text" name="name" id="name" value="<?= htmlspecialchars($chargePoint->getName()) ?>" readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Description:</label>
-                        <textarea class="editable-field" name="description" id="description" rows="2" readonly><?= htmlspecialchars($chargePoint->getDescription()) ?></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="cost_per_kwh">Cost per kWh:</label>
-                        <input class="editable-field" type="number" name="cost_per_kwh" id="cost_per_kwh" value="<?= htmlspecialchars($chargePoint->getPricePerKW()) ?>" step="0.01" readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="connector_type">Connector Type:</label>
-                        <input class="editable-field" type="text" name="connector_type" id="connector_type" value="<?= htmlspecialchars($chargePoint->getConnectorType()) ?>" readonly>
                     </div>
 
 
-                    <p><strong>Availability:</strong> <?= $chargePoint->getAvailableStatusId() == 1 ? 'Available' : 'Unavailable' ?></p>
-                </div>
-                <div class="button-row">
-                    <button type="button" id="editBtn" class="btn" onclick="enableEditMode()">Edit</button>
-                    <button type="submit" id="saveBtn" class="btn" style="display:none;">Save</button>
-                    <button type="button" id="cancelBtn" class="btn" onclick="cancelEditMode()" style="display:none;">Cancel</button>
-                    <button type="button" class="btn delete-btn" onclick="confirmDelete()">Delete</button>
                 </div>
             </div>
-
-
         </form>
     <?php else: ?>
         <p>No charger point found.</p>
     <?php endif; ?>
 
-    <!-- Delete Confirmation Modal -->
+    <!-- Delete Modal -->
     <div id="deleteModal" class="modal" style="display:none;">
         <div class="modal-content">
             <h3>Confirm Deletion</h3>
@@ -79,50 +91,42 @@
             </div>
         </div>
     </div>
-
 </main>
 
 <script>
     function enableEditMode() {
-        document.querySelectorAll('.editable-field').forEach(el => el.removeAttribute('readonly'));
-        document.getElementById('editBtn').style.display = 'none';
-        document.getElementById('saveBtn').style.display = 'inline-block';
-        document.getElementById('cancelBtn').style.display = 'inline-block';
+        document.querySelectorAll('.editable-field').forEach(el => el.removeAttribute('readonly'))
+        document.getElementById('editBtn').style.display = 'none'
+        document.getElementById('saveBtn').style.display = 'inline-block'
+        document.getElementById('cancelBtn').style.display = 'inline-block'
     }
 
     function cancelEditMode() {
-        window.location.reload();
+        window.location.reload()
     }
 
-
-        function confirmDelete() {
-        document.getElementById('deleteModal').style.display = 'block';
+    function confirmDelete() {
+        document.getElementById('deleteModal').style.display = 'block'
     }
 
-        function closeDeleteModal() {
-        document.getElementById('deleteModal').style.display = 'none';
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none'
     }
 
-        function proceedDelete() {
-        window.location.href = "deleteChargerPoint.php";
+    function proceedDelete() {
+        window.location.href = "deleteChargerPoint.php"
     }
-
-
 </script>
 
 <style>
-
     body {
         background: linear-gradient(to right, #2cc4b0, #3a95dd);
-    }
-    .page-title {
-        color: #005b7f;
-        text-align: center;
-        font-weight: 700;
+        margin: 0;
+        font-family: system-ui, sans-serif;
     }
 
     .manage-container {
-        max-width: 900px;
+        max-width: 1200px;
         margin: 40px auto;
         padding: 40px;
         border-radius: 16px;
@@ -130,96 +134,137 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-
     .page-title {
+        color: #005b7f;
         font-size: 28px;
+        text-align: center;
+        font-weight: 700;
         margin-bottom: 20px;
         border-bottom: 2px solid #eee;
         padding-bottom: 10px;
     }
 
-    .card {
-        padding: 20px;
-        border: 2px solid #005b7f;
-        border-radius: 12px;
-        background-color: #f9f9f9;
-
-        /* Add this */
-        width: 100%;
-        max-width: 700px;
+    /* CARD */
+    .card.redesigned {
+        background: #fff;
+        border: 1px solid #005b7f;
+        border-radius: 16px;
+        box-shadow: none;
+        padding: 40px 50px; /* more vertical space */
+        width: 95%;
         margin: 0 auto;
+        min-height: 400px; /* add a taller base height */
     }
 
-    .card-section {
+
+
+    /* CARD BODY FLEX LAYOUT */
+    .card-body {
         display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .charger-img {
-        max-width: 100%;
-        max-height: 200px;
-        object-fit: contain;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-    }
-
-    .form-group {
-        display: flex;
-        align-items: center;
-        gap: 10px;
         flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 40px;
     }
 
-    .form-group label {
-        min-width: 120px;
-        font-weight: bold;
+    /* LEFT CONTENT */
+    .card-left {
+        flex: 1 1 55%;
+        min-width: 300px;
     }
 
-    .form-group input,
-    .form-group textarea {
-        flex: 1;
-        min-width: 300px; /* Increased */
+    /* RIGHT IMAGE */
+    .card-right {
+        flex: 1 1 35%;
+        max-width: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* IMAGE */
+    .charger-img {
         width: 100%;
+        max-width: 250px;
+        height: auto;
+        object-fit: contain;
+        border-radius: 12px;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
+    /* INFO GRID */
+    .info-grid {
+        display: grid;
+        grid-template-columns: 150px auto;
+        row-gap: 12px;
+        column-gap: 20px;
+        font-size: 16px;
+    }
 
-    .button-row .btn {
-        min-width: 100px;
+    .info-grid .label {
         font-weight: bold;
+        text-align: right;
+    }
+
+    .info-grid .value {
+        text-align: left;
+    }
+
+    /* BUTTON GROUP */
+    .card-actions {
+        flex: 1 1 100%;
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        padding-top: 20px;
+        margin-top: 30px;
+        border-top: 1px solid #eee;
+    }
+
+    /* BUTTON BASE STYLE */
+    .card-actions .btn {
+        min-width: 120px;
+        max-width: 160px;
+        padding: 10px 20px;
+        font-weight: bold;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    /* BUTTON COLORS */
+    .btn {
+        background-color: #005b7f;
+        color: white;
         transition: background 0.3s;
     }
 
+    .btn:hover {
+        background-color: #004466;
+    }
 
-    .btn {
-        padding: 10px 18px;
-        border: none;
-        border-radius: 5px;
-        background-color: #005b7f;
-        color: white;
-        cursor: pointer;
+    .btn.delete-btn {
+        background: linear-gradient(to right, #f85032, #e73827);
     }
 
     .btn.delete-btn:hover {
-        background-color: #800000; /* Darker red */
-        color: white;
-        opacity: 1;
+        background-color: #800000;
     }
 
-
-    .btn:hover {
-        background-color: #004466; /* Darker version of your base color */
-        color: white;
-        opacity: 1;
+    .cancel-btn {
+        background-color: #888;
     }
 
+    /* EDITABLE FIELDS */
     .editable-field[readonly] {
         border: none;
-        background-color: transparent;
-        pointer-events: none;
-        padding-left: 0;
+        background: transparent;
         font-weight: 500;
+        pointer-events: none;
     }
+
+    /* MODAL */
     .modal {
         position: fixed;
         inset: 0;
@@ -236,25 +281,13 @@
         width: 90%;
         max-width: 400px;
         text-align: center;
-        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     }
 
-    .modal-button-group {
+    .modal-buttons {
         display: flex;
         justify-content: center;
         gap: 12px;
         margin-top: 20px;
     }
-
-    .cancel-btn {
-        background-color: #888;
-    }
-
-    .delete-btn {
-        background: linear-gradient(to right, #f85032, #e73827);
-    }
-
-
 </style>
-
-
