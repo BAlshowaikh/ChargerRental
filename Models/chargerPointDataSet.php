@@ -64,32 +64,44 @@ class chargerPointDataSet
         return null;
     }
 
-    public function fetchChargerPointsByUserId($userId)
+    public function fetchChargerPointsByUserId($chargerId)
     {
-        $sqlQuery = 'SELECT * FROM Charger_point WHERE user_id = :userId';
+        $sqlQuery = '
+        SELECT 
+            cp.charger_point_id,
+            cp.Name,
+            cp.charger_point_description,
+            cp.price_per_kwatt,
+            cp.connector_type,
+            cp.charger_image_url,
+            cp.available_status_id,
+            cp.user_id,
+            cp.location_id,
+            l.Latitude,
+            l.Longitude
+        FROM Charger_point cp
+        JOIN Location l ON cp.location_id = l.location_id
+        WHERE cp.charger_point_id = :chargerId
+    ';
+
         $statement = $this->_dbHandle->prepare($sqlQuery);
-        $statement->bindParam(':userId', $userId);
+        $statement->bindParam(':chargerId', $chargerId, PDO::PARAM_INT); // ✅ Corrected here
         $statement->execute();
 
         $dataSet = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            // Update field names to match the data class column names
-            $dataSet[] = new chargerPointData([
-                'charger_point_id' => $row['charger_point_id'],
-                'Name' => $row['Name'],
-                'charger_point_description' => $row['charger_point_description'],
-                'price_per_kwatt' => $row['price_per_kwatt'],
-                'connector_type' => $row['connector_type'],
-                'charger_image_url' => $row['charger_image_url'],
-                'available_status_id' => $row['available_status_id'],
-                'user_id' => $row['user_id'],
-                'location_id' => $row['location_id']
-            ]);
+            // You can return full array instead of objects if you need coordinates
+            $dataSet[] = $row;
+
+            // OR, if you're still using chargerPointData:
+            // You can store coords separately in the result, or skip this.
+            // $dataSet[] = new chargerPointData($row);
         }
 
         return $dataSet;
     }
+
 
     public function fetchAllDetailedChargerPoints()
     {
