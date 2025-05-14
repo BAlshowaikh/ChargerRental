@@ -1,22 +1,30 @@
 <?php require("template/CustomerNavBar.phtml"); ?>
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/shared.css">
+<script src="/js/HomeownerBookingRequests.js"></script>
+<link rel="stylesheet" href="/css/BookingRequest.css">
+<link rel="stylesheet" href="/css/BookingRequestMange.css">
 
 <div class="container py-5">
     <h2 class="text-white mb-4">Incoming Booking Requests</h2>
 
-    <!-- Filter Controls -->
-    <form method="get" class="row g-3 mb-4">
+    <!-- Filters -->
+    <form method="get" class="row g-3 mb-4 align-items-center" id="filterForm">
         <div class="col-md-4">
-            <select name="status" class="form-select" onchange="this.form.submit()">
+            <select name="status" class="form-select shadow-sm rounded-pill" id="statusSelect" onchange="document.getElementById('filterForm').submit()">
                 <option value="all" <?= $statusFilter === 'all' ? 'selected' : '' ?>>All Statuses</option>
                 <option value="1" <?= $statusFilter === '1' ? 'selected' : '' ?>>Pending</option>
                 <option value="2" <?= $statusFilter === '2' ? 'selected' : '' ?>>Approved</option>
                 <option value="3" <?= $statusFilter === '3' ? 'selected' : '' ?>>Declined</option>
             </select>
         </div>
+        <div class="col-md-4">
+            <select name="sort" class="form-select shadow-sm rounded-pill" id="sortSelect" onchange="document.getElementById('filterForm').submit()">
+                <option value="newest" <?= $sortOrder === 'newest' ? 'selected' : '' ?>>Sort by Newest</option>
+                <option value="oldest" <?= $sortOrder === 'oldest' ? 'selected' : '' ?>>Sort by Oldest</option>
+            </select>
+        </div>
     </form>
 
+    <!-- Booking Cards -->
     <?php if (empty($view->bookingRequests)): ?>
         <div class="alert alert-light">No requests found.</div>
     <?php else: ?>
@@ -44,7 +52,7 @@
                 ?>
                 <div class="col-md-4">
                     <div class="card card-hover border-0 bg-transparent p-0 <?= $statusClass ?>" style="height: 250px;"
-                         onclick="openPopup(<?= $b['Booking_ID'] ?>, '<?= htmlspecialchars($b['Booking_start']) ?>', <?= $statusId ?>)">
+                         onclick="openStatusModal(<?= $b['Booking_ID'] ?>, '<?= htmlspecialchars($b['Booking_start']) ?>', <?= $statusId ?>)">
                         <div class="card-inner">
                             <!-- Front -->
                             <div class="card-front card-body border h-100">
@@ -63,58 +71,37 @@
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <!-- Pagination -->
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center flex-wrap gap-2">
+                <?php if ($view->currentPage > 1): ?>
+                    <li class="page-item">
+                        <a class="page-link shadow-sm rounded-pill px-4"
+                           href="?page=<?= $view->currentPage - 1 ?>&status=<?= $statusFilter ?>&sort=<?= $sortOrder ?>">« Previous</a>
+                    </li>
+                <?php else: ?>
+                    <li class="page-item disabled"><span class="page-link shadow-sm rounded-pill px-4">« Previous</span></li>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $view->totalPages; $i++): ?>
+                    <li class="page-item <?= $i === $view->currentPage ? 'active' : '' ?>">
+                        <a class="page-link rounded-pill fw-semibold <?= $i === $view->currentPage ? 'bg-dark text-white border-dark' : '' ?>"
+                           href="?page=<?= $i ?>&status=<?= $statusFilter ?>&sort=<?= $sortOrder ?>"><?= $i ?></a>
+                    </li>
+                <?php endfor; ?>
+
+                <?php if ($view->currentPage < $view->totalPages): ?>
+                    <li class="page-item">
+                        <a class="page-link shadow-sm rounded-pill px-4"
+                           href="?page=<?= $view->currentPage + 1 ?>&status=<?= $statusFilter ?>&sort=<?= $sortOrder ?>">Next »</a>
+                    </li>
+                <?php else: ?>
+                    <li class="page-item disabled"><span class="page-link shadow-sm rounded-pill px-4">Next »</span></li>
+                <?php endif; ?>
+            </ul>
+        </nav>
     <?php endif; ?>
 </div>
-
-<!-- Popup -->
-<div id="popup" class="popup-overlay">
-    <div class="popup-card">
-        <span class="popup-close" onclick="closePopup()">&times;</span>
-        <h5>Confirm Status Change</h5>
-        <p id="bookingTimeText"></p>
-        <form method="post" action="UpdateBookingStatus.php">
-            <input type="hidden" name="booking_id" id="popupBookingId">
-            <input type="hidden" name="status" id="popupStatus">
-
-            <div id="statusButtons" class="mb-3">
-                <button type="button" class="btn btn-success me-2" onclick="submitStatus(2)">Approve</button>
-                <button type="button" class="btn btn-danger" onclick="submitStatus(3)">Decline</button>
-            </div>
-
-            <div id="lockedMessage" class="mb-3 d-none">
-                <p class="text-muted">Status cannot be changed.</p>
-            </div>
-
-            <button type="submit" class="btn btn-primary d-none" id="confirmBtn">Confirm</button>
-        </form>
-    </div>
-</div>
-
-<script>
-    function openPopup(id, startTime, statusId) {
-        document.getElementById("popupBookingId").value = id;
-        document.getElementById("popupStatus").value = '';
-        document.getElementById("bookingTimeText").textContent = `Booking starts: ${startTime}`;
-
-        if (statusId === 1) {
-            document.getElementById("statusButtons").classList.remove("d-none");
-            document.getElementById("lockedMessage").classList.add("d-none");
-        } else {
-            document.getElementById("statusButtons").classList.add("d-none");
-            document.getElementById("lockedMessage").classList.remove("d-none");
-        }
-
-        document.getElementById("popup").style.display = 'flex';
-    }
-
-    function closePopup() {
-        document.getElementById("popup").style.display = 'none';
-    }
-
-    function submitStatus(statusVal) {
-        document.getElementById("popupStatus").value = statusVal;
-        document.getElementById("confirmBtn").click();
-    }
-</script>
 
 <?php require("template/footer.phtml"); ?>

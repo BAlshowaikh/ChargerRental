@@ -73,7 +73,7 @@ class bookingRequestDataSet
         ";
 
         if (!empty($status)) {
-            $query .= " AND bs.Booking_status = ?";
+            $query .= " AND bs.Booking_status_ID = ?";
             $params[] = $status;
         }
 
@@ -107,58 +107,60 @@ class bookingRequestDataSet
         return $statement->fetchColumn();
     }
 
-    public function fetchBookingsForHomeowner($homeownerId, $status = 'all')
+    public function fetchBookingsForHomeowner($homeownerId, $statusFilter, $sortOrder = 'newest', $limit = 6, $offset = 0)
     {
-        $query = "SELECT br.*, cp.Name AS charger_name, bs.Booking_status
-              FROM Booking_request br
-              INNER JOIN Charger_point cp ON br.Charger_point_ID = cp.charger_point_id
-              INNER JOIN Booking_Status bs ON br.Booking_status_ID = bs.Booking_status_id
-              WHERE cp.user_id = :homeownerId";
+        $params = [$homeownerId];
 
-        if ($status !== 'all') {
-            $query .= " AND br.Booking_status_ID = :status";
+        $query = "
+        SELECT br.*, bs.Booking_status, cp.Name AS charger_name
+        FROM Booking_request br
+        INNER JOIN Booking_Status bs ON br.Booking_status_ID = bs.Booking_status_ID
+        INNER JOIN Charger_point cp ON br.Charger_point_ID = cp.charger_point_id
+        WHERE cp.user_id = ?
+    ";
+
+        if ($statusFilter !== 'all' && is_numeric($statusFilter)) {
+            $query .= " AND br.Booking_status_ID = ?";
+            $params[] = $statusFilter;
         }
 
-        $statement = $this->_dbHandle->prepare($query);
-        $statement->bindParam(':homeownerId', $homeownerId);
+        $order = ($sortOrder === 'oldest') ? "ASC" : "DESC";
 
-        if ($status !== 'all') {
-            $statement->bindParam(':status', $status);
+        // ⚠️ Inject LIMIT and OFFSET directly (safe because casted to int)
+        $query .= " ORDER BY br.Booking_start $order LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+
+        $stmt = $this->_dbHandle->prepare($query);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function countBookingsForHomeowner($homeownerId, $statusFilter)
+    {
+        $query = "
+        SELECT COUNT(*)
+        FROM Booking_request br
+        INNER JOIN Charger_point cp ON br.Charger_point_ID = cp.charger_point_id
+        WHERE cp.user_id = :homeownerId
+    ";
+
+        $params = [':homeownerId' => $homeownerId];
+
+        if ($statusFilter !== 'all' && is_numeric($statusFilter)) {
+            $query .= " AND br.Booking_status_ID = :statusFilter";
+            $params[':statusFilter'] = (int)$statusFilter;
         }
 
-        $statement->execute();
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getBookingsWithStatusByUserId($userId)
-    {
-        $query = "SELECT br.*, bs.Booking_status 
-                  FROM Booking_request br
-                  INNER JOIN Booking_Status bs ON br.Booking_status_ID = bs.Booking_status_ID
-                  WHERE br.User_ID = :userId
-                  ORDER BY br.Booking_start DESC";
-
-        $statement = $this->_dbHandle->prepare($query);
-        $statement->bindParam(':userId', $userId);
-        $statement->execute();
-
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getBookingsForChargerPoint($cpId)
-    {
-        $query = "SELECT * FROM Booking_request WHERE Charger_point_ID = :cpId ORDER BY Booking_start DESC";
-        $statement = $this->_dbHandle->prepare($query);
-        $statement->bindParam(':cpId', $cpId);
-        $statement->execute();
-
-        $results = [];
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $results[] = new bookingRequestData($row);
+        $stmt = $this->_dbHandle->prepare($query);
+        $stmt->bindValue(':homeownerId', $params[':homeownerId'], PDO::PARAM_INT);
+        if (isset($params[':statusFilter'])) {
+            $stmt->bindValue(':statusFilter', $params[':statusFilter'], PDO::PARAM_INT);
         }
 
-        return $results;
+        $stmt->execute();
+        return $stmt->fetchColumn();
     }
+
 
     public function updateBookingStatus($bookingId, $newStatusId)
     {
@@ -166,6 +168,6 @@ class bookingRequestDataSet
         $statement = $this->_dbHandle->prepare($query);
         $statement->bindParam(':statusId', $newStatusId);
         $statement->bindParam(':id', $bookingId);
-        $statement->execute();
+        return $statement->execute();
     }
 }
