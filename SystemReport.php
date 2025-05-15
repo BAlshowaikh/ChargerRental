@@ -2,6 +2,14 @@
 session_start();
 require_once("Models/bookingRequestDataSet.php");
 
+// Check if user is logged in
+$userId = $_SESSION['userID'] ?? null;
+
+if (!$userId) {
+    header("Location: login.php");
+    exit;
+}
+
 $bookingDataSet = new BookingRequestDataSet();
 
 $attributes = [
@@ -14,10 +22,10 @@ $attributes = [
     'Booking_status_ID'
 ];
 
-$selectedAttribute = isset($_POST['attribute']) ? $_POST['attribute'] : '';
-$selectedMonth = isset($_POST['month']) ? $_POST['month'] : '';
+$selectedAttribute = $_POST['attribute'] ?? '';
+$selectedMonth = $_POST['month'] ?? '';
 
-$months = $bookingDataSet->getUniqueMonths();
+$months = $bookingDataSet->getUniqueMonths($userId);
 
 $bookings = [];
 $barData = [];
@@ -28,27 +36,31 @@ if (!empty($selectedAttribute)) {
         case 'Booking_start':
         case 'Booking_end':
             if (!empty($selectedMonth)) {
-                $bookings = $bookingDataSet->getBookingsByMonth($selectedAttribute, $selectedMonth);
+                $bookings = $bookingDataSet->getBookingsByMonth($selectedAttribute, $selectedMonth, $userId);
                 $barData = array_count_values(array_column($bookings, $selectedAttribute));
             }
             break;
         case 'Price_per_kwatt':
-            $bookings = $bookingDataSet->getRequestsCountByPrice();
+            $bookings = $bookingDataSet->getRequestsCountByPrice($userId);
             foreach ($bookings as $booking) {
                 $barData[$booking['rounded_price']] = $booking['num_requests'];
             }
             break;
         case 'Charger_point_ID':
-            $bookings = $bookingDataSet->getBookingsGroupedByChargerID();
+            $bookings = $bookingDataSet->getBookingsGroupedByChargerID($userId);
             $barData = array_count_values(array_column($bookings, 'Charger_point_ID'));
             break;
         case 'User_ID':
-            $bookings = $bookingDataSet->getBookingsGroupedByUserID();
+            $bookings = $bookingDataSet->getBookingsGroupedByUserID($userId);
             $barData = array_count_values(array_column($bookings, 'User_ID'));
             break;
         case 'Booking_status_ID':
-            $bookings = $bookingDataSet->getBookingsGroupedByStatusID();
-            $barData = array_count_values(array_column($bookings, 'Booking_status_ID'));
+            $bookings = $bookingDataSet->getBookingsGroupedByStatusID($userId);
+            // Now using status_name instead of Booking_status_ID
+            $barData = [];
+            foreach ($bookings as $booking) {
+                $barData[$booking['Booking_status']] = $booking['num_requests'];
+            }
             break;
     }
 }
