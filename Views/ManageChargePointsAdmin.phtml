@@ -1,5 +1,13 @@
-<?php require_once 'template/AdminNavBar.phtml'; ?>
-<link rel="stylesheet" href="/css/sharedLayout.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/sharedLayout.css">
+</head>
+
+<body>
+<?php include 'template/AdminNavBar.phtml'; ?>
 
 <main class="manage-container">
     <h2 class="page-title">Manage Charger Points</h2>
@@ -62,7 +70,8 @@
         </div>
     </div>
 </main>
-
+<?php include 'template/footer.phtml'; ?>
+</body>
 <script>
     function openDeleteModal(id) {
         document.getElementById('deleteChargerId').value = id;
@@ -74,7 +83,6 @@
     }
 </script>
 
-<?php require_once 'template/footer.phtml'; ?>
 
 <style>
     .manage-container {

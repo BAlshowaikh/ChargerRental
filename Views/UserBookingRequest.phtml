@@ -1,6 +1,16 @@
-<?php require("template/CustomerNavBar.phtml"); ?>
-    <link rel="stylesheet" href="/Leaflet/leaflet.css">
-    <script src="/Leaflet/leaflet.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/sharedLayout.css">
+    <link rel="stylesheet" href="/css/BookingRequest.css">
+    <link rel="stylesheet" href="/css/BookingRequestMange.css">
+        <link rel="stylesheet" href="/Leaflet/leaflet.css">
+        <script src="/Leaflet/leaflet.js"></script>
+</head>
+<body>
+<?php include("template/CustomerNavBar.phtml"); ?>
 
     <div class="container py-5">
         <h2 class="text-white mb-4">My Booking Requests</h2>
@@ -121,6 +131,7 @@
             </nav>
         <?php endif; ?>
     </div>
+<?php include("template/footer.phtml"); ?>
 
-<script src="/js/UserBooksJS.js"></script>
-<?php require("template/footer.phtml"); ?>
+</body>
+    <script src="/js/UserBooksJS.js"></script>
