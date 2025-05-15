@@ -170,4 +170,78 @@ class bookingRequestDataSet
         $statement->bindParam(':id', $bookingId);
         return $statement->execute();
     }
+
+    public function getBookingsByMonth($attribute, $month, $userId) {
+        $query = "SELECT br.*, bs.Booking_status 
+              FROM Booking_request br
+              JOIN Charger_point cp ON br.Charger_point_ID = cp.charger_point_id
+              JOIN Booking_Status bs ON br.Booking_status_ID = bs.Booking_status_ID
+              WHERE MONTH(br.$attribute) = :month AND cp.user_id = :userId";
+        $stmt = $this->_dbHandle->prepare($query);
+        $stmt->bindParam(':month', $month, PDO::PARAM_INT);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getBookingsGroupedByChargerID($userId) {
+        $query = "SELECT br.Charger_point_ID, COUNT(*) AS num_requests, AVG(br.Price_per_kwatt) AS avg_price 
+              FROM Booking_request br
+              JOIN Charger_point cp ON br.Charger_point_ID = cp.charger_point_id
+              WHERE cp.user_id = :userId
+              GROUP BY br.Charger_point_ID";
+        $stmt = $this->_dbHandle->prepare($query);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getBookingsGroupedByUserID($userId) {
+        $query = "SELECT br.User_ID, COUNT(*) AS num_requests 
+              FROM Booking_request br
+              JOIN Charger_point cp ON br.Charger_point_ID = cp.charger_point_id
+              WHERE cp.user_id = :userId
+              GROUP BY br.User_ID";
+        $stmt = $this->_dbHandle->prepare($query);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getBookingsGroupedByStatusID($userId) {
+        $query = "SELECT bs.Booking_status, COUNT(*) AS num_requests 
+              FROM Booking_request br
+              JOIN Charger_point cp ON br.Charger_point_ID = cp.charger_point_id
+              JOIN Booking_Status bs ON br.Booking_status_ID = bs.Booking_status_ID
+              WHERE cp.user_id = :userId
+              GROUP BY bs.Booking_status";
+        $stmt = $this->_dbHandle->prepare($query);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getUniqueMonths($userId) {
+        $query = "SELECT DISTINCT MONTH(br.Created_timestamp) AS month 
+              FROM Booking_request br
+              JOIN Charger_point cp ON br.Charger_point_ID = cp.charger_point_id
+              WHERE cp.user_id = :userId
+              ORDER BY month";
+        $stmt = $this->_dbHandle->prepare($query);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function getRequestsCountByPrice($userId) {
+        $query = "SELECT ROUND(br.Price_per_kwatt, 2) AS rounded_price, COUNT(*) AS num_requests 
+              FROM Booking_request br
+              JOIN Charger_point cp ON br.Charger_point_ID = cp.charger_point_id
+              WHERE cp.user_id = :userId
+              GROUP BY rounded_price";
+        $stmt = $this->_dbHandle->prepare($query);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

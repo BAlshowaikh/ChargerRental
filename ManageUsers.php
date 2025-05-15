@@ -3,6 +3,16 @@ session_start();
 $view = new stdClass();
 require_once("Models/userDataSet.php");
 
+
+// Check if user is logged in
+$userId = $_SESSION['userID'] ?? null;
+
+if (!$userId) {
+    header("Location: login.php");
+    exit;
+}
+
+
 $userDataSet = new userDataSet();
 
 // Pagination settings
