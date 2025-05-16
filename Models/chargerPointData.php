@@ -25,5 +25,12 @@ class chargerPointData {
     public function getAvailableStatusId() { return $this->availableStatusId; }
     public function getUserId()            { return $this->userId; }
     public function getLocationId()        { return $this->locationId; }
+
+    // Setter for the image
+    public function setImageUrl(string $imageUrl): void
+    {
+        // Optional: Sanitize input if you're assigning this manually
+        $this->imageUrl = basename($imageUrl);
+    }
 }
 

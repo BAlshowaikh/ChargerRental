@@ -72,7 +72,7 @@
                                             <button type="submit" name="action" value="suspend" class="btn delete-btn py-1">Suspend</button>
                                         <?php endif; ?>
                                         <?php if ($user->getUserRoleId() === 2): ?>
-                                            <a href="ManageChargePoints.php?userId=<?= htmlspecialchars($user->getUserId()) ?>" class="btn add-btn py-1">View Charge Points</a>
+                                            <a href="ManageChargePointsAdmin.php?userId=<?= htmlspecialchars($user->getUserId()) ?>" class="btn add-btn py-1">View Charge Point</a>
                                         <?php endif; ?>
                                     <?php elseif ($user->getUserStatus() === "Suspend"): ?>
                                         <button type="submit" name="action" value="unsuspend" class="btn add-btn py-1">Unsuspend</button>

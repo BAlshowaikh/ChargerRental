@@ -4,15 +4,15 @@ $view = new stdClass();
 require_once("Models/userDataSet.php");
 
 
-// Check if user is logged in
-$userId = $_SESSION['userID'] ?? null;
+//Check if user is logged in
+//$userId = $_SESSION['userID'] ?? null;
+//
+//if (!$userId) {
+//    header("Location: login.php");
+//    exit;
+//}
 
-if (!$userId) {
-    header("Location: login.php");
-    exit;
-}
-
-
+$userId=1;
 $userDataSet = new userDataSet();
 
 // Pagination settings

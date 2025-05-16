@@ -633,3 +633,94 @@ footer {
     }
 }
 
+
+/* Code for splitting form into two parts (image left, fields right)*/
+.form-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-top: 30px;
+    text-align: left;
+}
+
+.image-preview {
+    flex: 1;
+    max-width: 30%;
+    cursor: pointer;
+    position: relative;
+}
+
+.image-preview img {
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+    max-height: 400px;
+}
+
+.image-preview::after {
+    content: "Click to change image";
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 5px;
+    text-align: center;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 0 0 12px 12px;
+}
+
+.image-preview:hover::after {
+    opacity: 1;
+}
+
+
+.edit-form {
+    flex: 2; /* Take more space than image */
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%; /* Ensures full width of its flex area */
+}
+
+.edit-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-form label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #2e4a68;
+}
+
+.edit-form input,
+.edit-form textarea,
+.edit-form select {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.update-btn {
+    padding: 12px;
+    background: linear-gradient(to right, #26d0ce, #1a2980);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.update-btn:hover {
+    opacity: 0.9;
+}

@@ -19,10 +19,10 @@
                     <div class="card-section card-image">
                         <?php if (!empty($point->getImageUrl())): ?>
                             <img
-                                    src="/images/ChargerPoints/<?= htmlspecialchars($point->getImageUrl()) ?>.jpg"
+                                    src="/images/ChargerPoints/<?= htmlspecialchars($point->getImageUrl()) ?>"
                                     alt="Charger Image"
                                     class="card-img"
-                                    onerror="this.src='/images/profileicon.png';">
+                                    onerror="this.src='/images/NoImage.png';">
                         <?php else: ?>
                             <div class="no-img">No Image</div>
                         <?php endif; ?>
