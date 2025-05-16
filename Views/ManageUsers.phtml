@@ -94,22 +94,39 @@
         </div>
 
         <!-- Pagination Links -->
-        <div class="pagination">
-            <?php if ($view->currentPage > 1): ?>
-                <a href="?page=<?= $view->currentPage - 1 ?>&search=<?= urlencode($view->searchTerm) ?>&role=<?= urlencode($view->selectedRole) ?>">Previous</a>
-            <?php endif; ?>
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center flex-wrap gap-2">
+                <?php if ($view->currentPage > 1): ?>
+                    <li class="page-item">
+                        <a class="page-link shadow-sm rounded-pill px-4" href="?page=<?= $view->currentPage - 1 ?>&search=<?= urlencode($view->searchTerm) ?>&role=<?= urlencode($view->selectedRole) ?>">« Previous</a>
+                    </li>
+                <?php else: ?>
+                    <li class="page-item disabled">
+                        <span class="page-link shadow-sm rounded-pill px-4">« Previous</span>
+                    </li>
+                <?php endif; ?>
 
-            <?php
-            for ($page = max(1, $view->currentPage - 1); $page <= min($view->totalPages, $view->currentPage + 1); $page++): ?>
-                <a href="?page=<?= $page ?>&search=<?= urlencode($view->searchTerm) ?>&role=<?= urlencode($view->selectedRole) ?>" class="<?= ($page == $view->currentPage) ? 'active' : '' ?>">
-                    <?= $page ?>
-                </a>
-            <?php endfor; ?>
+                <?php for ($page = max(1, $view->currentPage - 1); $page <= min($view->totalPages, $view->currentPage + 1); $page++): ?>
+                    <li class="page-item <?= $page == $view->currentPage ? 'active' : '' ?>">
+                        <a class="page-link rounded-pill fw-semibold <?= $page == $view->currentPage ? 'bg-dark text-white border-dark' : '' ?>"
+                           href="?page=<?= $page ?>&search=<?= urlencode($view->searchTerm) ?>&role=<?= urlencode($view->selectedRole) ?>">
+                            <?= $page ?>
+                        </a>
+                    </li>
+                <?php endfor; ?>
 
-            <?php if ($view->currentPage < $view->totalPages): ?>
-                <a href="?page=<?= $view->currentPage + 1 ?>&search=<?= urlencode($view->searchTerm) ?>&role=<?= urlencode($view->selectedRole) ?>">Next</a>
-            <?php endif; ?>
-        </div>
+                <?php if ($view->currentPage < $view->totalPages): ?>
+                    <li class="page-item">
+                        <a class="page-link shadow-sm rounded-pill px-4" href="?page=<?= $view->currentPage + 1 ?>&search=<?= urlencode($view->searchTerm) ?>&role=<?= urlencode($view->selectedRole) ?>">Next »</a>
+                    </li>
+                <?php else: ?>
+                    <li class="page-item disabled">
+                        <span class="page-link shadow-sm rounded-pill px-4">Next »</span>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
+
     </main>
 <?php include 'template/footer.phtml'; ?>
 

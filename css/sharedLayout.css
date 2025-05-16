@@ -648,6 +648,8 @@ footer {
     max-width: 30%;
     cursor: pointer;
     position: relative;
+    border: solid 2px #0056b3;
+    border-radius: 5px;
 }
 
 .image-preview img {
