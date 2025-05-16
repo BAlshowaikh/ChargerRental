@@ -167,5 +167,30 @@ class chargerPointDataSet
         $statement->execute();
         return $statement->fetch(PDO::FETCH_ASSOC)['total'];
     }
+
+    public function updateChargerPointByValues($id, $name, $desc, $price, $connector, $image, $status)
+    {
+        $sql = "UPDATE Charger_point 
+            SET Name = :name, 
+                charger_point_description = :description, 
+                price_per_kwatt = :price, 
+                connector_type = :connector, 
+                charger_image_url = :image, 
+                available_status_id = :status 
+            WHERE charger_point_id = :id";
+
+        $statement = $this->_dbHandle->prepare($sql);
+
+        $statement->bindValue(':name', $name);
+        $statement->bindValue(':description', $desc);
+        $statement->bindValue(':price', $price);
+        $statement->bindValue(':connector', $connector);
+        $statement->bindValue(':image', $image);
+        $statement->bindValue(':status', $status);
+        $statement->bindValue(':id', $id);
+
+        return $statement->execute();
+    }
+
 }
 

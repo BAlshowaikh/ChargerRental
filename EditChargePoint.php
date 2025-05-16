@@ -1,12 +1,11 @@
 <?php
 require_once 'Models/Database.php';
-require_once 'Models/chargerPointData.php';
+require_once 'Models/chargerPointDataSet.php';
 
 session_start();
-$db = Database::getInstance()->getConnection();
+$chargerSet = new chargerPointDataSet();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Handle form submission (update)
     $id        = intval($_POST['id']);
     $name      = $_POST['name'];
     $desc      = $_POST['description'];
@@ -14,10 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $connector = $_POST['connector'];
     $status    = $_POST['status'];
 
-    // Default image file name
     $image = "charger{$id}.jpg";
 
-    // Handle image upload if a new one is submitted
+    // Handle image upload
     if (isset($_FILES['imageFile']) && $_FILES['imageFile']['error'] === UPLOAD_ERR_OK) {
         $fileTmpPath = $_FILES['imageFile']['tmp_name'];
         $fileSize = $_FILES['imageFile']['size'];
@@ -26,17 +24,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $allowedTypes = ['image/jpeg' => 'jpg', 'image/png' => 'png'];
 
         if (!array_key_exists($mimeType, $allowedTypes)) {
-            die("Invalid image type.");
+            die("Invalid image type. Only JPG and PNG are allowed.");
         }
 
         if ($fileSize > 2 * 1024 * 1024) {
-            die("Image is too large.");
+            die("Image is too large. Max size is 2MB.");
         }
 
         $extension = $allowedTypes[$mimeType];
         $image = "charger{$id}." . $extension;
 
-        // Delete old formats
+        // Delete any existing version of the image
         foreach (['jpg', 'png'] as $ext) {
             $old = $uploadDir . "charger{$id}." . $ext;
             if (file_exists($old)) unlink($old);
@@ -45,32 +43,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         move_uploaded_file($fileTmpPath, $uploadDir . $image);
     }
 
-    // Update DB
-    $stmt = $db->prepare("UPDATE Charger_point SET Name=?, Charger_point_description=?, Price_per_kWatt=?, Connector_type=?, Charger_image_url=?, Available_status_ID=? WHERE Charger_point_ID=?");
-    $stmt->execute([$name, $desc, $price, $connector, $image, $status, $id]);
+    //  Use dataset to update (pass raw values)
+    $chargerSet->updateChargerPointByValues($id, $name, $desc, $price, $connector, $image, $status);
 
-    // Redirect
     header("Location: ManageChargePointsAdmin.php");
     exit;
 
 } else {
-    // Handle GET: show form
     if (!isset($_GET['id'])) {
         die("No charger point ID provided.");
     }
 
     $id = $_GET['id'];
-    $stmt = $db->prepare("SELECT * FROM Charger_point WHERE Charger_point_ID = ?");
-    $stmt->execute([$id]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $charger = $chargerSet->fetchChargerPointById($id);
 
-    if (!$row) {
+    if (!$charger) {
         die("Charger not found.");
     }
 
-    $charger = new chargerPointData($row);
-
-    // Render form view
     require 'Views/EditChargePointsAdmin.phtml';
 }
-?>
