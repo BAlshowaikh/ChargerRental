@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->execute([$name, $description, $cost, $connectorType, $imageUrl, $chargerId, $userId]);
 
-    header("Location: ManageChargePoints.php");
+    header("Location: HomeownerChargePoint.php");
     exit;
 }
 

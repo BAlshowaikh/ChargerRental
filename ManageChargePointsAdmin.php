@@ -4,13 +4,13 @@ require_once 'Models/chargerPointData.php';
 
 session_start();
 
-// Simulate admin session only if not already set
+// TEMPORARY - manually fake login session
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = 1;
     $_SESSION['user_role_id'] = 1; // 1 = Admin
 }
 
-// ✅ Check admin permission (optional but recommended)
+// Check admin permission (optional)
 if ($_SESSION['user_role_id'] !== 1) {
     header("Location: unauthorized.php");
     exit;

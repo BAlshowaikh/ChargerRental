@@ -13,7 +13,7 @@
     <h2 class="page-title">Charger Point Details</h2>
 
     <?php if (isset($chargePoint)): ?>
-        <form id="editForm" method="post" action="updateChargePoint.php">
+        <form id="editForm" method="post" action="HomeownerUpdateChargePoint.php">
             <input type="hidden" name="charger_id" value="<?= htmlspecialchars($chargePoint->getId()) ?>">
 
             <div class="card redesigned">
@@ -61,17 +61,12 @@
                     <div class="card-right">
                         <?php
                         $imageDir = $_SERVER['DOCUMENT_ROOT'] . '/images/ChargerPoints/';
-                        $imageBase = $chargePoint->getImageUrl(); // stored value with no extension
-                        $possibleExts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+                        $imageBase = $chargePoint->getImageUrl();
+                        $imagePath = '/images/ChargerPoints/' . $imageBase;
 
-                        $imagePath = '/images/profileicon.png'; // fallback if nothing is found
-
-                        foreach ($possibleExts as $ext) {
-                            $fullPath = $imageDir . $imageBase . '.' . $ext;
-                            if (file_exists($fullPath)) {
-                                $imagePath = '/images/ChargerPoints/' . $imageBase . '.' . $ext;
-                                break;
-                            }
+                        $fullPath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
+                        if (!file_exists($fullPath) || empty($imageBase)) {
+                            $imagePath = '/images/noImage.png';
                         }
                         ?>
 

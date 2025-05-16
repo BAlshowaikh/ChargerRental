@@ -32,5 +32,12 @@ class chargerPointData {
         // Optional: Sanitize input if you're assigning this manually
         $this->imageUrl = basename($imageUrl);
     }
+    public static function getByUserId($db, $userId) {
+        $stmt = $db->prepare("SELECT * FROM Charger_point WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? new chargerPointData($row) : null;
+    }
+
 }
 
