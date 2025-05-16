@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["email"]) && isset($_P
 
         if ($userData["User_role_User_role_ID"] == 1 || $userData["User_role_User_role_ID"] == 2)
         {
-            header("Location: ManageChargePoints.php");
+            header("Location: HomeownerChargePoint.php");
             exit();
         }
         else if ($userData["User_role_User_role_ID"] == 3)
