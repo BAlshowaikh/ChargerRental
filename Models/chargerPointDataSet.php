@@ -192,5 +192,42 @@ class chargerPointDataSet
         return $statement->execute();
     }
 
+    public function fetchDetailedChargerPointsPaginatedAdminView($limit, $offset)
+    {
+        $sql = "
+        SELECT 
+            cp.charger_point_id,
+            cp.Name,
+            cp.charger_point_description,
+            cp.price_per_kwatt,
+            cp.connector_type,
+            cp.charger_image_url,
+            cp.available_status_id,
+            cp.user_id,
+            cp.location_id,
+            l.Latitude,
+            l.Longitude,
+            a.Available_status
+        FROM Charger_point cp
+        JOIN Location l ON cp.location_id = l.location_id
+        JOIN Available_status a ON cp.available_status_id = a.available_id
+        LIMIT :limit OFFSET :offset
+    ";
+
+        $statement = $this->_dbHandle->prepare($sql);
+        $statement->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $statement->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $statement->execute();
+
+        $dataSet = [];
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $dataSet[] = new chargerPointData($row);
+        }
+
+        return $dataSet;
+    }
+
+
 }
 

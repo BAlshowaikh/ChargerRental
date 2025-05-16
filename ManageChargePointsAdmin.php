@@ -1,6 +1,6 @@
 <?php
 require_once 'Models/Database.php';
-require_once 'Models/chargerPointData.php';
+require_once 'Models/chargerPointDataSet.php';
 
 session_start();
 
@@ -10,26 +10,28 @@ if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_role_id'] = 1; // 1 = Admin
 }
 
-// ✅ Check admin permission (optional but recommended)
+// Check admin permission
 if ($_SESSION['user_role_id'] !== 1) {
     header("Location: unauthorized.php");
     exit;
 }
 
-try {
-    $db = Database::getInstance()->getConnection();
+// Instantiate the dataset model
+$chargerDataSet = new chargerPointDataSet();
 
-    // ✅ Get all charger points
-    $stmt = $db->prepare("SELECT * FROM Charger_point");
-    $stmt->execute();
+// Pagination setup
+$chargersPerPage = 6;
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($currentPage - 1) * $chargersPerPage;
 
-    $chargerPointObjs = [];
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $chargerPointObjs[] = new chargerPointData($row);
-    }
+// Fetch paginated data from model
+$chargerPointObjs = $chargerDataSet->fetchDetailedChargerPointsPaginatedAdminView($chargersPerPage, $offset);
+$totalChargers = $chargerDataSet->getTotalChargerCount();
+$totalPages = ceil($totalChargers / $chargersPerPage);
 
-} catch (PDOException $e) {
-    die("Database error: " . $e->getMessage());
-}
+// Pass pagination values to the view
+$view = new stdClass();
+$view->currentPage = $currentPage;
+$view->totalPages = $totalPages;
 
 require 'Views/ManageChargePointsAdmin.phtml';
