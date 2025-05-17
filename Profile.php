@@ -65,11 +65,11 @@ if ($userID) {
     $user = $db->getUserByID($userID);
 
     if ($user) {
-        $view->fullname = $user['f_Name'] . ' ' . $user['l_Name'];
-        $view->f_Name = $user['f_Name'];
-        $view->l_Name = $user['l_Name'];
+        $view->fullname = $user['first_name'] . ' ' . $user['last_name'];
+        $view->f_Name = $user['first_name'];
+        $view->l_Name = $user['last_name'];
         $view->username = $user['username'];
-        $view->phone = $user['Phone_no'];
+        $view->phone = $user['phone_number'];
     }
 }
 
