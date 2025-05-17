@@ -3,7 +3,7 @@
 require ("Models/userDataSet.php");
 
 $view = new stdClass();
-$view->styles = "css/LoginRegCSS.css";
+$view->styles = "/css/LoginRegCSS.css";
 session_start();
 
 if (isset($_SESSION["userID"]) && isset($_SESSION["user_status"]) && $_SESSION["user_status"] === "Approve")
@@ -36,7 +36,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($view->errors)) {
         $userDataSet = new userDataSet();
 
-//        $_SESSION["user_status"] = $userDataSet["user_status"];
 
         $regDate    = date('Y-m-d');
         $userStatus = 'Reject';
@@ -48,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         try {
-            // Step 1: Insert user & charger point with temporary image name
+            // Insert user & charger point with temporary image name
             $chargerId = $userDataSet->registerHomeOwner(
                 $_POST['fname'],
                 $_POST['lname'],
@@ -71,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $_POST["longitude"]
             );
 
-            // Step 2: Build proper image name and save file
+            // Build proper image name and save file
             $extension = $allowedTypes[$mimeType];
             $imageName = "charger{$chargerId}.{$extension}";
             $uploadDir = __DIR__ . "/images/ChargerPoints/";
@@ -93,7 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 throw new RuntimeException("Failed to save uploaded image.");
             }
 
-            // Step 3: Update DB with image name
+            // Update DB with image name
             $userDataSet->updateChargerImage($chargerId, $imageName);
 
             $view->successReg = "Registration submitted! Awaiting admin approval.";

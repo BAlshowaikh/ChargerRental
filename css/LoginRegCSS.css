@@ -6,6 +6,11 @@ body {
     background-repeat: no-repeat;
 }
 
+.dropdown-menu {
+    right: 0 !important; /* Aligns the dropdown to the right */
+    left: auto !important;
+}
+
 input,
 textarea {
     background-color: #ecf0f1;
@@ -189,3 +194,4 @@ footer {
     color: #fff;
     margin-top: auto;
 }
+

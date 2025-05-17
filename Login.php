@@ -38,8 +38,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["email"]) && isset($_P
 
     if ($userData) {
         if ($userData["user_status"] !== "Approve") {
-            $view->loginError = "Your account is not approved yet. Please wait for admin approval.";
-        } else {
+            if($userData["user_status"] === "Reject") {
+                $view->loginError = "Your account is rejected.";
+            }
+            else {
+                $view->loginError = "Your account is not approved yet. Please wait for admin approval.";
+            }
+        }
+        else {
             $_SESSION["userID"] = $userData["user_id"];
             $_SESSION["role"] = $userData["user_role_id"];
             $_SESSION["user_status"] = $userData["user_status"];
