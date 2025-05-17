@@ -16,76 +16,130 @@
                             <img id="mainLogo" src="https://i.imgur.com/PSXxjNY.png">
                         </div>
                         <h3 class="mb-5 text-center heading">Sign Up for Tidi</h3>
+                        <?php if (!empty($view->errors['general'])): ?>
+                            <div class="alert alert-danger text-center">
+                                <?= htmlspecialchars($view->errors['general']) ?>
+                            </div>
+                        <?php endif; ?>
 
-                        <form id="homeownerRegForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">First Name</label>
-                            <input type="text" id="fname" name="fname" placeholder="Enter your first name" class="form-control" >
-                            <?php if (!empty($view->errors['fname'])): ?>
-                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['fname']) ?></small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">Last Name</label>
-                            <input type="text" id="lname" name="lname" placeholder="Enter your last name" class="form-control" >
-                            <?php if (!empty($view->errors['lname'])): ?>
-                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['lname']) ?></small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">Email</label>
-                            <input type="text" id="email" name="email" placeholder="Enter your email" class="form-control" >
-                            <?php if (!empty($view->errors['email'])): ?>
-                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['email']) ?></small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">Password</label>
-                            <input type="password" id="password" name="password" placeholder="Enter your password" class="form-control" >
-                            <?php if (!empty($view->errors['password'])): ?>
-                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['password']) ?></small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">Phone Number</label>
-                            <input type="text" id="phno" name="phno" placeholder="Enter your phone number" class="form-control" >
-                            <?php if (!empty($view->errors['phno'])): ?>
-                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['phno']) ?></small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">Phone Number</label>
-                            <input type="text" id="chargePoint" name="chargePoint" placeholder="Charge Point Description" class="form-control" >
-                            <?php if (!empty($view->errors['chargePoint'])): ?>
-                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['chargePoint']) ?></small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">Phone Number</label>
-                            <input type="text" id="price" name="price" placeholder="Enter price per kwh" class="form-control" >
-                            <?php if (!empty($view->errors['price'])): ?>
-                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['price']) ?></small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">Availability</label>
-                            <select id="availability" name="availability" class="form-control">
-                                <option disabled selected value="">Select Availability</option>
-                                <option value="available">Available</option>
-                                <option value="unavailable">Unavailable</option>
-                            </select>
-                            <?php if (!empty($view->errors['available'])): ?>
-                                <small class="text-danger"><?php echo htmlspecialchars($view->errors['available']) ?></small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-control-label text-muted">Charge Point Image</label>
-                            <input type="file" id="chargePointImage" name="chargePointImage" class="form-control">
-                        </div>
+                        <form id="homeownerRegForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">First Name</label>
+                                <input type="text" id="fname" name="fname" placeholder="Enter your first name" class="form-control" >
+                                <?php if (!empty($view->errors['fname'])): ?>
+                                    <small class="text-danger"><?php echo htmlspecialchars($view->errors['fname']) ?></small>
+                                <?php endif; ?>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">Last Name</label>
+                                <input type="text" id="lname" name="lname" placeholder="Enter your last name" class="form-control" >
+                                <?php if (!empty($view->errors['lname'])): ?>
+                                    <small class="text-danger"><?php echo htmlspecialchars($view->errors['lname']) ?></small>
+                                <?php endif; ?>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">Email</label>
+                                <input type="text" id="email" name="email" placeholder="Enter your email" class="form-control" >
+                                <?php if (!empty($view->errors['email'])): ?>
+                                    <small class="text-danger"><?php echo htmlspecialchars($view->errors['email']) ?></small>
+                                <?php endif; ?>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">Password</label>
+                                <input type="password" id="password" name="password" placeholder="Enter your password" class="form-control" >
+                                <?php if (!empty($view->errors['password'])): ?>
+                                    <small class="text-danger"><?php echo htmlspecialchars($view->errors['password']) ?></small>
+                                <?php endif; ?>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">Phone Number</label>
+                                <input type="text" id="phno" name="phno" placeholder="Enter your phone number" class="form-control" >
+                                <?php if (!empty($view->errors['phno'])): ?>
+                                    <small class="text-danger"><?php echo htmlspecialchars($view->errors['phno']) ?></small>
+                                <?php endif; ?>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">Charge Point Name</label>
+                                <input type="text" id="chargePointName" name="chargePointName" class="form-control" placeholder="Enter charge point name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">Charge Point Description</label>
+                                <input type="text" id="chargePoint" name="chargePoint" placeholder="Charge Point Description" class="form-control" >
+                                <?php if (!empty($view->errors['chargePoint'])): ?>
+                                    <small class="text-danger"><?php echo htmlspecialchars($view->errors['chargePoint']) ?></small>
+                                <?php endif; ?>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">Charge Point Price</label>
+                                <input type="text" id="price" name="price" placeholder="Enter price per kwh" class="form-control" >
+                                <?php if (!empty($view->errors['price'])): ?>
+                                    <small class="text-danger"><?php echo htmlspecialchars($view->errors['price']) ?></small>
+                                <?php endif; ?>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">Availability</label>
+                                <select id="availability" name="availability" class="form-control">
+                                    <option disabled selected value="">Select Availability</option>
+                                    <option value="1">Available</option>
+                                    <option value="2">In Use</option>
+                                    <option value="3">Maintenance</option>
+                                </select>
+                                <?php if (!empty($view->errors['available'])): ?>
+                                    <small class="text-danger"><?php echo htmlspecialchars($view->errors['available']) ?></small>
+                                <?php endif; ?>
+                            </div>
 
-                        <div class="row justify-content-center my-3 px-3">
-                            <button type="submit" class="btn-block btn-color">Sign Up</button>
-                        </div>
+                            <div class="form-group">
+                                <label class="form-control-label text-muted" for="connectorType">
+                                    Connector Type
+                                </label>
+                                <input type="text"
+                                       id="connectorType"
+                                       name="connectorType"
+                                       placeholder="Enter connector type"
+                                       class="form-control">
+                                <?php if (!empty($view->errors['connectorType'])): ?>
+                                    <small class="text-danger">
+                                        <?= htmlspecialchars($view->errors['connectorType']) ?>
+                                    </small>
+                                <?php endif; ?>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">Road</label>
+                                <input type="text" name="road" id="road" class="form-control" placeholder="Enter road">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">City</label>
+                                <input type="text" name="city" id="city" class="form-control" placeholder="Enter city">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">Home Number</label>
+                                <input type="text" name="home_number" id="home_number" class="form-control" placeholder="Enter home number">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">ZIP Code</label>
+                                <input type="text" name="zip_code" id="zip_code" class="form-control" placeholder="Enter ZIP code">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label text-muted">Charge Point Image</label>
+                                <input type="file" id="chargePointImage" name="chargePointImage" class="form-control-file" accept="image/png, image/jpeg">
+                                <?php if (!empty($view->errors['chargePointImage'])): ?>
+                                    <small class="text-danger">
+                                        <?php echo htmlspecialchars($view->errors['chargePointImage']); ?>
+                                    </small>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Hidden inputs to store coordinates -->
+                            <input type="hidden" name="latitude" id="latitude">
+                            <input type="hidden" name="longitude" id="longitude">
+
+                            <div class="row justify-content-center my-3 px-3">
+                                <button type="submit" class="btn-block btn-color">Sign Up</button>
+                            </div>
                         </form>
                     </div>
                     <?php
@@ -113,7 +167,8 @@
     </div>
 </div>
 
-<script type="module" src="./js/RegistrationFormValidation.js"></script>
+<script type="module" src="./js/HomeOwnerRegFormValidation.js"></script>
+<script src="./js/geoLocation.js"></script>
 
 <?php
 
