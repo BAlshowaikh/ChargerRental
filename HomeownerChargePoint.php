@@ -3,7 +3,7 @@ require_once 'Models/Database.php';
 require_once 'Models/chargerPointData.php';
 
 session_start();
-$_SESSION['userID'] = 4; // TEMP LOGIN
+//$_SESSION['userID'] = 4; // TEMP LOGIN
 
 $userId = $_SESSION['userID'] ?? null;
 

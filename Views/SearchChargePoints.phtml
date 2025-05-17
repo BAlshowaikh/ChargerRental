@@ -1,14 +1,9 @@
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link href="/css/sharedLayout.css" rel="stylesheet">
-    <link href="/css/bootstrap.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- The leaflet css for the map-->
-    <link rel="stylesheet" href="/Leaflet/leaflet.css">
-</head>
-<?php require("template/CustomerNavBar.phtml"); ?>
+<!--    <link rel="stylesheet" href="/Leaflet/leaflet.css">-->
 
-<body>
+<?php require ('template/header.phtml'); ?>
 <main class="manage-container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <!-- Toggle Button Group (left side) -->
@@ -111,9 +106,7 @@
     <script src="/Leaflet/leaflet.js"></script>
     <script src="/js/Map.js"></script>
 </main>
-<?php include('template/footer.phtml'); ?>
-
-</body>
+<?php require ('template/footer.phtml'); ?>
 
 
 <script>

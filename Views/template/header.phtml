@@ -11,7 +11,9 @@ if (session_status() === PHP_SESSION_NONE) {
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <?php if (!empty($view->styles)): ?>
-        <link rel="stylesheet" href="<?= $view->styles ?>">
+            <?php foreach ((array) $view->styles as $style): ?>
+                <link rel="stylesheet" href="<?= $style ?>">
+            <?php endforeach; ?>
     <?php else: ?>
         <link rel="stylesheet" href="/css/sharedLayout.css">
     <?php endif; ?>
@@ -21,8 +23,8 @@ if (session_status() === PHP_SESSION_NONE) {
 <?php if (!empty($_SESSION["userID"])): ?>
     <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="/images/PowerUpLogo.png" alt="EV Portal Logo" style="height: 20px;">
+            <a class="navbar-brand" href="/index.php">
+                <img src="/images/PowerUpLogo.png"  alt="EV Portal Logo" style="height: 20px;">
             </a>
 
             <div class="collapse navbar-collapse">
@@ -42,10 +44,6 @@ if (session_status() === PHP_SESSION_NONE) {
                             <li class="nav-item"><a class="nav-link" href="/SearchChargePoints.php">Explore Charge Point</a></li>
                             <li class="nav-item"><a class="nav-link" href="/UserBookingRequest.php">Booking History</a></li>
                         <?php endif; ?>
-                    <?php else: ?>
-                        <!-- Guest Nav -->
-                        <li class="nav-item"><a class="nav-link" href="/Login.php">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Signup.php">Signup</a></li>
                     <?php endif; ?>
                 </ul>
 

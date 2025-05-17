@@ -6,15 +6,17 @@ require_once("Models/chargerPointDataSet.php");
 
 $view = new stdClass();
 $view->pageTitle = "My Booking Requests";
+$view->styles = ["/css/BookingRequest.css", "/css/BookingRequestMange.css", "/Leaflet/leaflet.css"];
 
 // Login to be enabled later
-// if (!isset($_SESSION['user'])) {
-//     header("Location: Login.php");
-//     exit();
-// }
+ if (!isset($_SESSION['userID'])) {
+     header("Location: Login.php");
+     exit();
+ }
 
+$userId = $_SESSION['userID'];
 // $userId = $_SESSION['user']->getUserId();
-$userId = 123;
+//$userId = 123;
 
 // GET filters and pagination
 $status = $_GET['status'] ?? '';

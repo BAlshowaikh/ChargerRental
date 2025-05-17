@@ -3,6 +3,7 @@
 session_start();
 
 $view = new stdClass();
+$view->styles = "Leaflet/leaflet.css";
 
 require_once("Models/Database.php");
 require_once("Models/chargerPointDataSet.php");
