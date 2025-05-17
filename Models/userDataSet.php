@@ -15,36 +15,21 @@ class userDataSet
 
     public function addUserData($fname, $lname, $username, $password, $phoneNo, $regDate)//, $road, $city, $country)
     {
-        if (strpos($username, "@admin.com") !== false)
-        {
-            $userRoleID = 1;
-        }
-        elseif (strpos($username, "@homeowner.com") !== false)
+        if (strpos($username, "@homeowner.com") !== false)
         {
             $userRoleID = 2;
         }
-        else
+        elseif (strpos($username, "@customer.com") !== false)
         {
             $userRoleID = 3;
         }
 
         //Hash password
         $password = password_hash($password, PASSWORD_DEFAULT);
-        $approved = "no";
+        $approved = "Pending";
 
 
-        /*$locationQuery = "INSERT INTO Location (City, Road, Country) VALUES (:city, :road, :country)";
-
-        $statement = $this->_dbHandle->prepare($locationQuery);
-        $statement->bindParam(":road", $road);
-        $statement->bindParam(':city', $city);
-        $statement->bindParam(':country', $country);
-        $statement->execute();
-
-        $locationID = $this->_dbHandle->lastInsertId();*/
-
-
-        $sqlQuery = "INSERT INTO User (first_name, last_name, username, password, phone_number, registration_timestamp, Approved, user_role_id) 
+        $sqlQuery = "INSERT INTO User (first_name, last_name, username, password, phone_number, registration_timestamp, user_status, user_role_id) 
                      VALUES (:fname, :lname, :username, :password, :phoneNo, :regDate, :approved, :userRoleID)";
 
         $stmt = $this->_dbHandle->prepare($sqlQuery);
@@ -57,7 +42,6 @@ class userDataSet
         $stmt->bindParam(':regDate', $regDate);
         $stmt->bindParam(':approved', $approved);
         $stmt->bindParam(':userRoleID', $userRoleID, PDO::PARAM_INT);
-        //$stmt->bindParam(':locationID', $locationID, PDO::PARAM_INT);
 
         $stmt->execute();
     }
@@ -107,18 +91,6 @@ class userDataSet
         return $statement->fetch(PDO::FETCH_ASSOC); // ✅ Return as associative array
     }
 
-    public function updateLocation($road, $city, $locationID)
-    {
-        $sql = "UPDATE Location 
-                SET city = :city, road = :road
-                WHERE location_ID = :locationID";
-
-        $stmt = $this->_dbHandle->prepare($sql);
-        $stmt->bindParam(':city', $city);
-        $stmt->bindParam(':road', $road);
-        $stmt->bindParam(':locationID', $locationID);
-        return $stmt->execute();
-    }
 
     public function registerHomeOwner(
         $firstName,
@@ -145,16 +117,15 @@ class userDataSet
             throw new \InvalidArgumentException('Admin users cannot self-register.');
         } elseif (strpos($username, '@homeowner.com') !== false) {
             $userRoleId = 2;
-            $userStatus = 'Reject';
+            $userStatus = 'Pending';
         } else {
             $userRoleId = 3;
-            $userStatus = 'Reject';
+            $userStatus = 'Pending';
         }
         $hashed = password_hash($plainPassword, PASSWORD_DEFAULT);
 
-        //$this->_dbHandle->beginTransaction();
 
-        // a) Insert Location
+        // Insert Location
         $sqlLocation = "
         INSERT INTO Location (Road, City, Home_number, ZIP_Code, Latitude, Longitude)
         VALUES (:road, :city, :home_number, :zip_code, :latitude, :longitude)
@@ -169,7 +140,7 @@ class userDataSet
         $stmtLocation->execute();
         $locationId = (int)$this->_dbHandle->lastInsertId();
 
-        // a) User
+        // User
         $sqlU = "
 INSERT INTO User
   (first_name, last_name, username, password,
@@ -192,7 +163,7 @@ VALUES
 
         $newUserId = (int)$this->_dbHandle->lastInsertId();
 
-        // b) Charger_point (blank image_url)
+        // Charger_point (blank image_url)
         $sqlCharger = "
         INSERT INTO Charger_point (
             Name,
@@ -225,7 +196,7 @@ VALUES
         $stmt2->bindParam(':locationID', $locationId);
         $stmt2->execute();
 
-        // Step 3: Return charger_point_id for image upload and update
+        // Return charger_point_id for image upload and update
         return (int)$this->_dbHandle->lastInsertId();
     }
 
