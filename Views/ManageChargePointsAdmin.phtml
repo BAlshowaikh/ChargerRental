@@ -3,6 +3,7 @@
     <h2 class="page-title">Manage Charger Points</h2>
 
     <div class="card-container">
+
         <?php if (!empty($chargerPointObjs)): ?>
             <?php foreach ($chargerPointObjs as $point): ?>
                 <div class="card">
@@ -59,6 +60,17 @@
             </form>
         </div>
     </div>
+
+    <?php if (isset($_GET['status'])): ?>
+        <div id="statusPopup" class="popup-overlay">
+            <div class="popup-box <?= $_GET['status'] === 'updated' ? 'success-popup' : 'neutral-popup' ?>">
+                <?= $_GET['status'] === 'updated'
+                    ? 'Charger point updated successfully!'
+                    : 'No changes were made.' ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
 </main>
 <!-- Pagination -->
 <nav class="mt-5">
@@ -97,6 +109,17 @@
     function closeDeleteModal() {
         document.getElementById('deleteModal').style.display = 'none';
     }
+    window.addEventListener('DOMContentLoaded', () => {
+        const popup = document.getElementById('statusPopup');
+        if (popup) {
+            setTimeout(() => {
+                popup.remove();
+                const url = new URL(window.location);
+                url.searchParams.delete('status');
+                window.history.replaceState({}, document.title, url);
+            }, 4000);
+        }
+    });
 </script>
 
 
@@ -280,6 +303,48 @@
 
     .delete-btn {
         background: linear-gradient(to right, #f85032, #e73827);
+    }
+    .popup-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeOut 1s ease-out 3s forwards;
+    }
+
+    .popup-box {
+        font-weight: bold;
+        padding: 20px 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        font-size: 18px;
+        text-align: center;
+        border-left: 6px solid;
+    }
+
+    /* Green success */
+    .success-popup {
+        background: #e8f5e9;
+        color: #2e7d32;
+        border-left-color: #2e7d32;
+    }
+
+    /* Yellow neutral */
+    .neutral-popup {
+        background: #fff3cd;
+        color: #856404;
+        border-left-color: #ffeeba;
+    }
+
+    @keyframes fadeOut {
+        to {
+            opacity: 0;
+            visibility: hidden;
+        }
     }
 
 
