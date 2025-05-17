@@ -298,6 +298,42 @@ class chargerPointDataSet
         return $dataSet;
     }
 
+    public function getChargerPointByUserId($userId) {
+        $stmt = $this->_dbHandle->prepare("SELECT * FROM Charger_point WHERE user_ID = ?");
+        $stmt->execute([$userId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row ? new chargerPointData($row) : null;
+    }
+
+    public function getChargerPointByIdAndUser($chargerId, $userId) {
+        $stmt = $this->_dbHandle->prepare("SELECT * FROM Charger_point WHERE charger_point_id = ? AND user_id = ?");
+        $stmt->execute([$chargerId, $userId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? new chargerPointData($row) : null;
+    }
+
+    public function updateChargerPoint($chargerId, $userId, $name, $description, $cost, $connectorType, $imageUrl) {
+        $stmt = $this->_dbHandle->prepare("
+        UPDATE Charger_point 
+        SET Name = ?, 
+            charger_point_description = ?, 
+            price_per_kwatt = ?, 
+            connector_type = ?, 
+            charger_image_url = ?
+        WHERE charger_point_id = ? AND user_id = ?
+    ");
+        return $stmt->execute([
+            $name,
+            $description,
+            $cost,
+            $connectorType,
+            $imageUrl,
+            $chargerId,
+            $userId
+        ]);
+    }
+
 
 }
 

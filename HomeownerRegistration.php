@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($view->errors)) {
         $userDataSet = new userDataSet();
 
-        $_SESSION["user_status"] = $userDataSet["user_status"];
+//        $_SESSION["user_status"] = $userDataSet["user_status"];
 
         $regDate    = date('Y-m-d');
         $userStatus = 'Reject';
