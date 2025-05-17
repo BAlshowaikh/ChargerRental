@@ -1,0 +1,120 @@
+.status-modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.status-modal {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.status-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    font-size: 22px;
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+}
+
+/* Centered overlay container */
+.status-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: none; /* initially hidden */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Centered popup modal box */
+.status-modal {
+    background: #fff;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 450px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: fadeInPopup 0.25s ease-out;
+}
+
+/* Close button */
+.status-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+}
+
+/* Fade in animation */
+@keyframes fadeInPopup {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
+.status-modal {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    max-width: 500px;
+    width: 90%;
+    margin: auto;
+    position: relative;
+    z-index: 1001;
+}
+.status-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    border: none;
+    background: none;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+}
+
+.status-modal-overlay {
+    transition: opacity 0.3s ease;
+}
+.status-modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#statusModalButtons button {
+    transition: transform 0.2s ease;
+}
+#statusModalButtons button:hover {
+    transform: scale(1.05);
+}

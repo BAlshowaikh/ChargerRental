@@ -1,27 +1,87 @@
-<?php
-
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
- */
-
-
-require("template/AdminNavBar.phtml");
-
-?>
-
-<html>
 <head>
-    <link href="/css/sharedLayout.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/sharedLayout.css">
 </head>
 <body>
-    <main class="manage-container">
-        <h2 class="page-title">Edit Charge Points</h2>
-    </main>
+<?php include 'template/AdminNavBar.phtml'; ?>
+
+<main class="manage-container">
+    <h2 class="page-title">Edit Charger Point</h2>
+
+    <div class="form-wrapper">
+        <!-- Left: Image -->
+        <div class="image-preview" onclick="document.getElementById('imageFile').click()">
+            <img id="charger-image" src="images/ChargerPoints/<?= htmlspecialchars($charger->getImageUrl()) ?>" alt="Charger Image">
+        </div>
+
+        <!-- Right: Form -->
+        <form method="post" action="EditChargePointAdmin.php" class="edit-form" enctype="multipart/form-data">
+            <!-- Hidden File Input (to replace the image) -->
+            <input type="file" id="imageFile" name="imageFile" accept="image/png, image/jpeg" style="display: none;" onchange="previewImage(this)">
+
+            <input type="hidden" name="id" value="<?= htmlspecialchars($charger->getId()) ?>">
+
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" name="name" value="<?= htmlspecialchars($charger->getName()) ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description:</label>
+                <textarea name="description" rows="2"><?= htmlspecialchars($charger->getDescription()) ?></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Price per kWh:</label>
+                <input type="number" step="0.01" name="price" value="<?= htmlspecialchars($charger->getPricePerKW()) ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label>Connector Type:</label>
+                <input type="text" name="connector" value="<?= htmlspecialchars($charger->getConnectorType()) ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label>Status:</label>
+                <select name="status">
+                    <option value="1" <?= $charger->getAvailableStatusId() == 1 ? 'selected' : '' ?>>Available</option>
+                    <option value="0" <?= $charger->getAvailableStatusId() == 0 ? 'selected' : '' ?>>Unavailable</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn update-btn">Update</button>
+        </form>
+    </div>
+</main>
+<?php include 'template/footer.phtml'; ?>
 </body>
-</html>
 
+<script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const validTypes = ['image/jpeg', 'image/png'];
 
-<?php
-require('template/footer.phtml');
-?>
+            if (!validTypes.includes(file.type)) {
+                alert("Only JPG and PNG files are allowed.");
+                input.value = '';
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) { // 2MB limit
+                alert("Image is too large. Max allowed size is 2MB.");
+                input.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('charger-image').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>

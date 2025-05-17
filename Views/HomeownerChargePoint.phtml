@@ -1,0 +1,300 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/sharedLayout.css">
+</head>
+<body>
+
+<?php include 'template/HomeownerNavBar.phtml'; ?>
+
+<main class="manage-container">
+    <h2 class="page-title">Charger Point Details</h2>
+
+    <?php if (isset($chargePoint)): ?>
+        <form id="editForm" method="post" action="HomeownerUpdateChargePoint.php">
+            <input type="hidden" name="charger_id" value="<?= htmlspecialchars($chargePoint->getId()) ?>">
+
+            <div class="card redesigned">
+                <div class="card-body">
+                    <!-- LEFT: Details -->
+                    <div class="card-left">
+                        <div class="info-grid">
+                            <div class="label">Name:</div>
+                            <div class="value">
+                                <input type="text" name="name" class="editable-field" value="<?= htmlspecialchars($chargePoint->getName()) ?>" readonly>
+                            </div>
+
+                            <div class="label">Description:</div>
+                            <div class="value">
+                                <textarea name="description" class="editable-field" rows="2" readonly><?= htmlspecialchars($chargePoint->getDescription()) ?></textarea>
+                            </div>
+
+                            <div class="label">Cost per kWh:</div>
+                            <div class="value">
+                                <input type="number" name="cost_per_kwh" class="editable-field" step="0.01" value="<?= htmlspecialchars($chargePoint->getPricePerKW()) ?>" readonly>
+                            </div>
+
+                            <div class="label">Connector Type:</div>
+                            <div class="value">
+                                <input type="text" name="connector_type" class="editable-field" value="<?= htmlspecialchars($chargePoint->getConnectorType()) ?>" readonly>
+                            </div>
+
+                            <div class="label">Image Filename:</div>
+                            <div class="value">
+                                <input type="text" name="image_url" class="editable-field" value="<?= htmlspecialchars($chargePoint->getImageUrl()) ?>" readonly>
+                            </div>
+
+                        </div>
+
+                        <!-- BUTTONS: Now inside card-body -->
+                        <div class="card-actions">
+                            <button type="button" id="editBtn" class="btn" onclick="enableEditMode()">Edit</button>
+                            <button type="submit" id="saveBtn" class="btn" style="display:none;">Save</button>
+                            <button type="button" id="cancelBtn" class="btn cancel-btn" onclick="cancelEditMode()" style="display:none;">Cancel</button>
+                            <button type="button" class="btn delete-btn" onclick="confirmDelete()">Delete</button>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: Image -->
+                    <div class="card-right">
+                        <?php
+                        $imageDir = $_SERVER['DOCUMENT_ROOT'] . '/images/ChargerPoints/';
+                        $imageBase = $chargePoint->getImageUrl();
+                        $imagePath = '/images/ChargerPoints/' . $imageBase;
+
+                        $fullPath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
+                        if (!file_exists($fullPath) || empty($imageBase)) {
+                            $imagePath = '/images/noImage.png';
+                        }
+                        ?>
+
+                        <img src="<?= $imagePath ?>"
+                             alt="Charger Image"
+                             class="charger-image">
+
+                    </div>
+
+
+                </div>
+            </div>
+        </form>
+    <?php else: ?>
+        <p>No charger point found.</p>
+    <?php endif; ?>
+
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Confirm Deletion</h3>
+            <p>Are you sure you want to delete this charger point?</p>
+            <div class="modal-buttons">
+                <button class="btn delete-btn" onclick="proceedDelete()">Yes, Delete</button>
+                <button class="btn cancel-btn" onclick="closeDeleteModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</main>
+<?php include('template/footer.phtml'); ?>
+
+</body>
+
+<script>
+    function enableEditMode() {
+        document.querySelectorAll('.editable-field').forEach(el => el.removeAttribute('readonly'))
+        document.getElementById('editBtn').style.display = 'none'
+        document.getElementById('saveBtn').style.display = 'inline-block'
+        document.getElementById('cancelBtn').style.display = 'inline-block'
+    }
+
+    function cancelEditMode() {
+        window.location.reload()
+    }
+
+    function confirmDelete() {
+        document.getElementById('deleteModal').style.display = 'block'
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none'
+    }
+
+    function proceedDelete() {
+        window.location.href = "deleteChargerPoint.php"
+    }
+</script>
+
+<style>
+    body {
+        background: linear-gradient(to right, #2cc4b0, #3a95dd);
+        margin: 0;
+        font-family: system-ui, sans-serif;
+    }
+
+    .manage-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 40px;
+        border-radius: 16px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-title {
+        color: #005b7f;
+        font-size: 28px;
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    /* CARD */
+    .card.redesigned {
+        background: #fff;
+        border: 1px solid #005b7f;
+        border-radius: 16px;
+        box-shadow: none;
+        padding: 40px 50px; /* more vertical space */
+        width: 95%;
+        margin: 0 auto;
+        min-height: 400px; /* add a taller base height */
+    }
+
+
+
+    /* CARD BODY FLEX LAYOUT */
+    .card-body {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 40px;
+    }
+
+    /* LEFT CONTENT */
+    .card-left {
+        flex: 1 1 55%;
+        min-width: 300px;
+    }
+
+    /* RIGHT IMAGE */
+    .card-right {
+        flex: 1 1 35%;
+        max-width: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* IMAGE */
+    .charger-img {
+        width: 100%;
+        max-width: 250px;
+        height: auto;
+        object-fit: contain;
+        border-radius: 12px;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* INFO GRID */
+    .info-grid {
+        display: grid;
+        grid-template-columns: 150px auto;
+        row-gap: 12px;
+        column-gap: 20px;
+        font-size: 16px;
+    }
+
+    .info-grid .label {
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .info-grid .value {
+        text-align: left;
+    }
+
+    /* BUTTON GROUP */
+    .card-actions {
+        flex: 1 1 100%;
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        padding-top: 20px;
+        margin-top: 30px;
+        border-top: 1px solid #eee;
+    }
+
+    /* BUTTON BASE STYLE */
+    .card-actions .btn {
+        min-width: 120px;
+        max-width: 160px;
+        padding: 10px 20px;
+        font-weight: bold;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    /* BUTTON COLORS */
+    .btn {
+        background-color: #005b7f;
+        color: white;
+        transition: background 0.3s;
+    }
+
+    .btn:hover {
+        background-color: #004466;
+    }
+
+    .btn.delete-btn {
+        background: linear-gradient(to right, #f85032, #e73827);
+    }
+
+    .btn.delete-btn:hover {
+        background-color: #800000;
+    }
+
+    .cancel-btn {
+        background-color: #888;
+    }
+
+    /* EDITABLE FIELDS */
+    .editable-field[readonly] {
+        border: none;
+        background: transparent;
+        font-weight: 500;
+        pointer-events: none;
+    }
+
+    /* MODAL */
+    .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: grid;
+        place-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 30px 20px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 20px;
+    }
+</style>

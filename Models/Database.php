@@ -1,8 +1,5 @@
 <?php
 
-namespace Models;
-
-use \PDO;
 
 class Database
 {
@@ -35,7 +32,7 @@ class Database
             $this->_dbHandle = new \PDO("mysql:host=$host;dbname=$database", $username, $password);
             //echo "Connected";
         }
-        catch (PDOException $e) {
+        catch (\Models\PDOException $e) {
             // Handle connection errors
             echo $e->getMessage(); // Output error message (in production, log this instead)
         }

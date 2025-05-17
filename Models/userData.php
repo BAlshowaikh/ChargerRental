@@ -2,28 +2,20 @@
 
 class userData
 {
-    private $userId, $fName, $lName, $username, $password, $phNo, $registrationDate, $approved, $userRoleId;
+    private $userId, $firstName, $lastName, $username, $password, $phoneNumber, $registrationTimestamp, $userStatus, $userRoleId, $userRoleName;
 
-    public function __construct($dbRow)
+    public function __construct(array $dbRow)
     {
-        $this->userId = $dbRow['user_ID'];
-        $this->fName = $dbRow['f_Name'];
-        $this->lName = $dbRow['l_Name'];
+        $this->userId = $dbRow['user_id'];
+        $this->firstName = $dbRow['first_name'];
+        $this->lastName = $dbRow['last_name'];
         $this->username = $dbRow['username'];
         $this->password = $dbRow['password'];
-        $this->phNo = $dbRow['Phone_no'];
-        $this->registrationDate = $dbRow['Registration_date'];
-
-        if ($dbRow['approved'])
-        {
-            $this->approved = "Yes";
-        }
-        else
-        {
-            $this->approved = "No";
-        }
-
-        $this->userRoleId = $dbRow['user_role_User_role_ID'];
+        $this->phoneNumber = $dbRow['phone_number'];
+        $this->registrationTimestamp = $dbRow['registration_timestamp'];
+        $this->userStatus = $dbRow['user_status'];
+        $this->userRoleId = $dbRow['user_role_id'];
+        $this->userRoleName = $dbRow['user_role'];
     }
 
     public function getUserId()
@@ -31,14 +23,14 @@ class userData
         return $this->userId;
     }
 
-    public function getFName()
+    public function getFirstName()
     {
-        return $this->fName;
+        return $this->firstName;
     }
 
-    public function getLName()
+    public function getLastName()
     {
-        return $this->lName;
+        return $this->lastName;
     }
 
     public function getUsername()
@@ -51,23 +43,27 @@ class userData
         return $this->password;
     }
 
-    public function getPhNo()
+    public function getPhoneNumber()
     {
-        return $this->phNo;
+        return $this->phoneNumber;
     }
 
-    public function getRegistrationDate()
+    public function getRegistrationTimestamp()
     {
-        return $this->registrationDate;
+        return $this->registrationTimestamp;
     }
 
-    public function getApproved()
+    public function getUserStatus()
     {
-        return $this->approved;
+        return $this->userStatus;
     }
 
     public function getUserRoleId()
     {
         return $this->userRoleId;
+    }
+    public function getUserRoleName()
+    {
+        return $this->userRoleName;
     }
 }

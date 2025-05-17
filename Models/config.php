@@ -1,6 +1,7 @@
-<!-- This class will hold the configuration for the db connection -->
+
 <?php
 
+/* This class will hold the configuration for the db connection */
 return [
     'database' => [
         'host' => '20.126.5.244',

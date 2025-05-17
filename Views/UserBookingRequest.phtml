@@ -1,0 +1,137 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/sharedLayout.css">
+    <link rel="stylesheet" href="/css/BookingRequest.css">
+    <link rel="stylesheet" href="/css/BookingRequestMange.css">
+        <link rel="stylesheet" href="/Leaflet/leaflet.css">
+        <script src="/Leaflet/leaflet.js"></script>
+</head>
+<body>
+<?php include("template/CustomerNavBar.phtml"); ?>
+
+    <div class="container py-5">
+        <h2 class="text-white mb-4">My Booking Requests</h2>
+
+        <!-- Filters -->
+        <form method="get" class="row g-3 mb-4 align-items-center" id="filterForm">
+            <div class="col-md-4">
+                <select name="status" class="form-select shadow-sm rounded-pill" id="statusSelect">
+                    <option value="">Filter by Status</option>
+                    <option value="1" <?= $_GET['status'] ?? '' === '1' ? 'selected' : '' ?>>Pending</option>
+                    <option value="2" <?= $_GET['status'] ?? '' === '2' ? 'selected' : '' ?>>Approved</option>
+                    <option value="3" <?= $_GET['status'] ?? '' === '3' ? 'selected' : '' ?>>Declined</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="sort" class="form-select shadow-sm rounded-pill" id="sortSelect">
+                    <option value="newest" <?= $_GET['sort'] ?? '' === 'newest' ? 'selected' : '' ?>>Sort by Newest</option>
+                    <option value="oldest" <?= $_GET['sort'] ?? '' === 'oldest' ? 'selected' : '' ?>>Sort by Oldest</option>
+                </select>
+            </div>
+        </form>
+
+        <!-- Booking Cards -->
+        <?php if (empty($view->bookings)): ?>
+            <div class="alert alert-light">No bookings found.</div>
+        <?php else: ?>
+            <div class="row g-4">
+                <?php foreach ($view->bookings as $b): ?>
+                    <?php
+                    $statusId = (int) $b['Booking_status_ID'];
+                    $statusText = $b['Booking_status'];
+                    $badge = match ($statusId) {
+                        1 => 'warning',
+                        2 => 'success',
+                        3 => 'danger',
+                        default => 'secondary'
+                    };
+                    $statusClass = match ($statusId) {
+                        1 => 'status-pending',
+                        2 => 'status-approved',
+                        3 => 'status-declined',
+                        default => ''
+                    };
+
+                    $start = new DateTime($b['Booking_start']);
+                    $end   = new DateTime($b['Booking_end']);
+                    $duration = $start->diff($end);
+                    $kwh = $duration->h + ($duration->i >= 30 ? 1 : 0);
+                    $cost = number_format($kwh * $b['Price_per_kwatt'], 2);
+                    ?>
+                    <div class="col-md-4">
+                        <div class="card card-hover bg-transparent border-0 p-0 <?= $statusClass ?>" onclick="loadChargerDetails(<?= $b['Charger_point_ID'] ?>)">
+                            <div class="card-inner h-100">
+                                <!-- Front -->
+                                <div class="card-front card-body border h-100">
+                                    <h5 class="card-title text-uppercase mb-3">⚡ <?= $start->format('l, F j, Y') ?></h5>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <strong>Start:</strong>
+                                        <span><?= $start->format('H:i') ?></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <strong>End:</strong>
+                                        <span><?= $end->format('H:i') ?></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <strong>Status:</strong>
+                                        <span class="badge bg-<?= $badge ?> rounded-pill px-3 py-2"><?= strtoupper($statusText) ?></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <strong>kWh:</strong>
+                                        <span><?= $kwh ?></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <strong>Cost:</strong>
+                                        <span><?= $cost ?> BD</span>
+                                    </div>
+                                </div>
+
+                                <!-- Back -->
+                                <div class="card-back h-100 d-flex align-items-center justify-content-center">
+                                    <div class="text-center px-3">
+                                        <h5 class="mb-3">🔍 View Charger Point</h5>
+                                        <p class="m-0">Tap to reveal charger location, description, and more details.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <?php endforeach; ?>
+            </div>
+
+            <!-- Pagination -->
+            <nav class="mt-5">
+                <ul class="pagination justify-content-center flex-wrap gap-2">
+                    <?php if ($view->currentPage > 1): ?>
+                        <li class="page-item">
+                            <a class="page-link shadow-sm rounded-pill px-4" href="?page=<?= $view->currentPage - 1 ?>&status=<?= $_GET['status'] ?? '' ?>&sort=<?= $_GET['sort'] ?? '' ?>">« Previous</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="page-item disabled"><span class="page-link shadow-sm rounded-pill px-4">« Previous</span></li>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $view->totalPages; $i++): ?>
+                        <li class="page-item <?= $i === $view->currentPage ? 'active' : '' ?>">
+                            <a class="page-link rounded-pill fw-semibold <?= $i === $view->currentPage ? 'bg-dark text-white border-dark' : '' ?>" href="?page=<?= $i ?>&status=<?= $_GET['status'] ?? '' ?>&sort=<?= $_GET['sort'] ?? '' ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <?php if ($view->currentPage < $view->totalPages): ?>
+                        <li class="page-item">
+                            <a class="page-link shadow-sm rounded-pill px-4" href="?page=<?= $view->currentPage + 1 ?>&status=<?= $_GET['status'] ?? '' ?>&sort=<?= $_GET['sort'] ?? '' ?>">Next »</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="page-item disabled"><span class="page-link shadow-sm rounded-pill px-4">Next »</span></li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
+        <?php endif; ?>
+    </div>
+<?php include("template/footer.phtml"); ?>
+
+</body>
+    <script src="/js/UserBooksJS.js"></script>

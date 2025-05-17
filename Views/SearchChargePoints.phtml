@@ -1,30 +1,168 @@
-<?php
-
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
- */
-
-require("template/CustomerNavBar.phtml");
-
-?>
-
-<!DOCTYPE html>
-<html>
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link href="/css/sharedLayout.css" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Search Charge Points</title>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <!-- The leaflet css for the map-->
+    <link rel="stylesheet" href="/Leaflet/leaflet.css">
 </head>
+<?php include("template/CustomerNavBar.phtml"); ?>
+
 <body>
-    <main class="manage-container">
-        <h2 class="page-title">Search Charge Points</h2>
-    </main>
+<main class="manage-container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- Toggle Button Group (left side) -->
+        <div>
+            <div class="btn-group" role="group" aria-label="View toggle">
+                <input type="radio" class="btn-check" name="viewToggle" id="toggleMap" autocomplete="off" <?php echo $_SESSION['view'] === 'map' ? 'checked' : ''; ?>>
+                <label class="btn" for="toggleMap">Map</label>
+
+                <input type="radio" class="btn-check" name="viewToggle" id="toggleList" autocomplete="off" <?php echo $_SESSION['view'] === 'list' ? 'checked' : ''; ?>>
+                <label class="btn" for="toggleList">List</label>
+
+            </div>
+        </div>
+
+        <!-- Spacer for centering the title -->
+        <div class="flex-grow-1 text-center">
+            <h2 class="page-title mb-0">Book Charge Point</h2>
+        </div>
+
+        <!-- Filter Button (right side) -->
+        <div class="filter-container position-relative ms-auto">
+            <!-- Filter button and Reset button(right side) -->
+            <div class="d-flex justify-content-start gap-2">
+                <div id="filterButton">
+                    <button class="btn btn-primary btn-sm">
+                        <i class="bi bi-funnel"></i> Filters
+                    </button>
+                </div>
+                <div id="resetButton">
+                    <button class="btn btn-outline-secondary btn-sm" >
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Panel -->
+            <div id="filter-panel" class="filter-panel d-none">
+                <h4>Filter Chargers</h4>
+                <label>
+                    <input type="checkbox" id="nearest">
+                    Nearest to me
+                </label><br><br>
+
+                <label for="priceRange">Price per kWatt (0–10):</label><br>
+                <input type="range" id="priceRange" min="0" max="10" step="1" value="10">
+                <span id="priceValue">10</span><br><br>
+
+                <label for="availability">Availability:</label><br>
+                <select id="availability">
+                    <option value="">All</option>
+                    <option value="Available">Available</option>
+                    <option value="In Use">In Use</option>
+                    <option value="Maintenance">Maintenance</option>
+                </select><br><br>
+
+                <button id="applyFilters" class="add-btn w-50 py-1">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map View -->
+    <div id="map-view" class="<?php echo $_SESSION['view'] === 'map' ? '' : 'd-none'; ?>">
+        <!-- Divide the container into two parts for the map and details-->
+        <div class="row">
+            <!-- Left column: Charger details -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 d-flex flex-column">
+                    <div class="card-body d-flex flex-column">
+                        <h4>Charger Details</h4>
+                        <hr class="divider">
+                        <p id="select-message" class="text-muted mb-3">Select a charger on the map to view details here.</p>
+                        <div id="charger-info" class="card-details mb-4"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right column: Map -->
+            <div class="col-md-8 position-relative">
+                <!-- Map container -->
+                <div id="map">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- List View -->
+    <div id="list-view" class="<?php echo $_SESSION['view'] === 'list' ? '' : 'd-none'; ?>">
+        <div class="row" id="charger-list">
+            <!-- Charger cards will be dynamically inserted here -->
+        </div>
+        <div id="pagination" class="mt-4 d-flex justify-content-center">
+            <!-- Pagination buttons will be dynamically inserted here -->
+        </div>
+    </div>
+
+
+    <!-- Leaflet JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- For ajax requests -->
+    <script src="/Leaflet/leaflet.js"></script>
+    <script src="/js/Map.js"></script>
+</main>
+<?php include('template/footer.phtml'); ?>
+
 </body>
-</html>
 
 
+<script>
+    $(document).ready(function () {
+        // Function to toggle between Map and List views
+        function switchView(view) {
+            if (view === 'map') {
+                // Show map view, hide list
+                $('#map-view').removeClass('d-none');
+                $('#list-view').addClass('d-none');
 
-<?php
-require('template/footer.phtml');
-?>
+                // Force the leaflet map to reload correctly
+                setTimeout(function () {
+                    if (typeof map !== 'undefined') {
+                        map.invalidateSize();
+                    }
+                }, 300);
+            } else {
+                // Show list view, hide map
+                $('#map-view').addClass('d-none');
+                $('#list-view').removeClass('d-none');
+            }
+
+            // Persist view selection in PHP session
+            $.post('', { view: view });
+        }
+
+        // Attach event handler to map toggle
+        $('#toggleMap').on('change', function () {
+            if ($(this).is(':checked')) {
+                switchView('map');
+            }
+        });
+
+        //  Attach event handler to list toggle
+        $('#toggleList').on('change', function () {
+            if ($(this).is(':checked')) {
+                loadChargerList();
+                switchView('list');
+            }
+        });
+
+        // Inject initial view directly using session value from PHP
+        var initialView = "<?php echo $_SESSION['view']; ?>";
+        if (initialView === 'map') {
+            switchView('map');
+        } else {
+            loadChargerList();
+            switchView('list');
+        }
+    });
+</script>
