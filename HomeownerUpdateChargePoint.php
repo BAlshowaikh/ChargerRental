@@ -11,11 +11,31 @@ if (!isset($_SESSION['userID']) || $_SESSION['role'] != 2 || $_SESSION['user_sta
 $userId = $_SESSION['userID'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $chargerId      = intval($_POST['charger_id']);
-    $name           = $_POST['name'];
-    $description    = $_POST['description'];
-    $cost           = $_POST['cost_per_kwh'];
-    $connectorType  = $_POST['connector_type'];
+    $errors = [];
+
+    // Sanitize & validate charger ID
+    $chargerId = isset($_POST['charger_id']) ? intval($_POST['charger_id']) : 0;
+    if ($chargerId <= 0) $errors[] = "Invalid charger ID.";
+
+    // Sanitize other inputs
+    $name = htmlspecialchars(trim($_POST['name'] ?? ''), ENT_QUOTES, 'UTF-8');
+    $description = htmlspecialchars(trim($_POST['description'] ?? ''), ENT_QUOTES, 'UTF-8');
+    $cost = $_POST['cost_per_kwh'] ?? '';
+    $connectorType = htmlspecialchars(trim($_POST['connector_type'] ?? ''), ENT_QUOTES, 'UTF-8');
+
+    // Field validations
+    if ($name === '' || strlen($name) > 100) $errors[] = "Name is required and must be under 100 characters.";
+    if (strlen($description) > 500) $errors[] = "Description must be under 500 characters.";
+    if (!is_numeric($cost) || $cost < 0) $errors[] = "Cost must be a non-negative number.";
+    if ($connectorType === '' || strlen($connectorType) > 50) $errors[] = "Connector type is required and must be under 50 characters.";
+
+    // Show errors if any
+    if (!empty($errors)) {
+        foreach ($errors as $error) {
+            echo "<p style='color:red;'>$error</p>";
+        }
+        exit;
+    }
 
     $db = Database::getInstance()->getConnection();
 
@@ -29,16 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Use current image as default
+    // Default to existing image
     $imageUrl = $current['charger_image_url'];
     $imageChanged = false;
 
-    // Handle image upload
     if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
         $fileTmpPath = $_FILES['image_file']['tmp_name'];
         $fileSize    = $_FILES['image_file']['size'];
         $mimeType    = mime_content_type($fileTmpPath);
-
         $allowedTypes = ['image/jpeg' => 'jpg', 'image/png' => 'png'];
 
         if (!array_key_exists($mimeType, $allowedTypes)) {
@@ -64,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Check if anything changed
+    // Detect changes
     $somethingChanged = (
         trim($name) !== trim($current['Name']) ||
         trim($description) !== trim($current['charger_point_description']) ||
@@ -83,7 +101,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 charger_image_url = ?
             WHERE charger_point_id = ? AND user_id = ?
         ");
-        $updateStmt->execute([$name, $description, $cost, $connectorType, $imageUrl, $chargerId, $userId]);
+        $updateStmt->execute([
+            $name,
+            $description,
+            $cost,
+            $connectorType,
+            $imageUrl,
+            $chargerId,
+            $userId
+        ]);
 
         header("Location: HomeownerChargePoint.php?status=updated");
         exit;

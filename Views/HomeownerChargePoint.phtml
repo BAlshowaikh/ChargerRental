@@ -14,27 +14,27 @@
                         <div class="info-grid">
                             <div class="label">Name:</div>
                             <div class="value">
-                                <input type="text" name="name" class="editable-field" value="<?= htmlspecialchars($chargePoint->getName()) ?>" readonly>
+                                <input type="text" name="name" class="editable-field" value="<?= htmlspecialchars($chargePoint->getName()) ?>" readonly required maxlength="100">
                             </div>
 
                             <div class="label">Description:</div>
                             <div class="value">
-                                <textarea name="description" class="editable-field" rows="2" readonly><?= htmlspecialchars($chargePoint->getDescription()) ?></textarea>
+                                <textarea name="description" class="editable-field" rows="2" readonly maxlength="500"><?= htmlspecialchars($chargePoint->getDescription()) ?></textarea>
                             </div>
 
                             <div class="label">Cost per kWh:</div>
                             <div class="value">
-                                <input type="number" name="cost_per_kwh" class="editable-field" step="0.01" value="<?= htmlspecialchars($chargePoint->getPricePerKW()) ?>" readonly>
+                                <input type="number" name="cost_per_kwh" class="editable-field" step="0.01" min="0" value="<?= htmlspecialchars($chargePoint->getPricePerKW()) ?>" readonly required>
                             </div>
 
                             <div class="label">Connector Type:</div>
                             <div class="value">
-                                <input type="text" name="connector_type" class="editable-field" value="<?= htmlspecialchars($chargePoint->getConnectorType()) ?>" readonly>
+                                <input type="text" name="connector_type" class="editable-field" value="<?= htmlspecialchars($chargePoint->getConnectorType()) ?>" readonly required maxlength="50">
                             </div>
 
                             <div class="label">Image Filename:</div>
                             <div class="value">
-                                <input type="text" name="image_url" class="editable-field" value="<?= htmlspecialchars($chargePoint->getImageUrl()) ?>" readonly>
+                                <input type="text" class="editable-field" value="<?= htmlspecialchars($chargePoint->getImageUrl()) ?>" readonly disabled>
                             </div>
                         </div>
 
