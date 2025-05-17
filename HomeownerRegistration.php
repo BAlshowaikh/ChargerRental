@@ -3,7 +3,7 @@
 require ("Models/userDataSet.php");
 
 $view = new stdClass();
-
+$view->styles = "css/LoginRegCSS.css";
 session_start();
 
 if (isset($_SESSION["userID"]) && isset($_SESSION["user_status"]) && $_SESSION["user_status"] === "Approve")

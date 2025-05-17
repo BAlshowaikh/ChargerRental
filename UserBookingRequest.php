@@ -6,7 +6,7 @@ require_once("Models/chargerPointDataSet.php");
 
 $view = new stdClass();
 $view->pageTitle = "My Booking Requests";
-$view->styles = ["/css/BookingRequest.css", "/css/BookingRequestMange.css", "/Leaflet/leaflet.css"];
+$view->styles = ["/css/BookingRequest.css", "/css/BookingRequestMange.css", "/Leaflet/leaflet.css", "/css/sharedLayout.css"];
 
 // Login to be enabled later
  if (!isset($_SESSION['userID'])) {

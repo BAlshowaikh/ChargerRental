@@ -28,7 +28,7 @@ if (session_status() === PHP_SESSION_NONE) {
             </a>
 
             <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav mb-2 mb-lg-0 mx-auto">
                     <?php if (!empty($_SESSION["userID"])): ?>
                         <?php if ($_SESSION["role"] == 1): ?>
                             <!-- Admin Nav -->

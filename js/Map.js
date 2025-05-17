@@ -189,7 +189,6 @@ function loadChargerList(page = 1, filters=getFilters()) {
 </div>`;
             });
 
-
             chargerList.innerHTML = html;
 
             // Render pagination buttons
@@ -237,14 +236,6 @@ function toRad(deg) {
     return deg * Math.PI / 180;
 }
 
-// Create a function to collect filters from the UI:
-// function getFilters() {
-//     return {
-//         max_price: document.getElementById('priceRange').value,
-//         availability: document.getElementById('availability').value,
-//     };
-// }
-
 function getFilters() {
     return {
         maxPrice: parseFloat(document.getElementById('priceRange').value),
@@ -285,6 +276,29 @@ $(document).ready(function () {
         loadChargerList(1, filters);
         $("#filter-panel").addClass("d-none");
     });
+
+    // LIVE filter when price slider changes
+    $("#priceRange").on("input", function () {
+        $("#priceValue").text($(this).val());
+        const filters = getFilters();
+        loadMapChargers(filters);
+        loadChargerList(1, filters);
+    });
+
+// LIVE filter when availability dropdown changes
+    $("#availability").on("change", function () {
+        const filters = getFilters();
+        loadMapChargers(filters);
+        loadChargerList(1, filters);
+    });
+
+// LIVE filter when "nearest" checkbox changes
+    $("#nearest").on("change", function () {
+        const filters = getFilters();
+        loadMapChargers(filters);
+        loadChargerList(1, filters);
+    });
+
 
     $("#resetButton").on("click", function () {
         $("#nearest").prop("checked", false);
