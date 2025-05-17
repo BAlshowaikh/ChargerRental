@@ -5,6 +5,12 @@ require ("Models/userDataSet.php");
 $view = new stdClass();
 
 session_start();
+
+if (isset($_SESSION["userID"]) && isset($_SESSION["user_status"]) && $_SESSION["user_status"] === "Approve")
+{
+    header("Location: index.php");
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $view->errors = [];
 
@@ -29,6 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (empty($view->errors)) {
         $userDataSet = new userDataSet();
+
+        $_SESSION["user_status"] = $userDataSet["user_status"];
 
         $regDate    = date('Y-m-d');
         $userStatus = 'Reject';

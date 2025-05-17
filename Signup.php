@@ -9,12 +9,18 @@ require ("Models/userDataSet.php");
 
 $view = new stdClass();
 $view->pageTitle = "Sign Up";
-
+session_start();
 
 $user = new userDataSet();
 
+if (isset($_SESSION["userID"]) && isset($_SESSION["user_status"]) && $_SESSION["user_status"] === "Approve")
+{
+    header("Location: index.php");
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fname']) && isset($_POST['lname']) && isset($_POST['email']) && isset($_POST['password']) && isset($_POST['phno']))
 {
+    $_SESSION["user_status"] = $user["user_status"];
     /*$addressRaw = $_POST["address"];
     $addressParts = array_map("trim", explode(",", $addressRaw));
     $addressParts = array_filter($addressParts); // Removes empty values

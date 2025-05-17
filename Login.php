@@ -14,6 +14,12 @@ session_start();
 
 $user = new userDataSet();
 
+if (isset($_SESSION["userID"]) && isset($_SESSION["user_status"]) && $_SESSION["user_status"] === "Approve")
+{
+    header("Location: index.php");
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["email"]) && isset($_POST["password"]))
 {
     $email = $_POST["email"];
@@ -27,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["email"]) && isset($_P
         } else {
             $_SESSION["userID"] = $userData["user_id"];
             $_SESSION["role"] = $userData["user_role_id"];
+            $_SESSION["user_status"] = $userData["user_status"];
 
             $_SESSION["fullname"] = $userData["first_name"] . " " . $userData["last_name"];
             $_SESSION["username"] = $userData["username"];
@@ -44,6 +51,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["email"]) && isset($_P
     {
         $view->loginError = "Invalid username or password";
     }
+
+
 }
 
 

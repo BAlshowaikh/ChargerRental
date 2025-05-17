@@ -1,6 +1,6 @@
 <?php
 require_once("Models/bookingRequestDataSet.php");
-
+session_start();
 // Set JSON header for AJAX
 header('Content-Type: application/json');
 
