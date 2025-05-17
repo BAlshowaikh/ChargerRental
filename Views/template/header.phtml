@@ -55,6 +55,13 @@
 
             </ul>-->
 
+            <?php
+            $currentPage = basename($_SERVER['PHP_SELF']);
+            $hideForPages = ['Login.php', 'Signup.php', 'HomeownerRegistration.php'];
+            $approved = strtolower($_SESSION['user_status'] ?? '') === 'approve';
+            $loggedIn = isset($_SESSION['userID']);
+            ?>
+
             <!-- User Account Dropdown -->
             <div class="d-flex align-items-center ms-auto">
                 <div class="dropdown ms-3">
@@ -63,13 +70,13 @@
                         <span id="userName" class="text-white fw-semibold me-2">Logged In User</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <?php if (empty($_SESSION["userID"])): ?>
-                            <li><a class="dropdown-item" href="Login.php">Login</a></li>
-                            <li><a class="dropdown-item" href="Signup.php">Signup</a></li>
-                        <?php else: ?>
+                        <?php if ($loggedIn && $approved && !in_array($currentPage, $hideForPages)): ?>
                             <li><a class="dropdown-item" href="Profile.php">Profile</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="Logout.php">Logout</a></li>
+                        <?php else: ?>
+                            <li><a class="dropdown-item" href="Login.php">Login</a></li>
+                            <li><a class="dropdown-item" href="Signup.php">Signup</a></li>
                         <?php endif; ?>
                     </ul>
                 </div>
