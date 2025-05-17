@@ -11,7 +11,6 @@ if (!$userId) {
     exit;
 }
 
-//$userId=1;
 $userDataSet = new userDataSet();
 
 // Pagination settings
@@ -63,5 +62,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
-// Include the view file
 require_once("Views/ManageUsers.phtml");

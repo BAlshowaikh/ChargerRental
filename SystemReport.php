@@ -10,7 +10,6 @@ if (!$userId) {
     exit;
 }
 
-//$userId = 3;
 $bookingDataSet = new BookingRequestDataSet();
 
 $attributes = [
