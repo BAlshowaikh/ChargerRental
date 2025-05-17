@@ -35,10 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["email"]) && isset($_P
             $_SESSION["username"] = $userData["username"];
 
             if ($userData["user_role_id"] == 1 || $userData["user_role_id"] == 2) {
-                header("Location: index.php");
-                exit();
+                header("Location: index.php?login=1");
+                exit;
             } else if ($userData["user_role_id"] == 3) {
-                header("Location: index.php");
+                header("Location: index.php?login=1");
                 exit();
             }
         }
