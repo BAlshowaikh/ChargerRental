@@ -1,13 +1,4 @@
-<head>
-    <meta charset="UTF-8">
-    <title>Page Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/sharedLayout.css">
-</head>
-<body>
-<?php include 'template/AdminNavBar.phtml'; ?>
-
+<?php require ('template/header.phtml'); ?>
     <main class="manage-users-container">
         <h2 class="page-title">Manage Users</h2>
 
@@ -72,7 +63,7 @@
                                             <button type="submit" name="action" value="suspend" class="btn delete-btn py-1">Suspend</button>
                                         <?php endif; ?>
                                         <?php if ($user->getUserRoleId() === 2): ?>
-                                            <a href="ManageChargePointsAdmin.php?userId=<?= htmlspecialchars($user->getUserId()) ?>" class="btn add-btn py-1">View Charge Point</a>
+                                            <a href="ManageChargePointsAdmin.php" class="btn add-btn py-1">View Charge Point</a>
                                         <?php endif; ?>
                                     <?php elseif ($user->getUserStatus() === "Suspend"): ?>
                                         <button type="submit" name="action" value="unsuspend" class="btn add-btn py-1">Unsuspend</button>
@@ -128,9 +119,8 @@
         </nav>
 
     </main>
-<?php include 'template/footer.phtml'; ?>
+<?php require ('Views/template/footer.phtml'); ?>
 
-</body>
     <script>
         function resetFilters() {
             document.querySelector('input[name="search"]').value = '';

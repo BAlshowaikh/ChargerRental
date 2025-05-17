@@ -1,24 +1,17 @@
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link href="/css/sharedLayout.css" rel="stylesheet">
-    <link href="/css/bootstrap.css" rel="stylesheet">
-    <!-- The leaflet css for the map-->
-    <link rel="stylesheet" href="/Leaflet/leaflet.css">
-</head>
-<?php include("template/CustomerNavBar.phtml"); ?>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<body>
+<?php require ('template/header.phtml'); ?>
 <main class="manage-container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <!-- Toggle Button Group (left side) -->
         <div>
             <div class="btn-group" role="group" aria-label="View toggle">
                 <input type="radio" class="btn-check" name="viewToggle" id="toggleMap" autocomplete="off" <?php echo $_SESSION['view'] === 'map' ? 'checked' : ''; ?>>
-                <label class="btn" for="toggleMap">Map</label>
+                <label class="btn" for="toggleMap" style="color: black;">Map</label>
 
                 <input type="radio" class="btn-check" name="viewToggle" id="toggleList" autocomplete="off" <?php echo $_SESSION['view'] === 'list' ? 'checked' : ''; ?>>
-                <label class="btn" for="toggleList">List</label>
+                <label class="btn" for="toggleList" style="color: black;">List</label>
 
             </div>
         </div>
@@ -38,7 +31,7 @@
                     </button>
                 </div>
                 <div id="resetButton">
-                    <button class="btn btn-outline-secondary btn-sm" >
+                    <button class="btn btn-primary btn-sm" >
                         <i class="bi bi-arrow-counterclockwise"></i> Reset
                     </button>
                 </div>
@@ -111,9 +104,7 @@
     <script src="/Leaflet/leaflet.js"></script>
     <script src="/js/Map.js"></script>
 </main>
-<?php include('template/footer.phtml'); ?>
-
-</body>
+<?php require ('template/footer.phtml'); ?>
 
 
 <script>

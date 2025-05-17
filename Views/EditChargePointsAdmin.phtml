@@ -1,12 +1,5 @@
-<head>
-    <meta charset="UTF-8">
-    <title>Page Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/sharedLayout.css">
-</head>
-<body>
-<?php include 'template/AdminNavBar.phtml'; ?>
+
+<?php require ('template/header.phtml'); ?>
 
 <main class="manage-container">
     <h2 class="page-title">Edit Charger Point</h2>
@@ -18,35 +11,34 @@
         </div>
 
         <!-- Right: Form -->
-        <form method="post" action="EditChargePointAdmin.php" class="edit-form" enctype="multipart/form-data">
-            <!-- Hidden File Input (to replace the image) -->
+        <form method="post" action="EditChargePointAdmin.php" class="edit-form" enctype="multipart/form-data" onsubmit="return validateForm();">
             <input type="file" id="imageFile" name="imageFile" accept="image/png, image/jpeg" style="display: none;" onchange="previewImage(this)">
 
-            <input type="hidden" name="id" value="<?= htmlspecialchars($charger->getId()) ?>">
+            <input type="hidden" name="id" value="<?= htmlspecialchars($charger->getId(), ENT_QUOTES, 'UTF-8') ?>">
 
             <div class="form-group">
                 <label>Name:</label>
-                <input type="text" name="name" value="<?= htmlspecialchars($charger->getName()) ?>" required>
+                <input type="text" name="name" value="<?= htmlspecialchars($charger->getName(), ENT_QUOTES, 'UTF-8') ?>" required maxlength="100">
             </div>
 
             <div class="form-group">
                 <label>Description:</label>
-                <textarea name="description" rows="2"><?= htmlspecialchars($charger->getDescription()) ?></textarea>
+                <textarea name="description" rows="2" maxlength="500"><?= htmlspecialchars($charger->getDescription(), ENT_QUOTES, 'UTF-8') ?></textarea>
             </div>
 
             <div class="form-group">
                 <label>Price per kWh:</label>
-                <input type="number" step="0.01" name="price" value="<?= htmlspecialchars($charger->getPricePerKW()) ?>" required>
+                <input type="number" step="0.01" min="0" name="price" value="<?= htmlspecialchars($charger->getPricePerKW(), ENT_QUOTES, 'UTF-8') ?>" required>
             </div>
 
             <div class="form-group">
                 <label>Connector Type:</label>
-                <input type="text" name="connector" value="<?= htmlspecialchars($charger->getConnectorType()) ?>" required>
+                <input type="text" name="connector" value="<?= htmlspecialchars($charger->getConnectorType(), ENT_QUOTES, 'UTF-8') ?>" required maxlength="50">
             </div>
 
             <div class="form-group">
                 <label>Status:</label>
-                <select name="status">
+                <select name="status" required>
                     <option value="1" <?= $charger->getAvailableStatusId() == 1 ? 'selected' : '' ?>>Available</option>
                     <option value="0" <?= $charger->getAvailableStatusId() == 0 ? 'selected' : '' ?>>Unavailable</option>
                 </select>
@@ -56,8 +48,7 @@
         </form>
     </div>
 </main>
-<?php include 'template/footer.phtml'; ?>
-</body>
+<?php require ('template/footer.phtml'); ?>
 
 <script>
     function previewImage(input) {
@@ -83,5 +74,22 @@
             };
             reader.readAsDataURL(file);
         }
+    }
+    function validateForm() {
+        const name = document.querySelector('[name="name"]').value.trim();
+        const price = document.querySelector('[name="price"]').value;
+        const connector = document.querySelector('[name="connector"]').value.trim();
+
+        if (name === '' || connector === '') {
+            alert("Name and connector type cannot be empty.");
+            return false;
+        }
+
+        if (isNaN(price) || price < 0) {
+            alert("Price must be a non-negative number.");
+            return false;
+        }
+
+        return true;
     }
 </script>

@@ -47,30 +47,6 @@ if (navigator.geolocation) {
     );
 }
 
-// Fetch charger data using XMLHttpRequest
-// function loadMapChargers() {
-//     const filters = getFilters();
-//     const query = new URLSearchParams({
-//         action: 'getChargers',
-//         mode: 'map',
-//         max_price: filters.max_price,
-//         availability: filters.availability
-//     }).toString();
-//
-//     const xhr = new XMLHttpRequest();
-//     xhr.open('GET', `/SearchChargePoints.php?${query}`, true);
-//     xhr.responseType = 'json';
-//
-//     xhr.onload = function () {
-//         if (xhr.status === 200) {
-//             const chargers = xhr.response.chargers;
-//             allChargers = chargers;
-//             displayChargers(allChargers);
-//         }
-//     };
-//     xhr.send();
-// }
-
 function loadMapChargers(filters) {
     const query = new URLSearchParams({
         action: 'getChargers',
@@ -93,14 +69,29 @@ function loadMapChargers(filters) {
     xhr.send();
 }
 
-
 // The below code is map view
 // Display markers for all chargers
 function displayChargers(chargers) {
     chargerMarkers.forEach(marker => map.removeLayer(marker));
     chargerMarkers = [];
 
-    chargers.forEach(point => {
+    const filters = getFilters();
+
+    let filteredChargers = chargers;
+
+    if (filters.nearest && userPosition) {
+        filteredChargers = chargers
+            .map(charger => {
+                const lat = parseFloat(charger.Latitude);
+                const lng = parseFloat(charger.Longitude);
+                const distance = getDistance(userPosition.lat, userPosition.lng, lat, lng);
+                return { ...charger, distance };
+            })
+            .sort((a, b) => a.distance - b.distance)
+            .slice(0, 5); // Show top 10 nearest
+    }
+
+    filteredChargers.forEach(point => {
         const lat = parseFloat(point.Latitude);
         const lng = parseFloat(point.Longitude);
 
@@ -150,14 +141,13 @@ function displayChargerDetails(point) {
 // Function to render the charger points in the list view
 let currentPage = 1;
 
-function loadChargerList(page = 1) {
+function loadChargerList(page = 1, filters=getFilters()) {
     currentPage = page;
-    const filters = getFilters();
     const query = new URLSearchParams({
         action: 'getChargers',
         mode: 'list',
         page,
-        max_price: filters.max_price,
+        max_price: filters.maxPrice,
         availability: filters.availability
     }).toString();
 
@@ -181,7 +171,7 @@ function loadChargerList(page = 1) {
 <div class="col-md-4 mb-4">
     <div class="card-list shadow h-100 card-hover" data-id="${charger.charger_point_id}">
         <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
-            <img src="/images/ChargerPoints/${charger.charger_image_url}.jpg" alt="${charger.Name}" class="img-fluid" style="max-height: 100%; max-width: 100%;">
+            <img src="/images/ChargerPoints/${charger.charger_image_url}" alt="${charger.Name}" class="img-fluid" style="max-height: 100%; max-width: 100%;">
         </div>
         <div class="card-body d-flex flex-column justify-content-between">
             <h5 class="card-title fw-bold">${charger.Name}</h5>
@@ -198,7 +188,6 @@ function loadChargerList(page = 1) {
     </div>
 </div>`;
             });
-
 
             chargerList.innerHTML = html;
 
@@ -247,18 +236,11 @@ function toRad(deg) {
     return deg * Math.PI / 180;
 }
 
-// Create a function to collect filters from the UI:
-// function getFilters() {
-//     return {
-//         max_price: document.getElementById('priceRange').value,
-//         availability: document.getElementById('availability').value,
-//     };
-// }
-
 function getFilters() {
     return {
-        max_price: parseFloat(document.getElementById('priceRange').value),
-        availability: document.getElementById('availability').value
+        maxPrice: parseFloat(document.getElementById('priceRange').value),
+        availability: document.getElementById('availability').value,
+        nearest: document.getElementById('nearest').checked
     };
 }
 
@@ -275,7 +257,6 @@ $(document).ready(function () {
     loadMapChargers(defaultFilters);
     loadChargerList(1, defaultFilters);
 
-    // Rest of your existing code...
     $("#filterButton").on("click", function () {
         $("#filter-panel").toggleClass("d-none");
     });
@@ -295,6 +276,29 @@ $(document).ready(function () {
         loadChargerList(1, filters);
         $("#filter-panel").addClass("d-none");
     });
+
+    // LIVE filter when price slider changes
+    $("#priceRange").on("input", function () {
+        $("#priceValue").text($(this).val());
+        const filters = getFilters();
+        loadMapChargers(filters);
+        loadChargerList(1, filters);
+    });
+
+// LIVE filter when availability dropdown changes
+    $("#availability").on("change", function () {
+        const filters = getFilters();
+        loadMapChargers(filters);
+        loadChargerList(1, filters);
+    });
+
+// LIVE filter when "nearest" checkbox changes
+    $("#nearest").on("change", function () {
+        const filters = getFilters();
+        loadMapChargers(filters);
+        loadChargerList(1, filters);
+    });
+
 
     $("#resetButton").on("click", function () {
         $("#nearest").prop("checked", false);

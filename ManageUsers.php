@@ -3,16 +3,14 @@ session_start();
 $view = new stdClass();
 require_once("Models/userDataSet.php");
 
-
 //Check if user is logged in
-//$userId = $_SESSION['userID'] ?? null;
-//
-//if (!$userId) {
-//    header("Location: login.php");
-//    exit;
-//}
+$userId = $_SESSION['userID'] ?? null;
 
-$userId=1;
+if (!$userId) {
+    header("Location: login.php");
+    exit;
+}
+
 $userDataSet = new userDataSet();
 
 // Pagination settings
@@ -22,8 +20,8 @@ $offset = ($currentPage - 1) * $usersPerPage;
 
 // Handle search functionality
 $searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
-$selectedRole = isset($_GET['role']) ? $_GET['role'] : '';
-$selectedStatus = isset($_GET['status']) ? $_GET['status'] : '';
+$selectedRole = $_GET['role'] ?? '';
+$selectedStatus = $_GET['status'] ?? '';
 
 // Fetch user roles for dropdown
 $view->roles = $userDataSet->getUserRoles(); // Method to fetch roles
@@ -64,5 +62,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
-// Include the view file
 require_once("Views/ManageUsers.phtml");

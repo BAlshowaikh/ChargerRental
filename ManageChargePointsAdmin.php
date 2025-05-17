@@ -4,17 +4,9 @@ require_once 'Models/chargerPointDataSet.php';
 
 session_start();
 
-// TEMPORARY - manually fake login session
-if (!isset($_SESSION['user_id'])) {
-    $_SESSION['user_id'] = 1;
-    $_SESSION['user_role_id'] = 1; // 1 = Admin
-}
-
-// Check admin permission (optional)
-if ($_SESSION['user_role_id'] !== 1) {
-    header("Location: unauthorized.php");
-    exit;
-}
+if (!isset($_SESSION['userID']) || $_SESSION['role'] != 1 || $_SESSION['user_status'] !== 'Approve') {
+    header("Location: login.php");
+    exit();}
 
 // Instantiate the dataset model
 $chargerDataSet = new chargerPointDataSet();
