@@ -20,23 +20,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["email"]) && isset($_P
     $password = $_POST["password"];
     $userData = $user->userExists($email, $password);
 
-    if ($userData)
-    {
-        $_SESSION["userID"] = $userData["user_ID"];
-        $_SESSION["role"] = $userData["User_role_User_role_ID"];
+    if ($userData) {
+        // Check approval status
+        if ($userData["user_status"] !== "Approve") {
+            $view->loginError = "Your account is not approved yet. Please wait for admin approval.";
+        } else {
+            $_SESSION["userID"] = $userData["user_id"];
+            $_SESSION["role"] = $userData["user_role_id"];
 
-        $_SESSION["fullname"] = $userData["f_Name"] . " " . $userData["l_Name"];
-        $_SESSION["username"] = $userData["username"];
+            $_SESSION["fullname"] = $userData["first_name"] . " " . $userData["last_name"];
+            $_SESSION["username"] = $userData["username"];
 
-        if ($userData["User_role_User_role_ID"] == 1 || $userData["User_role_User_role_ID"] == 2)
-        {
-            header("Location: HomeownerChargePoint.php");
-            exit();
-        }
-        else if ($userData["User_role_User_role_ID"] == 3)
-        {
-            header("Location: BookChargePoints.php");
-            exit();
+            if ($userData["user_role_id"] == 1 || $userData["user_role_id"] == 2) {
+                header("Location: index.php");
+                exit();
+            } else if ($userData["user_role_id"] == 3) {
+                header("Location: index.php");
+                exit();
+            }
         }
     }
     else

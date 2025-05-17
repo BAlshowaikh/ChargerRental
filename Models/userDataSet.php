@@ -19,7 +19,7 @@ class userDataSet
         {
             $userRoleID = 1;
         }
-        elseif (strpos($username, "@home.com") !== false)
+        elseif (strpos($username, "@homeowner.com") !== false)
         {
             $userRoleID = 2;
         }
@@ -44,7 +44,7 @@ class userDataSet
         $locationID = $this->_dbHandle->lastInsertId();*/
 
 
-        $sqlQuery = "INSERT INTO User (f_Name, l_Name, username, password, Phone_no, Registration_date, Approved, User_role_User_role_ID) 
+        $sqlQuery = "INSERT INTO User (first_name, last_name, username, password, phone_number, registration_timestamp, Approved, user_role_id) 
                      VALUES (:fname, :lname, :username, :password, :phoneNo, :regDate, :approved, :userRoleID)";
 
         $stmt = $this->_dbHandle->prepare($sqlQuery);
@@ -69,17 +69,23 @@ class userDataSet
         $stmt->bindParam(':username', $username);
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($password, $user['password'])) {
+            return $user;
+        }
+
+        return false;
     }
 
     public function updateUserInfo($userID, $fname, $lname, $username, $phoneNo)
     {
         $sql = "UPDATE User 
-                SET f_Name = :fname,
-                    l_Name = :lname,
+                SET first_name = :fname,
+                    last_name = :lname,
                     username = :username,
-                    Phone_no = :phoneNo
-                WHERE user_ID = :userID";
+                    phone_number = :phoneNo
+                WHERE user_id = :userID";
 
         $stmt = $this->_dbHandle->prepare($sql);
         $stmt->bindParam(':fname', $fname);
@@ -92,7 +98,7 @@ class userDataSet
     }
 
     public function getUserByID($userID) {
-        $sql = "SELECT * FROM User WHERE user_ID = :userID";
+        $sql = "SELECT * FROM User WHERE user_id = :userID";
 
         $statement = $this->_dbHandle->prepare($sql); // ✅ Fixed typo here
         $statement->bindParam(':userID', $userID, PDO::PARAM_INT); // ✅ Bind the parameter
@@ -112,6 +118,128 @@ class userDataSet
         $stmt->bindParam(':road', $road);
         $stmt->bindParam(':locationID', $locationID);
         return $stmt->execute();
+    }
+
+    public function registerHomeOwner(
+        $firstName,
+        $lastName,
+        $username,
+        $plainPassword,
+        $phoneNo,
+        $regDate,
+        $userStatus,
+        $chargeName,
+        $chargePointImage,       // blank on call
+        $chargePointDescription,
+        $pricePerKW,
+        $availability,
+        $connectorType,
+        $road,
+        $city,
+        $homeNumber,
+        $zipCode,
+        $latitude,
+        $longitude
+    ): int {
+        if (strpos($username, '@admin.com') !== false) {
+            throw new \InvalidArgumentException('Admin users cannot self-register.');
+        } elseif (strpos($username, '@homeowner.com') !== false) {
+            $userRoleId = 2;
+            $userStatus = 'Reject';
+        } else {
+            $userRoleId = 3;
+            $userStatus = 'Reject';
+        }
+        $hashed = password_hash($plainPassword, PASSWORD_DEFAULT);
+
+        //$this->_dbHandle->beginTransaction();
+
+        // a) Insert Location
+        $sqlLocation = "
+        INSERT INTO Location (Road, City, Home_number, ZIP_Code, Latitude, Longitude)
+        VALUES (:road, :city, :home_number, :zip_code, :latitude, :longitude)
+    ";
+        $stmtLocation = $this->_dbHandle->prepare($sqlLocation);
+        $stmtLocation->bindParam(':road', $road);
+        $stmtLocation->bindParam(':city', $city);
+        $stmtLocation->bindParam(':home_number', $homeNumber);
+        $stmtLocation->bindParam(':zip_code', $zipCode);
+        $stmtLocation->bindParam(':latitude', $latitude);
+        $stmtLocation->bindParam(':longitude', $longitude);
+        $stmtLocation->execute();
+        $locationId = (int)$this->_dbHandle->lastInsertId();
+
+        // a) User
+        $sqlU = "
+INSERT INTO User
+  (first_name, last_name, username, password,
+   phone_number, registration_timestamp,
+   user_status, user_role_id)
+VALUES
+  (:firstName,    :lastName,    :username,  :hashed,
+   :phoneNo,    :regDate,  :userStatus, :userRoleId)
+";
+        $stmt = $this->_dbHandle->prepare($sqlU);
+        $stmt->bindParam(':firstName', $firstName);
+        $stmt->bindParam(':lastName', $lastName);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':hashed', $hashed);
+        $stmt->bindParam(':phoneNo', $phoneNo);
+        $stmt->bindParam(':regDate', $regDate);
+        $stmt->bindParam(':userStatus', $userStatus);
+        $stmt->bindParam(':userRoleId', $userRoleId);
+        $stmt->execute();
+
+        $newUserId = (int)$this->_dbHandle->lastInsertId();
+
+        // b) Charger_point (blank image_url)
+        $sqlCharger = "
+        INSERT INTO Charger_point (
+            Name,
+            charger_image_url,
+            charger_point_description,
+            price_per_kwatt,
+            available_status_id,
+            connector_type,
+            user_id,
+            location_id
+        ) VALUES (
+            :chargeName,
+            :chargePointImage,
+            :chargePointDescription,
+            :pricePerKW,
+            :availability,
+            :connectorType,
+            :userID,
+            :locationID
+        )";
+
+        $stmt2 = $this->_dbHandle->prepare($sqlCharger);
+        $stmt2->bindValue(':chargeName', $chargeName);
+        $stmt2->bindValue(':chargePointImage', $chargePointImage); // e.g. empty string
+        $stmt2->bindParam(':chargePointDescription', $chargePointDescription);
+        $stmt2->bindParam(':pricePerKW', $pricePerKW);
+        $stmt2->bindParam(':availability', $availability);
+        $stmt2->bindParam(':connectorType', $connectorType);
+        $stmt2->bindParam(':userID', $newUserId);
+        $stmt2->bindParam(':locationID', $locationId);
+        $stmt2->execute();
+
+        // Step 3: Return charger_point_id for image upload and update
+        return (int)$this->_dbHandle->lastInsertId();
+    }
+
+    public function updateChargerImage(int $chargerId, string $imageName): void
+    {
+        $stmt = $this->_dbHandle->prepare(
+            "UPDATE Charger_point
+           SET charger_image_url = :img
+         WHERE charger_point_id = :id"
+        );
+        $stmt->execute([
+            ':img' => $imageName,
+            ':id'  => $chargerId,
+        ]);
     }
 
     public function getAllUsers($offset, $limit) {
