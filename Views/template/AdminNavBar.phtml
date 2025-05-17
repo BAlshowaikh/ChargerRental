@@ -1,4 +1,3 @@
-
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
     <div class="container-fluid position-relative">
 
@@ -9,25 +8,14 @@
             </a>
         </div>
 
-
         <!-- Centered nav items -->
         <div class="collapse navbar-collapse justify-content-center" id="navbarContent">
             <ul class="navbar-nav centered-nav">
                 <li class="nav-item">
-                    <div class="dropdown ms-3">
-                        <button class="btn btn-transparent d-flex align-items-center dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="text-white fw-semibold me-2">Management</span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="/ManageChargePointsAdmin.php">Manage Charge Points</a></li>
-                        </ul>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="/ManageUsers.php">Manage Users</a></li>
-                        </ul>
-                    </div>
+                    <a class="nav-link" href="/ManageUsers.php">Manage Users</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/SystemReport.php">System Reports</a>
+                    <a class="nav-link" href="/ManageChargePointsAdmin.php">Manage Charge Points</a>
                 </li>
             </ul>
         </div>
@@ -35,17 +23,17 @@
         <!-- Right-side user icon -->
         <div class="dropdown ms-3">
             <button class="btn btn-transparent d-flex align-items-center dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="images/profileicon.png" alt="Profile Icon" id="profileIcon">
+                <img src="/images/profileicon.png" alt="Profile Icon" id="profileIcon">
                 <span id="userName" class="text-white fw-semibold me-2">Logged In User</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <?php if (empty($_SESSION["userID"])): ?>
-                    <li><a class="dropdown-item" href="Login.php">Login</a></li>
-                    <li><a class="dropdown-item" href="Signup.php">Signup</a></li>
+                    <li><a class="dropdown-item" href="/Login.php">Login</a></li>
+                    <li><a class="dropdown-item" href="/Signup.php">Signup</a></li>
                 <?php else: ?>
-                    <li><a class="dropdown-item" href="Profile.php">Profile</a></li>
+                    <li><a class="dropdown-item" href="/Profile.php">Profile</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="Logout.php">Logout</a></li>
+                    <li><a class="dropdown-item" href="/Logout.php">Logout</a></li>
                 <?php endif; ?>
             </ul>
         </div>

@@ -20,20 +20,22 @@ if (isset($_GET['action']) && $_GET['action'] === 'getChargers') {
 
     try {
         $mode = $_GET['mode'] ?? 'list';
+        $maxPrice = isset($_GET['max_price']) ? floatval($_GET['max_price']) : null;
+        $availability = $_GET['availability'] ?? null;
+        $sql = "SELECT * FROM charger_points WHERE 1=1";
+
 
         if ($mode === 'map') {
-            // Return all charger points (for map)
-            $chargers = $chargerDataSet->fetchAllDetailedChargerPoints();
+            $chargers = $chargerDataSet->fetchAllDetailedChargerPoints($maxPrice, $availability);
             echo json_encode(['chargers' => $chargers]);
 
         } elseif ($mode === 'list') {
-            // Return paginated results (for list view)
             $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
             $limit = 6;
             $offset = ($page - 1) * $limit;
 
-            $chargers = $chargerDataSet->fetchDetailedChargerPointsPaginated($limit, $offset);
-            $totalCount = $chargerDataSet->getTotalChargerCount();
+            $chargers = $chargerDataSet->fetchDetailedChargerPointsPaginated($limit, $offset, $maxPrice, $availability);
+            $totalCount = $chargerDataSet->getTotalChargerCount($maxPrice, $availability);
             $totalPages = ceil($totalCount / $limit);
 
             echo json_encode([
