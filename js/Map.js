@@ -189,7 +189,6 @@ function loadChargerList(page = 1, filters=getFilters()) {
 </div>`;
             });
 
-
             chargerList.innerHTML = html;
 
             // Render pagination buttons

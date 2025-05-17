@@ -4,7 +4,7 @@ require_once("Models/bookingRequestDataSet.php");
 
 $view = new stdClass();
 $view->pageTitle = "My Charger Booking Requests";
-$view->styles = ["/css/BookingRequestMange.css", "/css/BookingRequest.css"];
+$view->styles = ["/css/BookingRequestMange.css", "/css/BookingRequest.css", "/css/sharedLayout.css"];
 
 
 // Auth (uncomment for real use)
