@@ -1,13 +1,6 @@
-<head>
-    <meta charset="UTF-8">
-    <title>Page Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/sharedLayout.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-<?php include 'template/HomeownerNavBar.phtml'; ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<?php require ('template/header.phtml'); ?>
 
 <main class="manage-users-container">
     <h2 class="page-title">View Booking Requests</h2>
@@ -75,5 +68,4 @@
         <p>No data available for the selected criteria.</p>
     <?php endif; ?>
 </main>
-<?php include('template/footer.phtml'); ?>
-</body>
+    <?php require ('template/footer.phtml'); ?>

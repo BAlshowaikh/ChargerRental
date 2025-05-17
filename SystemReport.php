@@ -3,14 +3,14 @@ session_start();
 require_once("Models/bookingRequestDataSet.php");
 
 // Check if user is logged in
-//$userId = $_SESSION['userID'] ?? null;
-//
-//if (!$userId) {
-//    header("Location: login.php");
-//    exit;
-//}
+$userId = $_SESSION['userID'] ?? null;
 
-$userId = 3;
+if (!$userId) {
+    header("Location: login.php");
+    exit;
+}
+
+//$userId = 3;
 $bookingDataSet = new BookingRequestDataSet();
 
 $attributes = [

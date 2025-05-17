@@ -1,19 +1,10 @@
-<head>
-    <meta charset="UTF-8">
-    <title>Page Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/sharedLayout.css">
-</head>
-<body>
-
-<?php include 'template/HomeownerNavBar.phtml'; ?>
+<?php require ('template/header.phtml'); ?>
 
 <main class="manage-container">
     <h2 class="page-title">Charger Point Details</h2>
 
     <?php if (isset($chargePoint)): ?>
-        <form id="editForm" method="post" action="HomeownerUpdateChargePoint.php">
+        <form id="editForm" method="post" action="HomeownerUpdateChargePoint.php" enctype="multipart/form-data>
             <input type="hidden" name="charger_id" value="<?= htmlspecialchars($chargePoint->getId()) ?>">
 
             <div class="card redesigned">
@@ -96,9 +87,8 @@
         </div>
     </div>
 </main>
-<?php include('template/footer.phtml'); ?>
+<?php require ('template/footer.phtml'); ?>
 
-</body>
 
 <script>
     function enableEditMode() {

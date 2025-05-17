@@ -4,6 +4,8 @@ require_once("Models/bookingRequestDataSet.php");
 
 $view = new stdClass();
 $view->pageTitle = "My Charger Booking Requests";
+$view->styles = ["/css/BookingRequestMange.css", "/css/BookingRequest.css"];
+
 
 // Auth (uncomment for real use)
 // if (!isset($_SESSION['user'])) {
@@ -12,7 +14,8 @@ $view->pageTitle = "My Charger Booking Requests";
 // }
 
 // $homeownerId = $_SESSION['user']->getUserId();
-$homeownerId = 7;
+$homeownerId = $_SESSION['userID'];
+//$homeownerId = 7;
 
 // Filters from GET
 $statusFilter = $_GET['status'] ?? 'all'; // '1', '2', '3', or 'all'
