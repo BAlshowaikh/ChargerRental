@@ -20,6 +20,7 @@ if (session_status() === PHP_SESSION_NONE) {
 </head>
 
 <body>
+
 <?php if (!empty($_SESSION["userID"])): ?>
     <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
         <div class="container-fluid">
@@ -67,6 +68,38 @@ if (session_status() === PHP_SESSION_NONE) {
                     </div>
                 </div>
             </div>
+        </div>
+    </nav>
+<?php else: ?>
+    <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/index.php">
+                <img src="/images/PowerUpLogo.png"  alt="EV Portal Logo" style="height: 20px;">
+            </a>
+
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav mb-2 mb-lg-0 mx-auto">
+
+                    <!-- User Dropdown -->
+
+                        <div class="dropdown">
+                            <button class="btn btn-transparent d-flex align-items-center dropdown-toggle text-white" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="/images/profileicon.png" alt="Profile Icon" style="height: 25px;" class="me-2">
+                                <span><?= $_SESSION["fullname"] ?? "Guest" ?></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <?php if (empty($_SESSION["userID"])): ?>
+                                    <li><a class="dropdown-item" href="/Login.php">Login</a></li>
+                                    <li><a class="dropdown-item" href="/Signup.php">Signup</a></li>
+                                <?php else: ?>
+                                    <li><a class="dropdown-item" href="/Profile.php">Profile</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="/Logout.php">Logout</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </div>
+                    </div>
+
         </div>
     </nav>
 <?php endif; ?>
