@@ -1,80 +1,74 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EV Portal</title>
+    <title><?= $view->pageTitle ?? 'EV Portal' ?></title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <?php if (!empty($view->styles)): ?>
+        <link rel="stylesheet" href="<?= $view->styles ?>">
+    <?php else: ?>
+        <link rel="stylesheet" href="/css/sharedLayout.css">
+    <?php endif; ?>
 </head>
+
 <body>
-<nav class="navbar navbar-expand-lg bg-primary navbar-dark">
-    <div class="container-fluid position-relative">
-        <div class="navbar-brand">
-            <img src="/images/PowerUpLogo.png" alt="EV Portal Logo" id="logo" style="height: 20px;">
-        </div>
+<?php if (!empty($_SESSION["userID"])): ?>
+    <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="/images/PowerUpLogo.png" alt="EV Portal Logo" style="height: 20px;">
+            </a>
 
-        <div class="collapse navbar-collapse" id="navbarColor01">
-            <!-- Centered Menu Items -->
-            <!--<ul class="navbar-nav centered-nav"> -->
-
-                <!-- Customer Menu -->
-                <!--<li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="customerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Customer
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="SearchChargePoints.php">Explore Charger Points</a></li>
-                        <li><a class="dropdown-item" href="UserBookingRequest.php">Booking History</a></li>
-                        <li><a class="dropdown-item" href="#">Reminders</a></li>
-                        <li><a class="dropdown-item" href="ContactPage.php">Contact Us</a></li>
-                    </ul>
-                </li>-->
-
-                <!-- Homeowner Menu -->
-                <!--<li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="homeownerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Homeowner
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="EditChargePoints.php">Manage Charger Point</a></li>
-                        <li><a class="dropdown-item" href="">Manage Booking Request</a></li>
-                    </ul>
-                </li>-->
-
-                <!-- Admin Menu -->
-                <!--<li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Admin
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="">Manage Charger Points</a></li>
-                        <li><a class="dropdown-item" href="">Manage User Accounts</a></li>
-                        <li><a class="dropdown-item" href="#">Generate System Reports</a></li>
-                        <li><a class="dropdown-item" href="ApproveHomeownerReg.php">Approve Homeowner Registration</a></li>
-                    </ul>
-                </li>
-
-            </ul>-->
-
-            <!-- User Account Dropdown -->
-            <div class="d-flex align-items-center ms-auto">
-                <div class="dropdown ms-3">
-                    <button class="btn btn-transparent d-flex align-items-center dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="images/profileicon.png" alt="Profile Icon" id="profileIcon">
-                        <span id="userName" class="text-white fw-semibold me-2">Logged In User</span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <?php if (empty($_SESSION["userID"])): ?>
-                            <li><a class="dropdown-item" href="Login.php">Login</a></li>
-                            <li><a class="dropdown-item" href="Signup.php">Signup</a></li>
-                        <?php else: ?>
-                            <li><a class="dropdown-item" href="Profile.php">Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="Logout.php">Logout</a></li>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <?php if (!empty($_SESSION["userID"])): ?>
+                        <?php if ($_SESSION["role"] == 1): ?>
+                            <!-- Admin Nav -->
+                            <li class="nav-item"><a class="nav-link" href="/ManageUsers.php">Manage Users</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/ManageChargePointsAdmin.php">Manage Charger Point</a></li>
+                        <?php elseif ($_SESSION["role"] == 2): ?>
+                            <!-- Homeowner Nav -->
+                            <li class="nav-item"><a class="nav-link" href="/HomeownerChargePoint.php">Manage My Charger Point</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/HomeownerBookingRequest.php">My Booking Requests</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/SystemReport.php">System Report</a></li>
+                        <?php elseif ($_SESSION["role"] == 3): ?>
+                            <!-- Customer Nav -->
+                            <li class="nav-item"><a class="nav-link" href="/SearchChargePoints.php">Explore Charge Point</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/UserBookingRequest.php">Booking History</a></li>
                         <?php endif; ?>
-                    </ul>
+                    <?php else: ?>
+                        <!-- Guest Nav -->
+                        <li class="nav-item"><a class="nav-link" href="/Login.php">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Signup.php">Signup</a></li>
+                    <?php endif; ?>
+                </ul>
+
+                <!-- User Dropdown -->
+                <div class="d-flex align-items-center ms-auto">
+                    <div class="dropdown">
+                        <button class="btn btn-transparent d-flex align-items-center dropdown-toggle text-white" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="/images/profileicon.png" alt="Profile Icon" style="height: 25px;" class="me-2">
+                            <span><?= $_SESSION["fullname"] ?? "Guest" ?></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <?php if (empty($_SESSION["userID"])): ?>
+                                <li><a class="dropdown-item" href="/Login.php">Login</a></li>
+                                <li><a class="dropdown-item" href="/Signup.php">Signup</a></li>
+                            <?php else: ?>
+                                <li><a class="dropdown-item" href="/Profile.php">Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/Logout.php">Logout</a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</nav>
-
+    </nav>
+<?php endif; ?>

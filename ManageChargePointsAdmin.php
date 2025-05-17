@@ -5,13 +5,13 @@ require_once 'Models/chargerPointDataSet.php';
 session_start();
 
 // TEMPORARY - manually fake login session
-if (!isset($_SESSION['user_id'])) {
-    $_SESSION['user_id'] = 1;
-    $_SESSION['user_role_id'] = 1; // 1 = Admin
-}
+//if (!isset($_SESSION['userID'])) {
+//    $_SESSION['userID'] = 1;
+//    $_SESSION['role'] = 1; // 1 = Admin
+//}
 
 // Check admin permission (optional)
-if ($_SESSION['user_role_id'] !== 1) {
+if ($_SESSION['role'] !== 1) {
     header("Location: unauthorized.php");
     exit;
 }
