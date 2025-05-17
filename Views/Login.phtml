@@ -24,7 +24,8 @@
                             <label class="form-control-label text-muted">Password</label>
                             <input type="password" id="password" name="password" placeholder="Password" class="form-control" value="<?php if (isset($_POST["password"])) {echo $_POST["password"];} ?>">
                         </div>
-
+                            <!-- reCAPTCHA (This will be uncommented once we deploy in the server)-->
+                            <!-- <div class="g-recaptcha" data-sitekey="6LdJYD4rAAAAAGZjJjKcu9FqJ1X6BrsZkRg1LaZq"></div>-->
                         <div class="row justify-content-center my-3 px-3">
                             <button type="submit" class="btn-block btn-color">Login to Power Up</button>
                         </div>
@@ -34,7 +35,6 @@
                                     <?php echo $view->loginError; ?>
                                 </div>
                             <?php endif; ?>
-
                     </form>
                     </div>
                 </div>
@@ -53,6 +53,7 @@
 </div>
 
 <script type="module" src="/js/LoginFormValidation.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <?php require_once('Views/template/footer.phtml'); ?>
 
 

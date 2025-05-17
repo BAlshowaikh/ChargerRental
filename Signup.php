@@ -16,7 +16,7 @@ if (isset($_SESSION["userID"]) && isset($_SESSION["user_status"]) && $_SESSION["
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fname']) && isset($_POST['lname']) && isset($_POST['email']) && isset($_POST['password']) && isset($_POST['phno']))
 {
-    $_SESSION["user_status"] = $user["user_status"];
+//    $_SESSION["user_status"] = $user["user_status"];
     /*$addressRaw = $_POST["address"];
     $addressParts = array_map("trim", explode(",", $addressRaw));
     $addressParts = array_filter($addressParts); // Removes empty values
@@ -26,6 +26,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fname']) && isset($_P
     $city = isset($addressParts[2]) ? $addressParts[2] : '';
     $country = isset($addressParts[3]) ? $addressParts[3] : '';*/
 
+    // Validate reCAPTCHA (This will be uncommented once we deploy in the server)
+//    $captcha = $_POST['g-recaptcha-response'] ?? '';
+//    $secretKey = "6LdJYD4rAAAAAIXJRUxroyKd0V0rB0FBQfxJAU_W";
+//    $ip = $_SERVER['REMOTE_ADDR'];
+//
+//    $verifyResponse = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secretKey&response=$captcha&remoteip=$ip");
+//    $responseData = json_decode($verifyResponse);
+//
+//    if (!$responseData->success) {
+//        $view->loginError = "reCAPTCHA failed. Please verify you're not a robot.";
+//        require_once('Views/Signup.phtml');
+//        exit;
+//    }
+
+    // Proceed with signup logic
     $fname = htmlspecialchars($_POST['fname']);
     $lname = htmlspecialchars($_POST['lname']);
     $email = htmlspecialchars($_POST['email']);

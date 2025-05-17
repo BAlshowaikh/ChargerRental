@@ -58,6 +58,8 @@ require('template/header.phtml');
                                 <small class="text-danger"><?php //echo htmlspecialchars($view->errors['address']) ?></small>
                             <?php //endif; ?>
                         </div>-->
+                            <!-- reCAPTCHA (This will be uncommented once we deploy in the server)-->
+                            <!--   <div class="g-recaptcha" data-sitekey="6LdJYD4rAAAAAGZjJjKcu9FqJ1X6BrsZkRg1LaZq"></div>-->
                         <div class="row justify-content-center my-3 px-3">
                             <button type="submit" class="btn-block btn-color">Sign Up to Tidi</button>
                         </div>
@@ -92,7 +94,7 @@ require('template/header.phtml');
 </div>
 
 <script type="module" src="./js/RegistrationFormValidation.js"></script>
-
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <?php
 
 require('template/footer.phtml');
