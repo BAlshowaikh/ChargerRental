@@ -13,14 +13,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $connector = $_POST['connector'];
     $status    = $_POST['status'];
 
-    $image = "charger{$id}.jpg";
+    // Fetch current data
+    $existing = $chargerSet->fetchChargerPointById($id);
+    if (!$existing) {
+        die("Charger not found.");
+    }
+
+    // Default to current image
+    $image = $existing->getImageUrl();
+    $imageChanged = false;
 
     // Handle image upload
     if (isset($_FILES['imageFile']) && $_FILES['imageFile']['error'] === UPLOAD_ERR_OK) {
         $fileTmpPath = $_FILES['imageFile']['tmp_name'];
-        $fileSize = $_FILES['imageFile']['size'];
-        $mimeType = mime_content_type($fileTmpPath);
-        $uploadDir = 'images/ChargerPoints/';
+        $fileSize    = $_FILES['imageFile']['size'];
+        $mimeType    = mime_content_type($fileTmpPath);
+        $uploadDir   = 'images/ChargerPoints/';
         $allowedTypes = ['image/jpeg' => 'jpg', 'image/png' => 'png'];
 
         if (!array_key_exists($mimeType, $allowedTypes)) {
@@ -34,19 +42,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $extension = $allowedTypes[$mimeType];
         $image = "charger{$id}." . $extension;
 
-        // Delete any existing version of the image
+        // Delete existing image
         foreach (['jpg', 'png'] as $ext) {
             $old = $uploadDir . "charger{$id}." . $ext;
             if (file_exists($old)) unlink($old);
         }
 
-        move_uploaded_file($fileTmpPath, $uploadDir . $image);
+        if (move_uploaded_file($fileTmpPath, $uploadDir . $image)) {
+            $imageChanged = true;
+        }
     }
 
-    //  Use dataset to update (pass raw values)
-    $chargerSet->updateChargerPointByValues($id, $name, $desc, $price, $connector, $image, $status);
+    // Check for changes
+    $somethingChanged = (
+        trim($name) !== trim($existing->getName()) ||
+        trim($desc) !== trim($existing->getDescription()) ||
+        (float)$price != (float)$existing->getPricePerKW() ||
+        strcasecmp($connector, $existing->getConnectorType()) !== 0 ||
+        (int)$status !== (int)$existing->getAvailableStatusId() ||
+        $imageChanged
+    );
 
-    header("Location: ManageChargePointsAdmin.php");
+    if ($somethingChanged) {
+        $chargerSet->updateChargerPointByValues($id, $name, $desc, $price, $connector, $image, $status);
+        header("Location: ManageChargePointsAdmin.php?status=updated");
+    } else {
+        header("Location: ManageChargePointsAdmin.php?status=nochange");
+    }
     exit;
 
 } else {

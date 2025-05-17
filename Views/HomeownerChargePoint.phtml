@@ -4,7 +4,7 @@
     <h2 class="page-title">Charger Point Details</h2>
 
     <?php if (isset($chargePoint)): ?>
-        <form id="editForm" method="post" action="HomeownerUpdateChargePoint.php" enctype="multipart/form-data>
+        <form id="editForm" method="post" action="HomeownerUpdateChargePoint.php" enctype="multipart/form-data">
             <input type="hidden" name="charger_id" value="<?= htmlspecialchars($chargePoint->getId()) ?>">
 
             <div class="card redesigned">
@@ -36,10 +36,8 @@
                             <div class="value">
                                 <input type="text" name="image_url" class="editable-field" value="<?= htmlspecialchars($chargePoint->getImageUrl()) ?>" readonly>
                             </div>
-
                         </div>
 
-                        <!-- BUTTONS: Now inside card-body -->
                         <div class="card-actions">
                             <button type="button" id="editBtn" class="btn" onclick="enableEditMode()">Edit</button>
                             <button type="submit" id="saveBtn" class="btn" style="display:none;">Save</button>
@@ -51,23 +49,21 @@
                     <!-- RIGHT: Image -->
                     <div class="card-right">
                         <?php
-                        $imageDir = $_SERVER['DOCUMENT_ROOT'] . '/images/ChargerPoints/';
                         $imageBase = $chargePoint->getImageUrl();
                         $imagePath = '/images/ChargerPoints/' . $imageBase;
-
                         $fullPath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
+
                         if (!file_exists($fullPath) || empty($imageBase)) {
                             $imagePath = '/images/noImage.png';
                         }
                         ?>
 
-                        <img src="<?= $imagePath ?>"
-                             alt="Charger Image"
-                             class="charger-image">
-
+                        <div class="image-wrapper">
+                            <img id="previewImg" src="<?= $imagePath ?>" alt="Charger Image" class="charger-img">
+                            <input type="file" name="image_file" id="imageInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
+                            <button type="button" id="changeImgBtn" class="btn" style="display: none;" onclick="document.getElementById('imageInput').click()">Change Image</button>
+                        </div>
                     </div>
-
-
                 </div>
             </div>
         </form>
@@ -86,33 +82,75 @@
             </div>
         </div>
     </div>
-</main>
-<?php require ('template/footer.phtml'); ?>
 
+    <?php if (isset($_GET['status'])): ?>
+        <div id="statusPopup" class="popup-overlay">
+            <div class="popup-box
+            <?= $_GET['status'] === 'updated' ? 'success' : 'neutral' ?>">
+                <?= $_GET['status'] === 'updated'
+                    ? 'Charger point updated successfully!'
+                    : 'No fields were changed. Nothing updated.' ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
+
+</main>
+
+<?php require ('template/footer.phtml'); ?>
 
 <script>
     function enableEditMode() {
-        document.querySelectorAll('.editable-field').forEach(el => el.removeAttribute('readonly'))
-        document.getElementById('editBtn').style.display = 'none'
-        document.getElementById('saveBtn').style.display = 'inline-block'
-        document.getElementById('cancelBtn').style.display = 'inline-block'
+        document.querySelectorAll('.editable-field').forEach(el => el.removeAttribute('readonly'));
+        document.getElementById('editBtn').style.display = 'none';
+        document.getElementById('saveBtn').style.display = 'inline-block';
+        document.getElementById('cancelBtn').style.display = 'inline-block';
+        const imgBtn = document.getElementById('changeImgBtn');
+        if (imgBtn) imgBtn.style.display = 'inline-block';
     }
 
     function cancelEditMode() {
-        window.location.reload()
+        window.location.reload();
     }
 
     function confirmDelete() {
-        document.getElementById('deleteModal').style.display = 'block'
+        document.getElementById('deleteModal').style.display = 'block';
     }
 
     function closeDeleteModal() {
-        document.getElementById('deleteModal').style.display = 'none'
+        document.getElementById('deleteModal').style.display = 'none';
     }
 
     function proceedDelete() {
-        window.location.href = "deleteChargerPoint.php"
+        window.location.href = "deleteChargerPoint.php";
     }
+
+    function previewImage(input) {
+        const preview = document.getElementById('previewImg');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => preview.src = e.target.result;
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const popup = document.getElementById('statusPopup');
+
+        if (popup) {
+            setTimeout(() => {
+                popup.remove();
+
+                // Clean the ?status= from the URL
+                const url = new URL(window.location);
+                url.searchParams.delete('status');
+                window.history.replaceState({}, document.title, url);
+            }, 4000);
+        }
+    });
+
+
+
 </script>
 
 <style>
@@ -181,13 +219,15 @@
     /* IMAGE */
     .charger-img {
         width: 100%;
-        max-width: 250px;
+        max-width: 180px;
         height: auto;
-        object-fit: contain;
+        aspect-ratio: 3 / 4;
+        object-fit: cover;
         border-radius: 12px;
         border: 1px solid #ccc;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
+
 
     /* INFO GRID */
     .info-grid {
@@ -287,4 +327,42 @@
         gap: 12px;
         margin-top: 20px;
     }
+    .popup-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeOut 1s ease-out 3s forwards; /* fade out after 3s */
+    }
+
+    .popup-box {
+        background: #e8f5e9;
+        color: #2e7d32;
+        font-weight: bold;
+        padding: 20px 30px;
+        border-radius: 10px;
+        border-left: 6px solid #2e7d32;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        font-size: 18px;
+        text-align: center;
+    }
+
+    /* Fade-out keyframes */
+    @keyframes fadeOut {
+        to {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+    .popup-box.neutral {
+        background: #fff3cd;
+        color: #856404;
+        border-left-color: #ffeeba;
+    }
+
+
 </style>
