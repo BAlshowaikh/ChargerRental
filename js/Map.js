@@ -43,7 +43,21 @@ if (navigator.geolocation) {
                 .bindPopup("You are here!")
                 .openPopup();
         },
-        () => alert("Could not get your location.")
+        () => {
+
+            userPosition = {
+                lat: 26.142310,
+                lng: 50.597069
+            };
+            map.setView([userPosition.lat, userPosition.lng], 14);
+
+            L.marker([userPosition.lat, userPosition.lng], { icon: userIcon })
+                .addTo(map)
+                .bindPopup("You are here!")
+                .openPopup();
+
+            alert("Could not get your location. Defaulting to a nearby one")
+        }
     );
 }
 
@@ -56,7 +70,7 @@ function loadMapChargers(filters) {
     }).toString();
 
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', `/SearchChargePoints.php?${query}`, true);
+    xhr.open('GET', `SearchChargePoints.php?${query}`, true);
     xhr.responseType = 'json';
 
     xhr.onload = function () {
@@ -152,7 +166,7 @@ function loadChargerList(page = 1, filters=getFilters()) {
     }).toString();
 
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', `/SearchChargePoints.php?${query}`, true);
+    xhr.open('GET', `SearchChargePoints.php?${query}`, true);
     xhr.responseType = 'json';
 
     xhr.onload = function () {
