@@ -46,25 +46,25 @@
                         </div>
                     </div>
 
-                    <!-- RIGHT: Image -->
+                    <!-- RIGHT: Image --><!-- RIGHT: Image -->
                     <div class="card-right">
                         <?php
                         $imageBase = $chargePoint->getImageUrl();
-                        $imagePath = 'images/ChargerPoints/' . $imageBase;
-                        $fullPath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
+                        $imagePath = "images/ChargerPoints/" . $imageBase;
 
-                        if (!file_exists($fullPath) || empty($imageBase)) {
-                            $imagePath = 'images/noImage.png';
+                        // Fallback if empty
+                        if (empty($imageBase)) {
+                            $imagePath = "images/noImage.png";
                         }
                         ?>
-
                         <div class="image-wrapper">
-                            <img id="previewImg" src="<?= $imagePath ?>" alt="Charger Image" class="charger-img">
-                            <input type="file" name="image_file" id="imageInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
-                            <button type="button" id="changeImgBtn" class="btn" style="display: none;" onclick="document.getElementById('imageInput').click()">Change Image</button>
+                            <img id="previewImg"
+                                 src="<?= $imagePath ?>"
+                                 alt="Charger Image"
+                                 class="charger-img"
+                                 onerror="this.onerror=null;this.src='images/noImage.png';">
+
                         </div>
-                    </div>
-                </div>
             </div>
         </form>
     <?php else: ?>
