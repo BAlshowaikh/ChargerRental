@@ -1,6 +1,4 @@
-
 <?php require ('template/header.phtml'); ?>
-
     <main class="booking-wrapper">
         <?php if (isset($view->successMessage)): ?>
             <div class="success-box">
@@ -36,7 +34,8 @@
                             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
                             document.getElementById("timer").textContent =
-                                ${hours}h ${minutes}m ${seconds}s;
+                                `${hours}h ${minutes}m ${seconds}s`;
+
                         }
 
                         const timer = setInterval(updateCountdown, 1000);
@@ -44,7 +43,7 @@
                     </script>
                 <?php endif; ?>
 
-                <a href="UserBookingRequest.php">Go to My Booking History</a>
+                <a href="UserBookingRequest.php?">Go to My Booking History</a>
             </div>
         <?php else: ?>
             <div class="booking-card">
@@ -61,7 +60,7 @@
                     <p class="text-danger">Charger Point details not found.</p>
                 <?php endif; ?>
 
-                <form method="post" action="" onsubmit="return validateDate()">
+                <form method="POST" action="BookChargePoints.php?id=<?= htmlspecialchars($view->chargerPoint->getId()) ?>">
                     <input type="hidden" name="cp_id" value="<?= htmlspecialchars($view->chargerPoint->getId()) ?>">
 
                     <div class="mb-3">

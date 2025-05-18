@@ -1,4 +1,9 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 require_once("Models/bookingRequestDataSet.php");
 require_once("Models/chargerPointDataSet.php");
@@ -29,7 +34,7 @@ if (!$view->chargerPoint) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book'])) {
-    $userId = $_SESSION['user']->getUserId();
+    $userId = $_SESSION['userID'];
     //$userId = 123;
     $chargerPointId = $_GET['id']; // ensure it's coming from the URL
     //$chargerPointId =3;
