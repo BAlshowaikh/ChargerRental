@@ -8,14 +8,14 @@ if (session_status() === PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <title><?= $view->pageTitle ?? 'EV Portal' ?></title>
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <?php if (!empty($view->styles)): ?>
             <?php foreach ((array) $view->styles as $style): ?>
                 <link rel="stylesheet" href="<?= $style ?>">
             <?php endforeach; ?>
     <?php else: ?>
-        <link rel="stylesheet" href="/css/sharedLayout.css">
+        <link rel="stylesheet" href="css/sharedLayout.css">
     <?php endif; ?>
 </head>
 
@@ -25,7 +25,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="/index.php">
-                <img src="/images/PowerUpLogo.png"  alt="EV Portal Logo" style="height: 20px;">
+                <img src="images/PowerUpLogo.png"  alt="EV Portal Logo" style="height: 20px;">
             </a>
 
             <div class="collapse navbar-collapse">
@@ -33,17 +33,17 @@ if (session_status() === PHP_SESSION_NONE) {
                     <?php if (!empty($_SESSION["userID"])): ?>
                         <?php if ($_SESSION["role"] == 1): ?>
                             <!-- Admin Nav -->
-                            <li class="nav-item"><a class="nav-link" href="/ManageUsers.php">Manage Users</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/ManageChargePointsAdmin.php">Manage Charger Point</a></li>
+                            <li class="nav-item"><a class="nav-link" href="ManageUsers.php">Manage Users</a></li>
+                            <li class="nav-item"><a class="nav-link" href="ManageChargePointsAdmin.php">Manage Charger Point</a></li>
                         <?php elseif ($_SESSION["role"] == 2): ?>
                             <!-- Homeowner Nav -->
-                            <li class="nav-item"><a class="nav-link" href="/HomeownerChargePoint.php">Manage My Charger Point</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/HomeownerBookingRequest.php">My Booking Requests</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/SystemReport.php">System Report</a></li>
+                            <li class="nav-item"><a class="nav-link" href="HomeownerChargePoint.php">Manage My Charger Point</a></li>
+                            <li class="nav-item"><a class="nav-link" href="HomeownerBookingRequest.php">My Booking Requests</a></li>
+                            <li class="nav-item"><a class="nav-link" href="SystemReport.php">System Report</a></li>
                         <?php elseif ($_SESSION["role"] == 3): ?>
                             <!-- Customer Nav -->
-                            <li class="nav-item"><a class="nav-link" href="/SearchChargePoints.php">Explore Charge Point</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/UserBookingRequest.php">Booking History</a></li>
+                            <li class="nav-item"><a class="nav-link" href="SearchChargePoints.php">Explore Charge Point</a></li>
+                            <li class="nav-item"><a class="nav-link" href="UserBookingRequest.php">Booking History</a></li>
                         <?php endif; ?>
                     <?php endif; ?>
                 </ul>
@@ -52,17 +52,17 @@ if (session_status() === PHP_SESSION_NONE) {
                 <div class="d-flex align-items-center ms-auto">
                     <div class="dropdown">
                         <button class="btn btn-transparent d-flex align-items-center dropdown-toggle text-white" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="/images/profileicon.png" alt="Profile Icon" style="height: 25px;" class="me-2">
+                            <img src="images/profileicon.png" alt="Profile Icon" style="height: 25px;" class="me-2">
                             <span><?= $_SESSION["fullname"] ?? "Guest" ?></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <?php if (empty($_SESSION["userID"])): ?>
-                                <li><a class="dropdown-item" href="/Login.php">Login</a></li>
-                                <li><a class="dropdown-item" href="/Signup.php">Signup</a></li>
+                                <li><a class="dropdown-item" href="Login.php">Login</a></li>
+                                <li><a class="dropdown-item" href="Signup.php">Signup</a></li>
                             <?php else: ?>
-                                <li><a class="dropdown-item" href="/Profile.php">Profile</a></li>
+                                <li><a class="dropdown-item" href="Profile.php">Profile</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/Logout.php">Logout</a></li>
+                                <li><a class="dropdown-item" href="Logout.php">Logout</a></li>
                             <?php endif; ?>
                         </ul>
                     </div>
@@ -73,8 +73,8 @@ if (session_status() === PHP_SESSION_NONE) {
 <?php else: ?>
     <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/index.php">
-                <img src="/images/PowerUpLogo.png"  alt="EV Portal Logo" style="height: 20px;">
+            <a class="navbar-brand" href="index.php">
+                <img src="images/PowerUpLogo.png"  alt="EV Portal Logo" style="height: 20px;">
             </a>
 
             <div class="collapse navbar-collapse">
@@ -84,17 +84,17 @@ if (session_status() === PHP_SESSION_NONE) {
 
                         <div class="dropdown">
                             <button class="btn btn-transparent d-flex align-items-center dropdown-toggle text-white" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="/images/profileicon.png" alt="Profile Icon" style="height: 25px;" class="me-2">
+                                <img src="images/profileicon.png" alt="Profile Icon" style="height: 25px;" class="me-2">
                                 <span><?= $_SESSION["fullname"] ?? "Guest" ?></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <?php if (empty($_SESSION["userID"])): ?>
-                                    <li><a class="dropdown-item" href="/Login.php">Login</a></li>
-                                    <li><a class="dropdown-item" href="/Signup.php">Signup</a></li>
+                                    <li><a class="dropdown-item" href="Login.php">Login</a></li>
+                                    <li><a class="dropdown-item" href="Signup.php">Signup</a></li>
                                 <?php else: ?>
-                                    <li><a class="dropdown-item" href="/Profile.php">Profile</a></li>
+                                    <li><a class="dropdown-item" href="Profile.php">Profile</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="/Logout.php">Logout</a></li>
+                                    <li><a class="dropdown-item" href="Logout.php">Logout</a></li>
                                 <?php endif; ?>
                             </ul>
                         </div>

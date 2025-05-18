@@ -3,7 +3,7 @@
 require ("Models/userDataSet.php");
 
 $view = new stdClass();
-$view->styles = "/css/LoginRegCSS.css";
+$view->styles = "css/LoginRegCSS.css";
 session_start();
 
 if (isset($_SESSION["userID"]) && isset($_SESSION["user_status"]) && $_SESSION["user_status"] === "Approve")
@@ -73,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // Build proper image name and save file
             $extension = $allowedTypes[$mimeType];
             $imageName = "charger{$chargerId}.{$extension}";
-            $uploadDir = __DIR__ . "/images/ChargerPoints/";
+            $uploadDir = __DIR__ . "images/ChargerPoints/";
 
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0755, true);

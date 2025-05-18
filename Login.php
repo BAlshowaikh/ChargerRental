@@ -4,7 +4,7 @@ require("Models/userDataSet.php");
 
 $view = new stdClass();
 $view->pageTitle = 'Login';
-$view->styles = '/css/LoginRegCSS.css';
+$view->styles = 'css/LoginRegCSS.css';
 
 session_start();
 

@@ -50,11 +50,11 @@
                     <div class="card-right">
                         <?php
                         $imageBase = $chargePoint->getImageUrl();
-                        $imagePath = '/images/ChargerPoints/' . $imageBase;
+                        $imagePath = 'images/ChargerPoints/' . $imageBase;
                         $fullPath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
 
                         if (!file_exists($fullPath) || empty($imageBase)) {
-                            $imagePath = '/images/noImage.png';
+                            $imagePath = 'images/noImage.png';
                         }
                         ?>
 

@@ -171,7 +171,7 @@ function loadChargerList(page = 1, filters=getFilters()) {
 <div class="col-md-4 mb-4">
     <div class="card-list shadow h-100 card-hover" data-id="${charger.charger_point_id}">
         <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
-            <img src="/images/ChargerPoints/${charger.charger_image_url}" alt="${charger.Name}" class="img-fluid" style="max-height: 100%; max-width: 100%;">
+            <img src="images/ChargerPoints/${charger.charger_image_url}" alt="${charger.Name}" class="img-fluid" style="max-height: 100%; max-width: 100%;">
         </div>
         <div class="card-body d-flex flex-column justify-content-between">
             <h5 class="card-title fw-bold">${charger.Name}</h5>
