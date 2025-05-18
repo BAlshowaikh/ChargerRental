@@ -195,7 +195,7 @@ function loadChargerList(page = 1, filters=getFilters()) {
             let paginationHTML = '';
             for (let i = 1; i <= totalPages; i++) {
                 paginationHTML += `
-                    <button class="btn ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'} mx-1" onclick="loadChargerList(${i})">${i}</button>
+                    <button class="btn ${i === currentPage ? 'btn-primary' : 'btn-primary '} mx-1" onclick="loadChargerList(${i})">${i}</button>
                 `;
             }
 

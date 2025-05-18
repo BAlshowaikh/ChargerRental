@@ -8,14 +8,13 @@ $view->styles = ["/css/BookingRequestMange.css", "/css/BookingRequest.css", "/cs
 
 
 // Auth (uncomment for real use)
-// if (!isset($_SESSION['user'])) {
-//     header("Location: Login.php");
-//     exit();
-// }
+ if (!isset($_SESSION['userID'])) {
+     header("Location: Login.php");
+     exit();
+ }
 
-// $homeownerId = $_SESSION['user']->getUserId();
 $homeownerId = $_SESSION['userID'];
-//$homeownerId = 7;
+
 
 // Filters from GET
 $statusFilter = $_GET['status'] ?? 'all'; // '1', '2', '3', or 'all'
