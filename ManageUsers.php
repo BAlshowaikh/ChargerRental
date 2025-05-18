@@ -1,7 +1,7 @@
 <?php
 session_start();
 $view = new stdClass();
-require_once("Models/userDataSet.php");
+require_once("Models/UserDataSet.php");
 
 //Check if user is logged in
 $userId = $_SESSION['userID'] ?? null;

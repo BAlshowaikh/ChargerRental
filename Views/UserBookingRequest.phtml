@@ -31,18 +31,25 @@
                     <?php
                     $statusId = (int) $b['Booking_status_ID'];
                     $statusText = $b['Booking_status'];
-                    $badge = match ($statusId) {
-                        1 => 'warning',
-                        2 => 'success',
-                        3 => 'danger',
-                        default => 'secondary'
-                    };
-                    $statusClass = match ($statusId) {
-                        1 => 'status-pending',
-                        2 => 'status-approved',
-                        3 => 'status-declined',
-                        default => ''
-                    };
+                    switch ($statusId) {
+                        case 1:
+                            $badge = 'warning';
+                            $statusClass = 'status-pending';
+                            break;
+                        case 2:
+                            $badge = 'success';
+                            $statusClass = 'status-approved';
+                            break;
+                        case 3:
+                            $badge = 'danger';
+                            $statusClass = 'status-declined';
+                            break;
+                        default:
+                            $badge = 'secondary';
+                            $statusClass = '';
+                            break;
+                    }
+
 
                     $start = new DateTime($b['Booking_start']);
                     $end   = new DateTime($b['Booking_end']);

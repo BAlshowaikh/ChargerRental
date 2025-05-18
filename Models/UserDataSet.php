@@ -1,7 +1,7 @@
 <?php
 
 require ("Models/Database.php");
-require ("Models/userData.php");
+require("Models/UserData.php");
 
 class userDataSet
 {

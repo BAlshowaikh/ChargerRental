@@ -1,6 +1,6 @@
 <?php
 
-require("Models/userDataSet.php");
+require("Models/UserDataSet.php");
 
 $view = new stdClass();
 $view->pageTitle = 'Login';

@@ -6,7 +6,7 @@
  */
 
 
-require ("Models/UserDataSet.php");
+require("Models/UserDataSet.php");
 
 $view = new stdClass();
 $view->styles = '/css/ProfileCSS.css';
