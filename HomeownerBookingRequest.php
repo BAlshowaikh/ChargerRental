@@ -17,8 +17,8 @@ $homeownerId = $_SESSION['userID'];
 
 
 // Filters from GET
-$statusFilter = $_GET['status'] ?? 'all'; // '1', '2', '3', or 'all'
-$sortOrder = $_GET['sort'] ?? 'newest'; // 'newest' or 'oldest'
+$statusFilter = isset($_GET['status']) ? $_GET['status'] : 'all';
+$sortOrder = isset($_GET['sort']) ? $_GET['sort'] : 'newest';
 
 // Pagination
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;

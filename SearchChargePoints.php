@@ -20,9 +20,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'getChargers') {
     $chargerDataSet = new chargerPointDataSet();
 
     try {
-        $mode = $_GET['mode'] ?? 'list';
+        $mode = isset($_GET['mode']) ? $_GET['mode'] : 'list';
         $maxPrice = isset($_GET['max_price']) ? floatval($_GET['max_price']) : null;
-        $availability = $_GET['availability'] ?? null;
+        $availability = isset($_GET['availability']) ? $_GET['availability'] : null;
         $sql = "SELECT * FROM charger_points WHERE 1=1";
 
 

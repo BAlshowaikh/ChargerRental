@@ -35,20 +35,35 @@
                 $status = $b['Booking_status'];
                 $statusId = (int)$b['Booking_status_ID'];
 
-                $badge = match ($status) {
-                    'Approved' => 'success',
-                    'Pending' => 'warning',
-                    'Declined' => 'danger',
-                    default => 'secondary'
-                };
+                switch ($status) {
+                    case 'Approved':
+                        $badge = 'success';
+                        break;
+                    case 'Pending':
+                        $badge = 'warning';
+                        break;
+                    case 'Declined':
+                        $badge = 'danger';
+                        break;
+                    default:
+                        $badge = 'secondary';
+                        break;
+                }
 
-                $statusClass = match ($statusId) {
-                    1 => 'status-pending',
-                    2 => 'status-approved',
-                    3 => 'status-declined',
-                    default => ''
-                };
-
+                switch ($statusId) {
+                    case 1:
+                        $statusClass = 'status-pending';
+                        break;
+                    case 2:
+                        $statusClass = 'status-approved';
+                        break;
+                    case 3:
+                        $statusClass = 'status-declined';
+                        break;
+                    default:
+                        $statusClass = '';
+                        break;
+                }
                 $backText = $statusId === 1 ? 'Click to change status' : 'Status is final';
                 ?>
                 <div class="col-md-4">
